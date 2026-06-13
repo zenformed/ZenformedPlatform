@@ -2,6 +2,7 @@ import {
   normalizePlatformPublicAppOrigin,
   resolvePlatformPublicAppUrl,
 } from '@/infrastructure/config/platformPublicAppUrl';
+import { resolveZenformedCoreApiBaseUrl } from '@/infrastructure/config/zenformedCoreUrlPolicy';
 
 export const env = {
   get supabaseUrl(): string {
@@ -26,5 +27,8 @@ export const env = {
       return window.location.origin;
     }
     return resolvePlatformPublicAppUrl();
+  },
+  get zenformedCoreApiBaseUrl(): string | null {
+    return resolveZenformedCoreApiBaseUrl(process.env.ZENFORMED_CORE_API_URL);
   },
 } as const;

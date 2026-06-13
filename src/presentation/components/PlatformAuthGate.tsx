@@ -7,7 +7,7 @@ import {
   parseAuthEntryQueryParams,
   resolvePostAuthRedirectTarget,
 } from '@zenformed/core/auth';
-import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
+import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 
 const PUBLIC_PATHS = [
@@ -31,7 +31,7 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { session, user, isLoading } = usePlatformAuth();
+  const { session, user, loading: isLoading } = useSaaSProfile();
 
   const isPublicPath = PUBLIC_PATHS.some((path) => pathname?.startsWith(path));
   const isHomePath = pathname === nav.routes.home;

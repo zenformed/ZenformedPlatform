@@ -69,11 +69,14 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
             <PlatformDashboardHeader
               user={dash.user ? { email: dash.user.email } : null}
               effectiveLicenseTier={dash.effectiveLicenseTier}
+              organizationRoleLabel={dash.organizationRoleLabel}
               isAdmin={dash.isAdmin}
               avatarUrl={dash.avatarUrl}
               avatarLoading={dash.avatarLoading}
               shopName={dash.shopName}
-              onOpenSettings={() => dash.setSettingsOpen(true)}
+              onOpenSettings={() => {
+                requestAnimationFrame(() => dash.setSettingsOpen(true));
+              }}
               onRequestSignOutConfirm={() => dash.setSignOutModalOpen(true)}
               onRequestProfilePhotoModal={() => dash.setProfilePhotoModalOpen(true)}
             />
@@ -96,15 +99,13 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
 
       <PlatformSettingsDrawer
         open={dash.settingsOpen}
-        activeSection={dash.settingsSection}
-        onSectionChange={dash.setSettingsSection}
         onClose={() => dash.setSettingsOpen(false)}
-        aboutSectionContent={
-          <div>
-            <h3>{content.dashboard.aboutSectionTitle}</h3>
-            <p>{content.dashboard.aboutSectionBody}</p>
-          </div>
-        }
+        getAccessToken={dash.getAccessToken}
+        shellContext={{
+          userEmail: dash.user?.email ?? null,
+          organizationName: dash.shopName ?? null,
+          logoUrl: dash.logoUrl ?? null,
+        }}
       />
 
       <PlatformDashboardModals
