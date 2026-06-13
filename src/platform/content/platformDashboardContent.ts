@@ -10,10 +10,13 @@ export const platformDashboardContent = {
   },
   dashboard: {
     title: 'Dashboard',
-    placeholderCardTitle: 'Welcome',
-    placeholderCardBody: 'Your Zenformed platform home. App launcher coming soon.',
+    homeWelcome: 'Your Zenformed platform home. Open an app below or use the apps menu in the header.',
     aboutSectionTitle: platformAppDefinition.displayName,
     aboutSectionBody:
       'Zenformed platform shell — shared auth entry and account management for Zenformed apps.',
+  },
+  apps: {
+    sectionTitle: 'Apps',
+    comingSoonLabel: 'Coming soon',
   },
 } as const;

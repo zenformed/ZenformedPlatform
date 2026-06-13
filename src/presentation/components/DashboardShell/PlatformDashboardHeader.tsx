@@ -14,6 +14,7 @@ import {
   SettingsIcon,
   SignOutIcon,
 } from '@/platform/icons/platformDashboardShellIcons';
+import { PlatformAppsLauncher } from '@/presentation/components/PlatformApps/PlatformAppsLauncher';
 import styles from '../../../../app/(dashboard)/dashboard/dashboard.module.css';
 
 const headerShellClassNames = pickHeaderShellClassNames(styles);
@@ -66,7 +67,12 @@ export function PlatformDashboardHeader({
       organizationRoleLabel={organizationRoleLabel}
       isAdmin={isAdmin}
       labels={accountMenuLabels}
-      themeToggle={<ThemeToggle />}
+      themeToggle={
+        <>
+          <ThemeToggle />
+          <PlatformAppsLauncher />
+        </>
+      }
       onOpenSettings={onOpenSettings}
       onRequestSignOutConfirm={onRequestSignOutConfirm}
       onRequestProfilePhotoModal={onRequestProfilePhotoModal}

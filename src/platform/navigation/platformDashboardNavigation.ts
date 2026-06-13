@@ -50,6 +50,14 @@ export const platformDashboardNavigation = {
 
   header: {
 
+    appsLauncher: {
+
+      triggerAriaLabel: 'Open apps',
+
+      popoverAriaLabel: 'Zenformed apps',
+
+    },
+
     account: {
 
       menuTriggerAriaLabel: 'Account menu',

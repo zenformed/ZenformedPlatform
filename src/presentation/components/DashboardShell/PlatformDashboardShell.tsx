@@ -17,6 +17,7 @@ import { PlatformDashboardHeader } from '@/presentation/components/DashboardShel
 import { PlatformDashboardModals } from '@/presentation/components/DashboardShell/PlatformDashboardModals';
 import { PlatformSettingsDrawer } from '@/presentation/components/DashboardShell/PlatformSettingsDrawer';
 import { PlatformSidebar } from '@/presentation/components/DashboardShell/PlatformSidebar';
+import { PlatformAppList } from '@/presentation/components/PlatformApps/PlatformAppList';
 import shellStyles from '../../../../app/(dashboard)/dashboard/dashboard.module.css';
 import pageStyles from '../../../../app/(dashboard)/dashboard/platformDashboard.module.css';
 
@@ -82,16 +83,9 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
             />
             <main className={shellStyles.mainContent}>
               <h1 className={shellStyles.headerTitle}>{content.dashboard.title}</h1>
-              <div className={pageStyles.placeholderGrid}>
-                <div className={pageStyles.placeholderCard}>
-                  <h3>{content.dashboard.placeholderCardTitle}</h3>
-                  <p>{content.dashboard.placeholderCardBody}</p>
-                </div>
-                <div className={pageStyles.placeholderCard}>
-                  <h3>Apps</h3>
-                  <p>App launcher tiles will appear here in a future phase.</p>
-                </div>
-              </div>
+              <p className={pageStyles.homeWelcome}>{content.dashboard.homeWelcome}</p>
+              <h2 className={pageStyles.appsSectionTitle}>{content.apps.sectionTitle}</h2>
+              <PlatformAppList variant="cards" />
             </main>
           </>
         }

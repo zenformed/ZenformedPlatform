@@ -81,9 +81,10 @@ export function HomeIcon(): React.ReactElement {
   );
 }
 
-export function AppsIcon(): React.ReactElement {
+export function AppsIcon({ className }: { className?: string } = {}): React.ReactElement {
   return (
     <svg
+      className={className}
       width="20"
       height="20"
       viewBox="0 0 24 24"
