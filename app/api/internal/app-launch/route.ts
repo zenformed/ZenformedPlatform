@@ -65,6 +65,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const result = await mintAppLaunch(raw, { targetApp, returnPath });
   if (!result.ok) {
+    console.error(
+      JSON.stringify({
+        platformAppLaunchMint: 'failed',
+        targetApp,
+        returnPath,
+        errorKind: result.error.kind,
+        httpStatus: result.error.kind === 'http_error' ? result.error.status : undefined,
+        upstreamError:
+          result.error.kind === 'http_error'
+            ? (result.error.body as Record<string, unknown> | undefined)?.error
+            : undefined,
+      })
+    );
     if (result.error.kind === 'http_error') {
       const st = result.error.status;
       if (st === 401 || st === 403) {

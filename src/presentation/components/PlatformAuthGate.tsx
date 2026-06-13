@@ -8,6 +8,7 @@ import {
   resolvePostAuthRedirectTarget,
 } from '@zenformed/core/auth';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
+import { isBuildCoreAuthAppHandoff } from '@/infrastructure/auth/platformBuildCoreLaunchHandoff';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 
 const PUBLIC_PATHS = [
@@ -42,6 +43,15 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
   const hasRecoveryCallback = hasAuthRecoveryCallback();
   const isAuthenticated = session != null && user != null;
 
+  const isBuildCoreLoginHandoff =
+    mounted &&
+    isLoginPath &&
+    isBuildCoreAuthAppHandoff(
+      parseAuthEntryQueryParams({
+        get: (name) => new URLSearchParams(window.location.search).get(name),
+      })
+    );
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -73,6 +83,10 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
       const authEntryParams = parseAuthEntryQueryParams({
         get: (name) => params.get(name),
       });
+      if (isBuildCoreAuthAppHandoff(authEntryParams)) {
+        // Login page performs cross-app mint + redirect; returnTo is a BuildCore path.
+        return;
+      }
       router.replace(resolvePostAuthRedirectTarget(authEntryParams, nav.routes.dashboard));
     }
   }, [
@@ -100,7 +114,7 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
     return <LoadingShell />;
   }
 
-  if (isAuthenticated && isLoginPath) {
+  if (isAuthenticated && isLoginPath && !isBuildCoreLoginHandoff) {
     return <LoadingShell />;
   }
 

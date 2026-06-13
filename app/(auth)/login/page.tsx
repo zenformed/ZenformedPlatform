@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, type ReactElement } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState, type ReactElement } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   DEFAULT_AUTH_LABELS,
@@ -11,20 +11,70 @@ import {
   parseAuthEntryQueryParams,
   resolvePostAuthRedirectTarget,
 } from '@zenformed/core/auth';
+import {
+  isBuildCoreAuthAppHandoff,
+  performBuildCoreLaunchHandoff,
+} from '@/infrastructure/auth/platformBuildCoreLaunchHandoff';
+import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 import { PlatformAuthPageShell } from '@/presentation/components/PlatformAuthPageShell';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import pageStyles from '@/presentation/components/platformAuthPage.module.css';
 
 function LoginPageContent(): ReactElement {
-  const { signIn, waitForSessionSync, isLoading } = usePlatformAuth();
+  const { signIn, waitForSessionSync, isLoading, session } = usePlatformAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loggingIn, setLoggingIn] = useState(false);
+  const [handoffPending, setHandoffPending] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const handoffStartedRef = useRef(false);
 
   const authEntryParams = parseAuthEntryQueryParams(searchParams);
+  const isBuildCoreHandoff = isBuildCoreAuthAppHandoff(authEntryParams);
   const redirectTarget = resolvePostAuthRedirectTarget(authEntryParams, nav.routes.dashboard);
+
+  const runBuildCoreHandoff = useCallback(async (): Promise<boolean> => {
+    if (handoffStartedRef.current) return true;
+    handoffStartedRef.current = true;
+    setHandoffPending(true);
+    setLoginError(null);
+
+    try {
+      await waitForSessionSync();
+      const {
+        data: { session: activeSession },
+      } = await getSupabaseClient().auth.getSession();
+      const accessToken = activeSession?.access_token?.trim() ?? '';
+      if (!accessToken) {
+        handoffStartedRef.current = false;
+        setHandoffPending(false);
+        setLoginError('Could not open BuildCore.');
+        return false;
+      }
+
+      const handoff = await performBuildCoreLaunchHandoff(accessToken, authEntryParams);
+      if (!handoff.ok) {
+        handoffStartedRef.current = false;
+        setHandoffPending(false);
+        setLoginError(handoff.message);
+        return false;
+      }
+
+      window.location.assign(handoff.launchUrl);
+      return true;
+    } catch {
+      handoffStartedRef.current = false;
+      setHandoffPending(false);
+      setLoginError('Could not open BuildCore.');
+      return false;
+    }
+  }, [authEntryParams, waitForSessionSync]);
+
+  useEffect(() => {
+    if (!isBuildCoreHandoff || isLoading || !session) return;
+    void runBuildCoreHandoff();
+  }, [isBuildCoreHandoff, isLoading, session, runBuildCoreHandoff]);
 
   async function handleSubmit(email: string, password: string): Promise<void> {
     setLoggingIn(true);
@@ -32,6 +82,11 @@ function LoginPageContent(): ReactElement {
     try {
       const result = await signIn(email, password);
       if (result.ok) {
+        if (isBuildCoreHandoff) {
+          await runBuildCoreHandoff();
+          return;
+        }
+
         await waitForSessionSync();
         router.replace(redirectTarget);
         return;
@@ -44,13 +99,17 @@ function LoginPageContent(): ReactElement {
     }
   }
 
+  const showLoading = isLoading || loggingIn || handoffPending;
+
   return (
     <PlatformAuthPageShell
       cardTitle="Sign in"
-      loading={isLoading || loggingIn}
-      loadingMessage={isLoading ? 'Checking session…' : 'Logging in…'}
+      loading={showLoading}
+      loadingMessage={
+        handoffPending ? 'Opening BuildCore…' : isLoading ? 'Checking session…' : 'Logging in…'
+      }
     >
-      {!isLoading && !loggingIn ? (
+      {!showLoading ? (
         <>
           <ZenformedLoginForm onSubmit={handleSubmit} error={loginError} />
           <ZenformedAuthPageLinks>
