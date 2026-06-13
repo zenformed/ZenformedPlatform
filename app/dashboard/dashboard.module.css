@@ -1,0 +1,52 @@
+.page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--theme-border-main);
+  background: var(--theme-surface-card);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.greeting {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.note {
+  margin: 0 0 1.5rem;
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.875rem;
+}
+
+.signOut {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: var(--theme-surface-button);
+  border: 1px solid var(--theme-border-strong);
+  border-radius: var(--theme-radius-md, 0.5rem);
+  cursor: pointer;
+}
+
+.signOut:hover {
+  background: var(--theme-surface-hover);
+}

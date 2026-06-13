@@ -1,0 +1,20 @@
+.card {
+  background-color: var(--theme-surface-card);
+  border: 1px solid var(--theme-border-card);
+  border-radius: var(--theme-radius-md, 0.5rem);
+  box-shadow: var(--theme-shadow-card);
+  overflow: hidden;
+}
+
+.title {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text, #0f172a);
+  border-bottom: 1px solid var(--theme-border-main);
+}
+
+.content {
+  padding: 1.25rem;
+}

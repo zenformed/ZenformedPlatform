@@ -1,0 +1,46 @@
+/**
+ * Global base styles. Semantic tokens live in theme-tokens.css and theme-surfaces.css.
+ * Theme: light (default) and dark via [data-theme="dark"].
+ */
+
+@import './theme-tokens.css';
+@import './theme-surfaces.css';
+@import './theme-scrollbars.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  transition: background-color 0.2s ease;
+}
+
+input:not([type='checkbox']):not([type='radio']),
+textarea,
+select {
+  background-color: var(--theme-form-input-bg, var(--theme-surface-elevated)) !important;
+  color: var(--theme-form-input-text, var(--color-text)) !important;
+  border-color: var(--theme-form-input-border, var(--theme-border-strong)) !important;
+}
