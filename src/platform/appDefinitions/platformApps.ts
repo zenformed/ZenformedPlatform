@@ -6,6 +6,8 @@ export type PlatformAppEntry = {
   readonly id: PlatformAppId;
   readonly name: string;
   readonly description: string;
+  /** When set, opens via one-time launch handoff instead of a direct href. */
+  readonly launchTarget?: PlatformAppId;
   readonly href?: string;
   readonly status: PlatformAppStatus;
 };
@@ -15,7 +17,7 @@ export const PLATFORM_APPS: readonly PlatformAppEntry[] = [
     id: 'buildcore',
     name: 'BuildCore',
     description: 'Construction project management and CRM.',
-    href: 'https://buildcore.zenformed.com/dashboard',
+    launchTarget: 'buildcore',
     status: 'live',
   },
   {
