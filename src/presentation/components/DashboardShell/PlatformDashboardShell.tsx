@@ -2,14 +2,18 @@
 
 import type { ReactElement } from 'react';
 import {
+  pickAppsLauncherClassNames,
   pickDashboardLayoutClassNames,
   pickDashboardPageLoadingClassNames,
   pickSidebarBrandingClassNames,
+  useZenformedAppLaunch,
+  ZenformedAppList,
   ZenformedDashboardAppShell,
   ZenformedDashboardPageLoading,
   ZenformedDashboardSidebarRow,
   ZenformedSidebarBranding,
 } from '@zenformed/core/dashboard-shell';
+import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
 import type { UsePlatformDashboardResult } from '@/presentation/features/platformDashboard/usePlatformDashboard';
@@ -17,7 +21,7 @@ import { PlatformDashboardHeader } from '@/presentation/components/DashboardShel
 import { PlatformDashboardModals } from '@/presentation/components/DashboardShell/PlatformDashboardModals';
 import { PlatformSettingsDrawer } from '@/presentation/components/DashboardShell/PlatformSettingsDrawer';
 import { PlatformSidebar } from '@/presentation/components/DashboardShell/PlatformSidebar';
-import { PlatformAppList } from '@/presentation/components/PlatformApps/PlatformAppList';
+import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import shellStyles from '../../../../app/(dashboard)/dashboard/dashboard.module.css';
 import pageStyles from '../../../../app/(dashboard)/dashboard/platformDashboard.module.css';
 
@@ -30,6 +34,18 @@ export type PlatformDashboardShellProps = {
 };
 
 export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): ReactElement {
+  const { session } = useSaaSProfile();
+  const appsLauncherClassNames = pickAppsLauncherClassNames(pageStyles);
+  const { launchApp, launchingAppId, launchError } = useZenformedAppLaunch({
+    launchApiUrl: '/api/internal/app-launch',
+    getAccessToken: () => session?.access_token ?? null,
+  });
+  const appsLauncherLabels = {
+    triggerAriaLabel: nav.header.appsLauncher.triggerAriaLabel,
+    popoverAriaLabel: nav.header.appsLauncher.popoverAriaLabel,
+    comingSoonLabel: content.apps.comingSoonLabel,
+  };
+
   if (dash.authLoading) {
     return (
       <ZenformedDashboardPageLoading
@@ -85,7 +101,15 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
               <h1 className={shellStyles.headerTitle}>{content.dashboard.title}</h1>
               <p className={pageStyles.homeWelcome}>{content.dashboard.homeWelcome}</p>
               <h2 className={pageStyles.appsSectionTitle}>{content.apps.sectionTitle}</h2>
-              <PlatformAppList variant="cards" />
+              <ZenformedAppList
+                apps={PLATFORM_APPS}
+                classNames={appsLauncherClassNames}
+                labels={appsLauncherLabels}
+                variant="cards"
+                launchApp={launchApp}
+                launchingAppId={launchingAppId}
+                launchError={launchError}
+              />
             </main>
           </>
         }
