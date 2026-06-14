@@ -47,10 +47,9 @@ export type PlatformDashboardHeaderProps = {
   user: { email: string } | null;
   effectiveLicenseTier: string | null | undefined;
   organizationRoleLabel?: string | null;
-  isAdmin: boolean;
   avatarUrl: string | null | undefined;
   avatarLoading: boolean;
-  shopName: string | null | undefined;
+  getAccessToken: () => string | null;
   onOpenSettings: () => void;
   onRequestSignOutConfirm: () => void;
   onRequestProfilePhotoModal: () => void;
@@ -60,10 +59,9 @@ export function PlatformDashboardHeader({
   user,
   effectiveLicenseTier,
   organizationRoleLabel,
-  isAdmin,
   avatarUrl,
   avatarLoading,
-  shopName,
+  getAccessToken,
   onOpenSettings,
   onRequestSignOutConfirm,
   onRequestProfilePhotoModal,
@@ -80,12 +78,12 @@ export function PlatformDashboardHeader({
       user={user}
       avatarUrl={avatarUrl}
       avatarLoading={avatarLoading}
-      shopName={shopName}
-      defaultShopNameFallback={content.branding.defaultShopNameFallback}
       effectiveLicenseTier={effectiveLicenseTier}
       organizationRoleLabel={organizationRoleLabel}
-      isAdmin={isAdmin}
       labels={accountMenuLabels}
+      settingsApiUrl={nav.apis.usersMeSettings}
+      getAccessToken={getAccessToken}
+      sessionUserId={session?.user?.id ?? null}
       themeToggle={
         <>
           <ThemeToggle />

@@ -87,10 +87,9 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
               user={dash.user ? { email: dash.user.email } : null}
               effectiveLicenseTier={dash.effectiveLicenseTier}
               organizationRoleLabel={dash.organizationRoleLabel}
-              isAdmin={dash.isAdmin}
               avatarUrl={dash.avatarUrl}
               avatarLoading={dash.avatarLoading}
-              shopName={dash.shopName}
+              getAccessToken={dash.getAccessToken}
               onOpenSettings={() => {
                 requestAnimationFrame(() => dash.setSettingsOpen(true));
               }}
