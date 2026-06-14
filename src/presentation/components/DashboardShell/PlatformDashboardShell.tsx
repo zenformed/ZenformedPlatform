@@ -12,6 +12,7 @@ import {
   ZenformedDashboardPageLoading,
   ZenformedDashboardSidebarRow,
   ZenformedSidebarBranding,
+  zenformedAppIconSrc,
 } from '@zenformed/core/dashboard-shell';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
@@ -43,6 +44,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
   const appsLauncherLabels = {
     triggerAriaLabel: nav.header.appsLauncher.triggerAriaLabel,
     popoverAriaLabel: nav.header.appsLauncher.popoverAriaLabel,
+    sectionTitle: content.apps.sectionTitle,
     comingSoonLabel: content.apps.comingSoonLabel,
   };
 
@@ -97,8 +99,17 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
               onRequestProfilePhotoModal={() => dash.setProfilePhotoModalOpen(true)}
             />
             <main className={shellStyles.mainContent}>
-              <h1 className={shellStyles.headerTitle}>{content.dashboard.title}</h1>
-              <p className={pageStyles.homeWelcome}>{content.dashboard.homeWelcome}</p>
+              <div className={pageStyles.dashboardBrand}>
+                {zenformedAppIconSrc('platform') ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={zenformedAppIconSrc('platform')}
+                    alt=""
+                    className={pageStyles.dashboardBrandIcon}
+                  />
+                ) : null}
+                <h1 className={pageStyles.dashboardBrandTitle}>{content.dashboard.title}</h1>
+              </div>
               <h2 className={pageStyles.appsSectionTitle}>{content.apps.sectionTitle}</h2>
               <ZenformedAppList
                 apps={PLATFORM_APPS}
