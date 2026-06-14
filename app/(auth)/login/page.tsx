@@ -18,6 +18,7 @@ import {
 import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 import { PlatformAuthPageShell } from '@/presentation/components/PlatformAuthPageShell';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
+import { platformAppDefinition } from '@/platform/appDefinitions/platform';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import pageStyles from '@/presentation/components/platformAuthPage.module.css';
 
@@ -103,7 +104,9 @@ function LoginPageContent(): ReactElement {
 
   return (
     <PlatformAuthPageShell
-      cardTitle="Sign in"
+      cardTitle={handoffPending ? 'Completing sign-in' : 'Sign in'}
+      brandIconId={handoffPending ? 'buildcore' : 'platform'}
+      brandName={handoffPending ? 'BuildCore' : platformAppDefinition.displayName}
       loading={showLoading}
       loadingMessage={
         handoffPending ? 'Opening BuildCore…' : isLoading ? 'Checking session…' : 'Logging in…'
