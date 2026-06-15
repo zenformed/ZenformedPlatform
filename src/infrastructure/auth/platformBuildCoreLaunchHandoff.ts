@@ -14,6 +14,7 @@ export function resolveBuildCoreHandoffReturnPath(
   defaultPath = '/dashboard'
 ): string {
   const candidate = authEntryParams.returnTo ?? authEntryParams.redirect;
+  if (candidate === '/') return '/dashboard';
   if (candidate?.startsWith('/')) return candidate;
   return defaultPath.startsWith('/') ? defaultPath : `/${defaultPath}`;
 }
@@ -21,8 +22,23 @@ export function resolveBuildCoreHandoffReturnPath(
 function readErrorMessage(json: unknown, fallback: string): string {
   if (json != null && typeof json === 'object') {
     const o = json as Record<string, unknown>;
+    if (o.error === 'zenformed_core_upstream') {
+      const upstreamBody = o.upstreamBody;
+      if (upstreamBody != null && typeof upstreamBody === 'object') {
+        const upstream = upstreamBody as Record<string, unknown>;
+        if (typeof upstream.message === 'string' && upstream.message.trim()) {
+          return upstream.message;
+        }
+      }
+      return 'BuildCore sign-in handoff is unavailable. Check that ZenformedCore is reachable.';
+    }
     if (typeof o.message === 'string' && o.message.trim()) return o.message;
-    if (typeof o.error === 'string' && o.error.trim()) return o.error;
+    if (typeof o.error === 'string' && o.error.trim()) {
+      if (o.error === 'zenformed_core_unreachable') {
+        return 'Could not reach ZenformedCore. Check ZENFORMED_CORE_API_URL and try again.';
+      }
+      return o.error;
+    }
   }
   return fallback;
 }

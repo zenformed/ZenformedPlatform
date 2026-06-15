@@ -29,15 +29,15 @@ function LoginPageContent(): ReactElement {
   const [loggingIn, setLoggingIn] = useState(false);
   const [handoffPending, setHandoffPending] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const handoffStartedRef = useRef(false);
+  const handoffAttemptedRef = useRef(false);
 
   const authEntryParams = parseAuthEntryQueryParams(searchParams);
   const isBuildCoreHandoff = isBuildCoreAuthAppHandoff(authEntryParams);
   const redirectTarget = resolvePostAuthRedirectTarget(authEntryParams, nav.routes.dashboard);
 
   const runBuildCoreHandoff = useCallback(async (): Promise<boolean> => {
-    if (handoffStartedRef.current) return true;
-    handoffStartedRef.current = true;
+    if (handoffAttemptedRef.current) return false;
+    handoffAttemptedRef.current = true;
     setHandoffPending(true);
     setLoginError(null);
 
@@ -48,7 +48,6 @@ function LoginPageContent(): ReactElement {
       } = await getSupabaseClient().auth.getSession();
       const accessToken = activeSession?.access_token?.trim() ?? '';
       if (!accessToken) {
-        handoffStartedRef.current = false;
         setHandoffPending(false);
         setLoginError('Could not open BuildCore.');
         return false;
@@ -56,7 +55,6 @@ function LoginPageContent(): ReactElement {
 
       const handoff = await performBuildCoreLaunchHandoff(accessToken, authEntryParams);
       if (!handoff.ok) {
-        handoffStartedRef.current = false;
         setHandoffPending(false);
         setLoginError(handoff.message);
         return false;
@@ -65,7 +63,6 @@ function LoginPageContent(): ReactElement {
       window.location.assign(handoff.launchUrl);
       return true;
     } catch {
-      handoffStartedRef.current = false;
       setHandoffPending(false);
       setLoginError('Could not open BuildCore.');
       return false;
@@ -80,6 +77,7 @@ function LoginPageContent(): ReactElement {
   async function handleSubmit(email: string, password: string): Promise<void> {
     setLoggingIn(true);
     setLoginError(null);
+    handoffAttemptedRef.current = false;
     try {
       const result = await signIn(email, password);
       if (result.ok) {

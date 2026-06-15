@@ -33,7 +33,7 @@ function parseAppLaunchMintJson(json: unknown): AppLaunchMintResponse | null {
 /** `POST /auth/app-launch` — mint one-time cross-app launch URL; server-side / BFF only. */
 export async function mintAppLaunch(
   accessToken: string,
-  body: { targetApp: PlatformAppId; returnPath?: string }
+  body: { targetApp: PlatformAppId; returnPath?: string; launchOrigin?: string | null }
 ): Promise<CoreApiResult<AppLaunchMintResponse>> {
   const base = env.zenformedCoreApiBaseUrl;
   if (base == null) {
