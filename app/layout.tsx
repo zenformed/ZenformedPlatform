@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import '@zenformed/core/dashboard-shell/mobile-shell.css';
 import type { ReactElement, ReactNode } from 'react';
 import '../styles/globals.css';
 import { platformAppDefinition } from '@/platform/appDefinitions/platform';
