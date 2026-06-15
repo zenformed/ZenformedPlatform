@@ -68,18 +68,9 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
           <PlatformSidebar activeId={dash.sidebarNav} onSelect={dash.setSidebarNav}>
             <ZenformedSidebarBranding
               classNames={sidebarBrandingClassNames}
-              shopName={dash.shopName}
-              defaultShopNameFallback={content.branding.defaultShopNameFallback}
-              logoUrl={dash.logoUrl}
-              brandingLoading={dash.brandingLoading}
-              logoUploading={dash.logoUploading}
-              showCameraButton={false}
-              fileInputRef={dash.headerLogoFileInputRef}
-              onLogoFileChange={(e) => {
-                void dash.handleLogoFileChange(e);
-              }}
-              companyLogoChangeTitle={nav.header.account.companyLogoChange.title}
-              companyLogoChangeAriaLabel={nav.header.account.companyLogoChange.ariaLabel}
+              appName={content.dashboard.title}
+              appIconSrc={zenformedAppIconSrc('platform')}
+              appAltText={content.dashboard.title}
             />
           </PlatformSidebar>
         }

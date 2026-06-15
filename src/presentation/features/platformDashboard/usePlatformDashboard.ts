@@ -2,13 +2,11 @@
 
 
 
-import { useCallback, useRef, useState, type ChangeEvent, type RefObject } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { useOrganizationLogoUpload, formatOrganizationRoleLabel } from '@zenformed/core/dashboard-shell';
+import { formatOrganizationRoleLabel } from '@zenformed/core/dashboard-shell';
 
 import { env } from '@/infrastructure/config/env';
-
-import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 
 import {
 
@@ -88,12 +86,6 @@ export function usePlatformDashboard(): {
 
   refetchBranding: () => Promise<void>;
 
-  logoUploading: boolean;
-
-  headerLogoFileInputRef: RefObject<HTMLInputElement>;
-
-  handleLogoFileChange: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
-
 } {
 
   const { signOut } = usePlatformAuth();
@@ -147,22 +139,6 @@ export function usePlatformDashboard(): {
   const [profilePhotoModalOpen, setProfilePhotoModalOpen] = useState(false);
 
   const [sidebarNav, setSidebarNav] = useState<PlatformSidebarNavId>('home');
-
-
-
-  const { logoUploading, headerLogoFileInputRef, handleLogoFileChange } = useOrganizationLogoUpload({
-
-    brandingApiUrl: nav.apis.branding,
-
-    getAccessToken,
-
-    refetchBranding,
-
-    logoSaveFailedFallback: content.branding.logoSaveFailedFallback,
-
-  });
-
-
 
   const effectiveLicenseTier = profile?.license_tier;
 
@@ -219,12 +195,6 @@ export function usePlatformDashboard(): {
     hasAvatarPhoto,
 
     refetchBranding,
-
-    logoUploading,
-
-    headerLogoFileInputRef,
-
-    handleLogoFileChange,
 
   };
 
