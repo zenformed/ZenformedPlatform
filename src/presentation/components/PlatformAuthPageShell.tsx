@@ -1,7 +1,8 @@
 'use client';
 
 import type { ReactElement, ReactNode } from 'react';
-import { zenformedAppIconSrc } from '@zenformed/core/dashboard-shell';
+import { platformAppIconSrc } from '@/platform/assets/platformAppIcon';
+import { zenformedAppIconPublicSrc, zenformedAppIconSrc } from '@zenformed/core/dashboard-shell';
 import { platformAppDefinition } from '@/platform/appDefinitions/platform';
 import { Card } from '@/presentation/components/Card/Card';
 import { ThemeToggle } from '@/presentation/components/ThemeToggle/ThemeToggle';
@@ -25,7 +26,10 @@ export function PlatformAuthPageShell({
   brandIconId = 'platform',
   brandName = platformAppDefinition.displayName,
 }: PlatformAuthPageShellProps): ReactElement {
-  const brandIconSrc = zenformedAppIconSrc(brandIconId);
+  const brandIconSrc =
+    brandIconId === 'platform'
+      ? platformAppIconSrc()
+      : zenformedAppIconPublicSrc(brandIconId) ?? zenformedAppIconSrc(brandIconId);
 
   return (
     <div className={styles.page}>

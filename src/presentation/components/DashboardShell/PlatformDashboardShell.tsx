@@ -12,8 +12,8 @@ import {
   ZenformedDashboardPageLoading,
   ZenformedDashboardSidebarRow,
   ZenformedSidebarBranding,
-  zenformedAppIconSrc,
 } from '@zenformed/core/dashboard-shell';
+import { platformAppIconSrc } from '@/platform/assets/platformAppIcon';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
@@ -68,7 +68,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
             <ZenformedSidebarBranding
               classNames={sidebarBrandingClassNames}
               appName={content.dashboard.title}
-              appIconSrc={zenformedAppIconSrc('platform')}
+              appIconSrc={platformAppIconSrc()}
               appAltText={content.dashboard.title}
             />
           </PlatformSidebar>
@@ -90,10 +90,10 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
             />
             <main className={shellStyles.mainContent}>
               <div className={pageStyles.dashboardBrand}>
-                {zenformedAppIconSrc('platform') ? (
+                {platformAppIconSrc() ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
-                    src={zenformedAppIconSrc('platform')}
+                    src={platformAppIconSrc()}
                     alt=""
                     className={pageStyles.dashboardBrandIcon}
                   />
