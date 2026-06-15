@@ -50,6 +50,28 @@
   overflow: hidden;
 }
 
+.sidebarRail {
+  flex-shrink: 0;
+  display: flex;
+  min-height: 0;
+}
+
+@media (max-width: 767px) {
+  .sidebarRail {
+    display: none;
+  }
+
+  .headerLeft {
+    display: flex !important;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  .mainContent {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
 :global([data-theme="dark"]) .dashboardWithSidebar {
   background: #1d2029;
 }

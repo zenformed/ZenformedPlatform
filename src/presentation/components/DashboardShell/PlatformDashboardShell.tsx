@@ -61,6 +61,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
       <ZenformedDashboardSidebarRow
         classNames={{
           dashboardWithSidebar: layoutClassNames.dashboardWithSidebar,
+          sidebarRail: layoutClassNames.sidebarRail,
           mainColumn: layoutClassNames.mainColumn,
         }}
         sidebar={
