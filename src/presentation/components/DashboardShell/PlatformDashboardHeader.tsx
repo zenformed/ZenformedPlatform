@@ -40,8 +40,7 @@ const accountMenuLabels: ZenformedAccountMenuLabels = {
 const appsLauncherLabels = {
   triggerAriaLabel: nav.header.appsLauncher.triggerAriaLabel,
   popoverAriaLabel: nav.header.appsLauncher.popoverAriaLabel,
-  sectionTitle: content.apps.sectionTitle,
-  comingSoonLabel: content.apps.comingSoonLabel,
+  appsSectionTitle: content.apps.sectionTitle,
 };
 
 export type PlatformDashboardHeaderProps = {
@@ -95,6 +94,7 @@ export function PlatformDashboardHeader({
             launchApp={launchApp}
             launchingAppId={launchingAppId}
             launchError={launchError}
+            showAccountSection={false}
             appsIcon={<AppsIcon />}
           />
         </>

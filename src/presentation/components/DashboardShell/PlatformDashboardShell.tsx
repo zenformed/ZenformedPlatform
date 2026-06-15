@@ -44,8 +44,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
   const appsLauncherLabels = {
     triggerAriaLabel: nav.header.appsLauncher.triggerAriaLabel,
     popoverAriaLabel: nav.header.appsLauncher.popoverAriaLabel,
-    sectionTitle: content.apps.sectionTitle,
-    comingSoonLabel: content.apps.comingSoonLabel,
+    appsSectionTitle: content.apps.sectionTitle,
   };
 
   if (dash.authLoading) {
