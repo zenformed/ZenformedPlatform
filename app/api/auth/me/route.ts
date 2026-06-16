@@ -1,41 +1,60 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseUserFromToken } from '@/infrastructure/supabase/supabaseServer';
-import { usesCoreUserAvatars } from '@/infrastructure/userPhoto/userPhotoAuthority';
-import { readRequestBearerToken } from '@/infrastructure/auth/readRequestBearer';
-import { getMyAvatarMeta } from '@/infrastructure/coreApi/userAvatarClient';
-import { runtimeModes } from '@/infrastructure/config/runtimeModes';
-
-const SAAS_MODE = runtimeModes.isSaasMode();
-
-async function resolveHasPhoto(bearerToken: string | null): Promise<boolean> {
-  if (usesCoreUserAvatars() && bearerToken != null) {
-    const meta = await getMyAvatarMeta(bearerToken);
-    if (meta.ok) {
-      return meta.data.hasAvatar;
-    }
-  }
-  return false;
-}
-
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const bearerToken = readRequestBearerToken(request);
-  const authHeader = request.headers.get('Authorization');
-
-  if (SAAS_MODE && authHeader?.startsWith('Bearer ')) {
-    const supabaseUser = await getSupabaseUserFromToken(authHeader);
-    if (supabaseUser?.email) {
-      const hasPhoto = await resolveHasPhoto(bearerToken);
-      return NextResponse.json({
-        user: null,
-        role: null,
-        hasPhoto,
-      });
-    }
-    return NextResponse.json({ user: null, role: null, hasPhoto: false });
-  }
-
-  return NextResponse.json(
-    { error: 'bad_request', message: 'Zenformed Platform expects NEXT_PUBLIC_SAAS_MODE=true for /api/auth/me.' },
-    { status: 400 }
-  );
-}
+import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseUserFromToken } from '@/infrastructure/supabase/supabaseServer';
+import { usesCoreUserAvatars } from '@/infrastructure/userPhoto/userPhotoAuthority';
+import { readRequestBearerToken } from '@/infrastructure/auth/readRequestBearer';
+import { getMyAvatarMeta } from '@/infrastructure/coreApi/userAvatarClient';
+import { runtimeModes } from '@/infrastructure/config/runtimeModes';
+
+export const dynamic = 'force-dynamic';
+
+const SAAS_MODE = runtimeModes.isSaasMode();
+
+const NO_STORE_HEADERS = { 'Cache-Control': 'private, no-store, must-revalidate' };
+
+async function resolveAvatarState(
+  bearerToken: string | null
+): Promise<{ hasPhoto: boolean; avatarRevision: string | null }> {
+  if (usesCoreUserAvatars() && bearerToken != null) {
+    const meta = await getMyAvatarMeta(bearerToken);
+    if (meta.ok) {
+      const revision =
+        meta.data.revision ?? meta.data.updatedAt ?? (meta.data.hasAvatar ? '0' : null);
+      return {
+        hasPhoto: meta.data.hasAvatar,
+        avatarRevision: meta.data.hasAvatar && revision != null ? revision : null,
+      };
+    }
+    return { hasPhoto: false, avatarRevision: null };
+  }
+  return { hasPhoto: false, avatarRevision: null };
+}
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const bearerToken = readRequestBearerToken(request);
+  const authHeader = request.headers.get('Authorization');
+
+  if (SAAS_MODE && authHeader?.startsWith('Bearer ')) {
+    const supabaseUser = await getSupabaseUserFromToken(authHeader);
+    if (supabaseUser?.email) {
+      const { hasPhoto, avatarRevision } = await resolveAvatarState(bearerToken);
+      return NextResponse.json(
+        {
+          user: null,
+          role: null,
+          hasPhoto,
+          avatarRevision,
+        },
+        { headers: NO_STORE_HEADERS }
+      );
+    }
+    return NextResponse.json(
+      { user: null, role: null, hasPhoto: false, avatarRevision: null },
+      { headers: NO_STORE_HEADERS }
+    );
+  }
+
+  return NextResponse.json(
+    { error: 'bad_request', message: 'Zenformed Platform expects NEXT_PUBLIC_SAAS_MODE=true for /api/auth/me.' },
+    { status: 400, headers: NO_STORE_HEADERS }
+  );
+}
