@@ -2,7 +2,7 @@
 
 import type { ReactElement } from 'react';
 import { ConfirmModal } from '@/presentation/components/ConfirmModal/ConfirmModal';
-import { ProfilePhotoModal } from '@/presentation/components/ProfilePhotoModal/ProfilePhotoModal';
+import { ProfilePhotoModal } from '@zenformed/core/dashboard-shell';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
 
 export type PlatformDashboardModalsProps = {
@@ -51,6 +51,7 @@ export function PlatformDashboardModals({
           hasPhoto={profilePhoto.hasPhoto}
           onSuccess={profilePhoto.onSuccess}
           getAccessToken={profilePhoto.getAccessToken}
+          enableCameraCapture
         />
       ) : null}
     </>
