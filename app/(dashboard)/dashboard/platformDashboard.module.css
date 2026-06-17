@@ -1,22 +1,225 @@
-.dashboardBrand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.dashboardBrandIcon {
-  width: 2.5rem;
-  height: 2.5rem;
-  object-fit: contain;
-  display: block;
-  flex-shrink: 0;
-}
-
-.dashboardBrandTitle {
+.dashboardContent {
+  width: 100%;
+  max-width: none;
   margin: 0;
-  font-size: 1.5rem;
+  padding: 0 0 2rem;
+  text-align: left;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.dashboardPanel {
+  margin-bottom: 1.25rem;
+  border: 1px solid #e0e2e5;
+  border-radius: 0.5rem;
+  background-color: var(--theme-surface-panel, var(--color-surface, #fff));
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+:global([data-theme='dark']) .dashboardPanel {
+  background-color: #161922;
+  border-color: #3d3e4a;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.dashboardPanel:last-child {
+  margin-bottom: 0;
+}
+
+.dashboardHeadingBar {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 5px 8px;
+  box-sizing: border-box;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background-color: #5a7a9e;
+  color: #ffffff;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.3;
+}
+
+:global([data-theme='dark']) .dashboardHeadingBar {
+  background-color: #1d2029;
+  color: var(--theme-table-header-text, #94a3b8);
+}
+
+.dashboardPanelBody {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.dashboardPageTitle {
+  font-size: 1.125rem;
+}
+
+.dashboardPageSubtitle {
+  margin: 0 0 0.875rem;
+  max-width: 42rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-muted, #64748b);
+}
+
+.dashboardSections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dashboardLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.dashboardLeftColumn,
+.dashboardRightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.dashboardLeftColumn .dashboardPanel,
+.dashboardRightColumn .dashboardPanel {
+  margin-bottom: 0;
+}
+
+@media (min-width: 1450px) {
+  .dashboardLayout {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
+}
+
+.dashboardSectionTitle {
+  font-size: 0.875rem;
+}
+
+.availableProductsPanel {
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  overflow: visible;
+}
+
+:global([data-theme='dark']) .availableProductsPanel {
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.availableProductsTitle {
+  margin: 0 0 0.875rem;
+  padding: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text, #334155);
+}
+
+:global([data-theme='dark']) .availableProductsTitle {
+  color: var(--theme-table-header-text, #94a3b8);
+}
+
+.availableProductsPanel .dashboardPanelBody {
+  padding: 0;
+}
+
+.availableProductsPanel .productMarketplaceCard {
+  background-color: #ffffff;
+}
+
+:global([data-theme='dark']) .availableProductsPanel .productMarketplaceCard {
+  background-color: #161922;
+}
+
+.dashboardSummaryMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 0;
+}
+
+.dashboardPanelBody > .dashboardSummaryMetrics:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.dashboardSummaryMetric {
+  margin: 0;
+  min-width: 0;
+}
+
+.dashboardSummaryMetricLabel {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-text-muted, #64748b);
+}
+
+.dashboardSummaryMetricValue {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text, #0f172a);
+}
+
+.dashboardSummaryMetricValueText {
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+:global([data-theme='dark']) .dashboardSummaryMetricValue {
+  color: #e8eaed;
+}
+
+.dashboardSummaryDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0 0 1rem;
+}
+
+.dashboardSummaryDetailRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.375rem 0.75rem;
+  margin: 0;
+}
+
+.dashboardSummaryDetailLabel {
+  margin: 0;
+  min-width: 9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted, #64748b);
+}
+
+.dashboardSummaryDetailValue {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text, #0f172a);
+}
+
+:global([data-theme='dark']) .dashboardSummaryDetailValue {
+  color: #e8eaed;
+}
+
+@media (max-width: 767px) {
+  .dashboardSummaryMetrics {
+    grid-template-columns: 1fr;
+  }
 }
 
 .appsSectionTitle {
@@ -109,6 +312,309 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--color-text-muted, #64748b);
+}
+
+.appsSectionHint {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #64748b);
+}
+
+.myAppsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.myAppsEmptyState {
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-muted, #64748b);
+  background: transparent;
+}
+
+.myAppsBrowseButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-text, #0f172a);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 0.5rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+:global([data-theme='dark']) .myAppsBrowseButton {
+  color: #f8fafc;
+  border-color: #4b5563;
+}
+
+.myAppsBrowseButton:hover {
+  background: var(--color-muted, #f1f5f9);
+  border-color: var(--color-text-muted, #94a3b8);
+}
+
+:global([data-theme='dark']) .myAppsBrowseButton:hover {
+  background: #2a2d38;
+  border-color: #6b7280;
+}
+
+.productMarketplaceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+@media (min-width: 800px) and (max-width: 1449px) {
+  .productMarketplaceGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1450px) {
+  .dashboardRightColumn .productMarketplaceGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.875rem;
+  }
+}
+
+.productMarketplaceCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  padding: 1.5rem 1.25rem 1.25rem;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.625rem;
+  background-color: var(--color-surface, #fff);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.dashboardRightColumn .productMarketplaceCard {
+  min-height: 21rem;
+  padding: 1.375rem 1rem 1.125rem;
+}
+
+.dashboardRightColumn .productMarketplaceTitleRow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.625rem;
+  padding-right: 3.25rem;
+}
+
+.dashboardRightColumn .productMarketplaceCardIcon,
+.dashboardRightColumn .productMarketplaceCardIconFallback {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.dashboardRightColumn .productMarketplaceCardIconFallback {
+  font-size: 0.875rem;
+}
+
+.dashboardRightColumn .productMarketplaceCardTitle {
+  font-size: 1.0625rem;
+  line-height: 1.2;
+}
+
+.dashboardRightColumn .productMarketplaceCardTagline {
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.dashboardRightColumn .productMarketplaceFeatureList {
+  gap: 0.3125rem;
+}
+
+.dashboardRightColumn .productMarketplaceFeatureList li {
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  padding-left: 0.6875rem;
+}
+
+.dashboardRightColumn .productMarketplaceCardFooter {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.dashboardRightColumn .productMarketplaceActionGhost {
+  padding: 0.5625rem 0.625rem;
+  font-size: 0.75rem;
+}
+
+.dashboardRightColumn .productMarketplaceLiveBadge,
+.dashboardRightColumn .productMarketplaceComingSoonBadge {
+  padding: 0.25rem 0.4375rem;
+  font-size: 0.5625rem;
+}
+
+:global([data-theme='dark']) .productMarketplaceCard {
+  background-color: #1d2029;
+  border-color: #3d4454;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.productMarketplaceLiveBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.3125rem 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #052e16;
+  background: #4ade80;
+  border-radius: 0 0.625rem 0 0.375rem;
+}
+
+.productMarketplaceComingSoonBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.3125rem 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  background: #343844;
+  border-radius: 0 0.625rem 0 0.375rem;
+}
+
+.productMarketplaceTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.5rem;
+  padding-right: 5rem;
+}
+
+.productMarketplaceCardIcon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.productMarketplaceCardIconFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #64748b);
+}
+
+.productMarketplaceCardTitle {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.productMarketplaceCardTagline {
+  margin: 0 0 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text-muted, #64748b);
+}
+
+.productMarketplaceFeatureList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1;
+}
+
+.productMarketplaceFeatureList li {
+  position: relative;
+  padding-left: 0.875rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-text-muted, #94a3b8);
+}
+
+.productMarketplaceFeatureList li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: currentColor;
+  opacity: 0.75;
+}
+
+.productMarketplaceCardFooter {
+  margin-top: 1.25rem;
+  padding-top: 0;
+}
+
+.productMarketplaceActionGhost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.6875rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-text, #0f172a);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 0.5rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+:global([data-theme='dark']) .productMarketplaceActionGhost {
+  color: #f8fafc;
+  border-color: #4b5563;
+}
+
+.productMarketplaceActionGhost:hover {
+  background: var(--color-muted, #f1f5f9);
+  border-color: var(--color-text-muted, #94a3b8);
+}
+
+:global([data-theme='dark']) .productMarketplaceActionGhost:hover {
+  background: #2a2d38;
+  border-color: #6b7280;
+}
+
+.productMarketplaceActionGhostDisabled {
+  color: var(--color-text-muted, #64748b);
+  border-color: var(--color-border, #e2e8f0);
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+:global([data-theme='dark']) .productMarketplaceActionGhostDisabled {
+  color: #6b7280;
+  border-color: #3f4450;
 }
 
 .appsLaunchError {
@@ -332,4 +838,150 @@
 .appsPopoverRowMeta {
   font-size: 0.75rem;
   color: var(--color-text-muted, #64748b);
+}
+
+/* 4K / ultra-wide: scale dashboard typography and icons for readability */
+@media (min-width: 2560px) {
+  .dashboardPanelBody {
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+
+  .dashboardHeadingBar {
+    padding: 6px 10px;
+    font-size: 1rem;
+  }
+
+  .dashboardPageTitle {
+    font-size: 1.375rem;
+  }
+
+  .dashboardSectionTitle {
+    font-size: 1rem;
+  }
+
+  .dashboardPageSubtitle {
+    font-size: 1.0625rem;
+    margin-bottom: 1rem;
+  }
+
+  .dashboardSummaryMetrics {
+    gap: 1.25rem 2rem;
+  }
+
+  .dashboardSummaryMetricLabel {
+    font-size: 0.875rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .dashboardSummaryMetricValue {
+    font-size: 1.375rem;
+  }
+
+  .dashboardSummaryMetricValueText {
+    font-size: 1.125rem;
+  }
+
+  .dashboardSummaryDetailLabel,
+  .dashboardSummaryDetailValue {
+    font-size: 1rem;
+  }
+
+  .appsSectionHint,
+  .myAppsEmptyState {
+    font-size: 1rem;
+  }
+
+  .appCardGrid {
+    gap: 1.5rem;
+    max-width: 32rem;
+  }
+
+  .appCardIcon,
+  .appCardIconFallback {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .appCardIconFallback {
+    font-size: 1.5rem;
+  }
+
+  .appCardTitle {
+    font-size: 0.9375rem;
+  }
+
+  .myAppsBrowseButton {
+    padding: 0.6875rem 1.125rem;
+    font-size: 0.9375rem;
+  }
+
+  .productMarketplaceCardIcon,
+  .productMarketplaceCardIconFallback {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .productMarketplaceCardIconFallback {
+    font-size: 1rem;
+  }
+
+  .productMarketplaceCardTitle {
+    font-size: 1.625rem;
+  }
+
+  .productMarketplaceCardTagline {
+    font-size: 1rem;
+  }
+
+  .productMarketplaceFeatureList li {
+    font-size: 0.9375rem;
+  }
+
+  .productMarketplaceActionGhost {
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .productMarketplaceLiveBadge,
+  .productMarketplaceComingSoonBadge {
+    padding: 0.3125rem 0.5rem;
+    font-size: 0.625rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceCard {
+    min-height: 24rem;
+    padding: 1.625rem 1.25rem 1.375rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceCardIcon,
+  .dashboardRightColumn .productMarketplaceCardIconFallback {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceCardIconFallback {
+    font-size: 1rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceCardTitle {
+    font-size: 1.25rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceCardTagline {
+    font-size: 0.875rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceFeatureList li {
+    font-size: 0.8125rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceActionGhost {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .dashboardRightColumn .productMarketplaceLiveBadge,
+  .dashboardRightColumn .productMarketplaceComingSoonBadge {
+    font-size: 0.625rem;
+  }
 }

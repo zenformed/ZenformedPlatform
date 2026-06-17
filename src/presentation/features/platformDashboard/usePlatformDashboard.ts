@@ -1,7 +1,6 @@
 'use client';
 
-
-
+import type { SettingsCategoryId } from '@zenformed/core/organization-settings';
 import { useCallback, useRef, useState } from 'react';
 
 import { formatOrganizationRoleLabel } from '@zenformed/core/dashboard-shell';
@@ -67,6 +66,12 @@ export function usePlatformDashboard(): {
   getAccessToken: () => string | null;
 
   settingsOpen: boolean;
+
+  settingsInitialCategory: SettingsCategoryId;
+
+  openSettings: (category?: SettingsCategoryId) => void;
+
+  closeSettings: () => void;
 
   setSettingsOpen: (open: boolean) => void;
 
@@ -134,6 +139,19 @@ export function usePlatformDashboard(): {
 
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+  const [settingsInitialCategory, setSettingsInitialCategory] =
+    useState<SettingsCategoryId>('account');
+
+  const openSettings = useCallback((category: SettingsCategoryId = 'account') => {
+    setSettingsInitialCategory(category);
+    setSettingsOpen(true);
+  }, []);
+
+  const closeSettings = useCallback(() => {
+    setSettingsOpen(false);
+    setSettingsInitialCategory('account');
+  }, []);
+
   const [signOutModalOpen, setSignOutModalOpen] = useState(false);
 
   const [profilePhotoModalOpen, setProfilePhotoModalOpen] = useState(false);
@@ -177,6 +195,12 @@ export function usePlatformDashboard(): {
     getAccessToken,
 
     settingsOpen,
+
+    settingsInitialCategory,
+
+    openSettings,
+
+    closeSettings,
 
     setSettingsOpen,
 

@@ -1,14 +1,18 @@
 import { env } from '@/infrastructure/config/env';
-import { parseProfileEnvelopeJson, parseUserSettingsEnvelopeJson } from '@/infrastructure/coreApi/parseResponse';
+import {
+  parseAppEntitlementEnvelopeJson,
+  parseProfileEnvelopeJson,
+  parseUserSettingsEnvelopeJson,
+} from '@/infrastructure/coreApi/parseResponse';
 import type {
   CoreApiError,
   CoreApiResult,
+  ZenformedCoreAppEntitlementEnvelope,
   ZenformedCoreProfileEnvelope,
   ZenformedCoreProfilePatchRequest,
   ZenformedCoreUserSettingsEnvelope,
   ZenformedCoreUserSettingsPatchRequest,
 } from '@/infrastructure/coreApi/types';
-
 const DEFAULT_TIMEOUT_MS = 5_000;
 
 function normalizeBaseUrl(raw: string): string {
@@ -25,6 +29,7 @@ async function fetchJsonWithBearer(
   try {
     const res = await fetch(url, {
       method: 'GET',
+      cache: 'no-store',
       signal: controller.signal,
       headers: {
         Accept: 'application/json',
@@ -154,4 +159,17 @@ export async function patchMySettings(
   body: ZenformedCoreUserSettingsPatchRequest
 ): Promise<CoreApiResult<ZenformedCoreUserSettingsEnvelope>> {
   return patchFromCoreWithBearer('/users/me/settings', accessToken, body, parseUserSettingsEnvelopeJson);
+}
+
+/** `GET /apps/:appSlug/entitlement` — platform-first entitlement snapshot; server-side / BFF only. */
+export async function getAppEntitlement(
+  appSlug: string,
+  accessToken: string
+): Promise<CoreApiResult<ZenformedCoreAppEntitlementEnvelope>> {
+  const encoded = encodeURIComponent(appSlug);
+  return getFromCoreWithBearer(
+    `/apps/${encoded}/entitlement`,
+    accessToken,
+    parseAppEntitlementEnvelopeJson
+  );
 }

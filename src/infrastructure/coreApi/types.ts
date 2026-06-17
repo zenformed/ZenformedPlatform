@@ -340,4 +340,8 @@ export type CoreApiResult<T> =
 
 export type { SaaSEntitlementSnapshot };
 
-
+/** `GET /apps/:appSlug/entitlement` — entitlement snapshot for the app context. */
+export type ZenformedCoreAppEntitlementEnvelope = {
+  appSlug: string;
+  entitlement: SaaSEntitlementSnapshot;
+};

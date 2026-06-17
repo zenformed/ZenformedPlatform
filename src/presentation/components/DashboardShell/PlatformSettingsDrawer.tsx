@@ -18,9 +18,12 @@ import { platformDashboardNavigation as nav } from '@/platform/navigation/platfo
 import { platformNavigation } from '@/platform/navigation/platformNavigation';
 import { useBrandingContext } from '@/presentation/providers';
 
+import type { SettingsCategoryId } from '@zenformed/core/organization-settings';
+
 export type PlatformSettingsDrawerProps = {
   open: boolean;
   onClose: () => void;
+  initialCategory?: SettingsCategoryId;
   shellContext?: OrganizationSettingsShellContext | null;
   getAccessToken: () => string | null;
 };
@@ -28,6 +31,7 @@ export type PlatformSettingsDrawerProps = {
 export function PlatformSettingsDrawer({
   open,
   onClose,
+  initialCategory = 'account',
   shellContext,
   getAccessToken,
 }: PlatformSettingsDrawerProps): ReactElement | null {
@@ -200,6 +204,7 @@ export function PlatformSettingsDrawer({
     <ZenformedOrganizationSettingsOverlay
       open={open}
       onClose={onClose}
+      initialCategory={initialCategory}
       title={nav.settingsDrawer.title}
       closeAriaLabel={nav.settingsDrawer.closeAriaLabel}
       shellContext={shellContext}
