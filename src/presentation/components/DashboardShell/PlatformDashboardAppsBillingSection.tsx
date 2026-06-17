@@ -2,19 +2,27 @@
 
 import type { ReactElement } from 'react';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
-import type { PlatformOrganizationWorkspaceSummary } from '@/presentation/hooks/usePlatformOrganizationWorkspaceSummary';
+import {
+  formatPlatformDashboardActiveSubscriptions,
+  formatPlatformDashboardMonthlySpend,
+  type PlatformOrganizationWorkspaceSummary,
+} from '@/presentation/hooks/usePlatformOrganizationWorkspaceSummary';
 import styles from '../../../../app/(dashboard)/dashboard/platformDashboard.module.css';
 
 export type PlatformDashboardAppsBillingSectionProps = {
   readonly summary: PlatformOrganizationWorkspaceSummary;
+  readonly activeSubscriptionsCount: number;
+  readonly activeSubscriptionsLoading: boolean;
   readonly onManageBilling: () => void;
 };
 
 export function PlatformDashboardAppsBillingSection({
   summary,
+  activeSubscriptionsCount,
+  activeSubscriptionsLoading,
   onManageBilling,
 }: PlatformDashboardAppsBillingSectionProps): ReactElement {
-  const showPlaceholder = !summary.isLoading && !summary.hasBillingSummary;
+  const billingMetricsLoading = summary.isLoading || activeSubscriptionsLoading;
 
   return (
     <section className={styles.dashboardPanel}>
@@ -26,49 +34,29 @@ export function PlatformDashboardAppsBillingSection({
           <p className={styles.appsLaunchError} role="alert">
             {summary.loadError}
           </p>
-        ) : summary.isLoading ? (
-          <>
-            <p className={styles.appsSectionHint}>{content.loading.page}</p>
-            <button
-              type="button"
-              className={styles.myAppsBrowseButton}
-              onClick={onManageBilling}
-            >
-              {content.appsBilling.manageAction}
-            </button>
-          </>
-        ) : showPlaceholder ? (
-          <>
-            <p className={styles.appsSectionHint}>{content.appsBilling.placeholder}</p>
-            <button
-              type="button"
-              className={styles.myAppsBrowseButton}
-              onClick={onManageBilling}
-            >
-              {content.appsBilling.manageAction}
-            </button>
-          </>
         ) : (
           <>
-            <dl className={styles.dashboardSummaryDetails}>
-              <div className={styles.dashboardSummaryDetailRow}>
-                <dt className={styles.dashboardSummaryDetailLabel}>
-                  {content.appsBilling.currentPlanLabel}
+            <dl className={styles.dashboardSummaryMetrics}>
+              <div className={styles.dashboardSummaryMetric}>
+                <dt className={styles.dashboardSummaryMetricLabel}>
+                  {content.appsBilling.activeSubscriptionsLabel}
                 </dt>
-                <dd className={styles.dashboardSummaryDetailValue}>{summary.planName}</dd>
+                <dd className={styles.dashboardSummaryMetricValue}>
+                  {formatPlatformDashboardActiveSubscriptions(
+                    activeSubscriptionsCount,
+                    billingMetricsLoading
+                  )}
+                </dd>
               </div>
-              <div className={styles.dashboardSummaryDetailRow}>
-                <dt className={styles.dashboardSummaryDetailLabel}>
-                  {content.appsBilling.subscriptionStatusLabel}
+              <div className={styles.dashboardSummaryMetric}>
+                <dt className={styles.dashboardSummaryMetricLabel}>
+                  {content.appsBilling.monthlySpendLabel}
                 </dt>
-                <dd className={styles.dashboardSummaryDetailValue}>{summary.subscriptionStatus}</dd>
-              </div>
-              <div className={styles.dashboardSummaryDetailRow}>
-                <dt className={styles.dashboardSummaryDetailLabel}>
-                  {content.appsBilling.renewalDateLabel}
-                </dt>
-                <dd className={styles.dashboardSummaryDetailValue}>
-                  {summary.renewalDateLabel ?? content.appsBilling.renewalDateUnavailable}
+                <dd className={styles.dashboardSummaryMetricValue}>
+                  {formatPlatformDashboardMonthlySpend(
+                    summary.monthlySpendCents,
+                    billingMetricsLoading
+                  )}
                 </dd>
               </div>
             </dl>

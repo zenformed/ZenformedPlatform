@@ -24,11 +24,12 @@ import { PlatformSettingsDrawer } from '@/presentation/components/DashboardShell
 import { PlatformSidebar } from '@/presentation/components/DashboardShell/PlatformSidebar';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import { usePlatformProductEntitlements } from '@/presentation/hooks/usePlatformProductEntitlements';
-import { partitionPlatformAppsByOwnership } from '@/presentation/features/platformDashboard/platformDashboardProducts';
+import { partitionPlatformAppsByOwnership, countActivePlatformSubscriptions } from '@/presentation/features/platformDashboard/platformDashboardProducts';
 import { PlatformAvailableProductsGrid } from '@/presentation/components/DashboardShell/PlatformAvailableProductsGrid';
 import { PlatformDashboardAppsBillingSection } from '@/presentation/components/DashboardShell/PlatformDashboardAppsBillingSection';
 import { PlatformDashboardTeamMembersSection } from '@/presentation/components/DashboardShell/PlatformDashboardTeamMembersSection';
 import {
+  formatPlatformDashboardActiveSubscriptions,
   formatPlatformDashboardSeatsUsed,
   usePlatformOrganizationWorkspaceSummary,
 } from '@/presentation/hooks/usePlatformOrganizationWorkspaceSummary';
@@ -48,11 +49,15 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
   const { ownedAppIds, isLoading: entitlementsLoading, error: entitlementsError } =
     usePlatformProductEntitlements(session?.access_token);
   const { myApps, availableProducts } = partitionPlatformAppsByOwnership(ownedAppIds);
+  const activeSubscriptionsCount = countActivePlatformSubscriptions(ownedAppIds);
+  const activeSubscriptionsDisplay = formatPlatformDashboardActiveSubscriptions(
+    activeSubscriptionsCount,
+    entitlementsLoading
+  );
   const organizationDisplayName =
     dash.brandingLoading && !dash.shopName
       ? content.loading.page
       : dash.shopName || content.branding.defaultShopNameFallback;
-  const applicationsOwnedCount = entitlementsLoading ? '—' : String(myApps.length);
   const organizationSummary = usePlatformOrganizationWorkspaceSummary(
     dash.getAccessToken,
     !dash.authLoading
@@ -142,10 +147,10 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                           </div>
                           <div className={pageStyles.dashboardSummaryMetric}>
                             <dt className={pageStyles.dashboardSummaryMetricLabel}>
-                              {content.dashboard.applicationsOwnedLabel}
+                              {content.dashboard.activeSubscriptionsLabel}
                             </dt>
                             <dd className={pageStyles.dashboardSummaryMetricValue}>
-                              {applicationsOwnedCount}
+                              {activeSubscriptionsDisplay}
                             </dd>
                           </div>
                           <div className={pageStyles.dashboardSummaryMetric}>
@@ -203,6 +208,8 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
 
                     <PlatformDashboardAppsBillingSection
                       summary={organizationSummary}
+                      activeSubscriptionsCount={activeSubscriptionsCount}
+                      activeSubscriptionsLoading={entitlementsLoading}
                       onManageBilling={() => dash.openSettings('appsBilling')}
                     />
                   </div>

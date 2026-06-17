@@ -14,7 +14,7 @@ export const platformDashboardContent = {
     accountSubtitle:
       'Manage your applications, organization, team members, subscriptions, and billing from one place.',
     organizationLabel: 'Organization',
-    applicationsOwnedLabel: 'Applications Owned',
+    activeSubscriptionsLabel: 'Active Subscriptions',
     seatsUsedLabel: 'Seats Used',
     aboutSectionTitle: platformAppDefinition.displayName,
     aboutSectionBody:
@@ -46,11 +46,8 @@ export const platformDashboardContent = {
   },
   appsBilling: {
     sectionTitle: 'Apps & Billing',
-    currentPlanLabel: 'Current Plan',
-    subscriptionStatusLabel: 'Subscription Status',
-    renewalDateLabel: 'Renewal Date',
-    renewalDateUnavailable: '—',
-    placeholder: 'Billing information will appear here once subscriptions are enabled.',
+    activeSubscriptionsLabel: 'Active Subscriptions',
+    monthlySpendLabel: 'Monthly Spend',
     manageAction: 'Manage Billing',
   },
 } as const;

@@ -12,10 +12,7 @@ export type PlatformOrganizationWorkspaceSummary = {
   readonly pendingInviteCount: number | null;
   readonly seatsAvailable: number | null;
   readonly seatLimit: number | null;
-  readonly planName: string | null;
-  readonly subscriptionStatus: string | null;
-  readonly renewalDateLabel: string | null;
-  readonly hasBillingSummary: boolean;
+  readonly monthlySpendCents: number | null;
 };
 
 function formatMetric(value: number | null, loading: boolean): string {
@@ -41,18 +38,26 @@ export function formatPlatformDashboardSummaryMetric(
   return formatMetric(value, loading);
 }
 
-function resolveSubscriptionStatus(
-  source: string,
-  appBreakdown: ReadonlyArray<{ entitlementStatus: string }>
+export function formatPlatformDashboardActiveSubscriptions(
+  activeSubscriptionCount: number,
+  loading: boolean
 ): string {
-  const activeEntitlement = appBreakdown.find(
-    (entry) =>
-      entry.entitlementStatus === 'active' ||
-      entry.entitlementStatus === 'subscription_active'
-  );
-  if (activeEntitlement) return 'Active';
-  if (source === 'entitlement_tier') return 'Connected';
-  return 'Default tier';
+  if (loading) return '—';
+  return String(activeSubscriptionCount);
+}
+
+export function formatPlatformDashboardMonthlySpend(
+  monthlySpendCents: number | null,
+  loading: boolean
+): string {
+  if (loading) return '—';
+  if (monthlySpendCents == null) return '—';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(monthlySpendCents / 100);
 }
 
 export function usePlatformOrganizationWorkspaceSummary(
@@ -86,14 +91,6 @@ export function usePlatformOrganizationWorkspaceSummary(
         ? Math.max(0, seats.seatLimit - activeMemberCount)
         : null;
 
-    const planName = seats?.planName?.trim() || null;
-    const hasBillingSummary =
-      workspace.hasLiveData && seats != null && seats.seatLimit > 0 && planName != null;
-
-    const subscriptionStatus = hasBillingSummary
-      ? resolveSubscriptionStatus(seats.source, seats.appBreakdown)
-      : null;
-
     return {
       isLoading: workspace.isLoading,
       loadError: workspace.loadError,
@@ -102,10 +99,7 @@ export function usePlatformOrganizationWorkspaceSummary(
       pendingInviteCount,
       seatsAvailable,
       seatLimit: seats?.seatLimit ?? null,
-      planName,
-      subscriptionStatus,
-      renewalDateLabel: null,
-      hasBillingSummary,
+      monthlySpendCents: null,
     };
   }, [workspace.hasLiveData, workspace.isLoading, workspace.loadError, workspace.snapshot]);
 }

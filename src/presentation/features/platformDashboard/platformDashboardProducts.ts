@@ -14,6 +14,12 @@ export function isPlatformAppOwned(
   return (ent as Record<string, unknown>).subscriptionActive === true;
 }
 
+export function countActivePlatformSubscriptions(
+  ownedAppIds: ReadonlySet<PlatformAppId>
+): number {
+  return ownedAppIds.size;
+}
+
 export function partitionPlatformAppsByOwnership(
   ownedAppIds: ReadonlySet<PlatformAppId>
 ): {
