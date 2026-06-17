@@ -80,14 +80,15 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
               user={dash.user ? { email: dash.user.email } : null}
               effectiveLicenseTier={dash.effectiveLicenseTier}
               organizationRoleLabel={dash.organizationRoleLabel}
-              avatarUrl={dash.avatarUrl}
-              avatarLoading={dash.avatarLoading}
+              avatarUrl={null}
+              avatarLoading={false}
               getAccessToken={dash.getAccessToken}
               onOpenSettings={() => {
                 requestAnimationFrame(() => dash.setSettingsOpen(true));
               }}
               onRequestSignOutConfirm={() => dash.setSignOutModalOpen(true)}
               onRequestProfilePhotoModal={() => dash.setProfilePhotoModalOpen(true)}
+              profilePhotoChangeEnabled={false}
             />
             <main className={shellStyles.mainContent}>
               <div className={pageStyles.dashboardBrand}>
@@ -135,21 +136,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
             await dash.signOut();
           },
         }}
-        profilePhoto={
-          dash.user
-            ? {
-                isOpen: dash.profilePhotoModalOpen,
-                onClose: () => dash.setProfilePhotoModalOpen(false),
-                userEmail: dash.user.email,
-                avatarUrl: dash.avatarUrl,
-                hasPhoto: dash.hasAvatarPhoto,
-                onSuccess: () => {
-                  void dash.refetchAvatar();
-                },
-                getAccessToken: dash.getAccessToken,
-              }
-            : null
-        }
+        profilePhoto={null}
       />
     </ZenformedDashboardAppShell>
   );
