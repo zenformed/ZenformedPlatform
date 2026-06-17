@@ -619,7 +619,7 @@ export function parseEntitlementSnapshotJson(
   if (raw == null || typeof raw !== 'object') return null;
   const o = raw as Record<string, unknown>;
   if (typeof o.subscriptionActive !== 'boolean') return null;
-  if (o.licenseTier !== 'STANDARD' && o.licenseTier !== 'PRO') return null;
+  if (typeof o.licenseTier !== 'string') return null;
   const src = o.resolutionSource;
   if (typeof src !== 'string' || !ENTITLEMENT_RESOLUTION_SOURCES.has(src)) return null;
   const offline = o.offlineExpiresAt;

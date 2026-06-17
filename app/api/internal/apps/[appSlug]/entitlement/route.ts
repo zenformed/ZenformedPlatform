@@ -1,18 +1,28 @@
 /**
  * GET /api/internal/apps/:appSlug/entitlement
  *
- * Relays `GET /apps/:appSlug/entitlement` on ZenformedCore when configured.
+ * Resolves entitlement from mirrored `platform_app_entitlements` via JWT-scoped Supabase reads.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAppEntitlement } from '@/infrastructure/coreApi/client';
+import type { SaaSEntitlementSnapshot } from '@zenformed/core';
+import { PlatformTableEntitlementReader } from '@/infrastructure/entitlements/PlatformTableEntitlementReader';
 import { ORGANIZATION_WORKSPACE_NO_STORE_HEADERS } from '@/infrastructure/coreApi/zenformedCoreRelayHttp';
-import { env } from '@/infrastructure/config/env';
 import { runtimeModes } from '@/infrastructure/config/runtimeModes';
 import { getSupabaseUserFromToken } from '@/infrastructure/supabase/supabaseServer';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+const platformEntitlementReader = new PlatformTableEntitlementReader();
+
+function inactivePlatformEntitlementSnapshot(): SaaSEntitlementSnapshot {
+  return {
+    subscriptionActive: false,
+    licenseTier: '',
+    resolutionSource: 'platform_tables',
+  };
+}
 
 function entitlementJson(body: unknown, init?: ResponseInit): NextResponse {
   return NextResponse.json(body, {
@@ -32,7 +42,7 @@ export async function GET(
     return entitlementJson(
       {
         error: 'bad_request',
-        message: 'Entitlement relay requires SaaS mode with real Supabase auth.',
+        message: 'Entitlement resolution requires SaaS mode with real Supabase auth.',
       },
       { status: 400 }
     );
@@ -53,49 +63,17 @@ export async function GET(
     return entitlementJson({ error: 'unauthenticated' }, { status: 401 });
   }
 
-  if (env.zenformedCoreApiBaseUrl == null) {
-    return entitlementJson({
-      relay: 'client_supabase_deprecated',
-      reason: 'core_unconfigured',
-    });
-  }
-
-  const result = await getAppEntitlement(appSlug, raw);
-  if (!result.ok) {
-    if (result.error.kind === 'http_error') {
-      const st = result.error.status;
-      if (st === 401 || st === 403) {
-        return entitlementJson({ error: 'unauthenticated' }, { status: 401 });
-      }
-      if (st === 404) {
-        let coreError: string | undefined;
-        if (result.error.body != null && typeof result.error.body === 'object') {
-          const o = result.error.body as Record<string, unknown>;
-          if (typeof o.error === 'string') coreError = o.error;
-        }
-        return entitlementJson(
-          {
-            relay: 'zenformed_core',
-            appSlug,
-            entitlement: null,
-            error: coreError ?? 'not_found',
-          },
-          { status: 404 }
-        );
-      }
-    }
-    return entitlementJson(
-      {
-        relay: 'error',
-        error: 'zenformed_core_unreachable',
-        detail: result.error,
-      },
-      { status: 502 }
-    );
-  }
+  const normalizedSlug = appSlug.trim();
+  const snapshot =
+    (await platformEntitlementReader.loadEntitlementsForApp({
+      userId: user.id,
+      appSlug: normalizedSlug,
+      accessToken: raw,
+    })) ?? inactivePlatformEntitlementSnapshot();
 
   return entitlementJson({
-    relay: 'zenformed_core',
-    ...result.data,
+    relay: 'platform_tables',
+    appSlug: normalizedSlug,
+    entitlement: snapshot,
   });
 }

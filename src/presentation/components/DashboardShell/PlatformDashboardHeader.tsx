@@ -45,7 +45,6 @@ const appsLauncherLabels = {
 
 export type PlatformDashboardHeaderProps = {
   user: { email: string } | null;
-  effectiveLicenseTier: string | null | undefined;
   organizationRoleLabel?: string | null;
   avatarUrl: string | null | undefined;
   avatarLoading: boolean;
@@ -57,7 +56,6 @@ export type PlatformDashboardHeaderProps = {
 
 export function PlatformDashboardHeader({
   user,
-  effectiveLicenseTier,
   organizationRoleLabel,
   avatarUrl,
   avatarLoading,
@@ -78,7 +76,6 @@ export function PlatformDashboardHeader({
       user={user}
       avatarUrl={avatarUrl}
       avatarLoading={avatarLoading}
-      effectiveLicenseTier={effectiveLicenseTier}
       organizationRoleLabel={organizationRoleLabel}
       labels={accountMenuLabels}
       settingsApiUrl={nav.apis.usersMeSettings}

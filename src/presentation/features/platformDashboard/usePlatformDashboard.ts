@@ -51,8 +51,6 @@ export function usePlatformDashboard(): {
 
   brandingLoading: boolean;
 
-  effectiveLicenseTier: string | undefined;
-
   organizationRoleLabel: string | null;
 
   isAdmin: boolean;
@@ -95,7 +93,7 @@ export function usePlatformDashboard(): {
 
   const { signOut } = usePlatformAuth();
 
-  const { user, session, profile, loading: authLoading, organizationMembershipContext } = useSaaSProfile();
+  const { user, session, loading: authLoading, organizationMembershipContext } = useSaaSProfile();
 
   const { shopName, logoUrl, isLoading: brandingLoading, refetch: refetchBranding } = useBranding();
 
@@ -158,8 +156,6 @@ export function usePlatformDashboard(): {
 
   const [sidebarNav, setSidebarNav] = useState<PlatformSidebarNavId>('home');
 
-  const effectiveLicenseTier = profile?.license_tier;
-
   const organizationRoleLabel = formatOrganizationRoleLabel(organizationMembershipContext?.role);
 
   const isAdmin = computePlatformIsAdmin(env.isSaasMode, dashboardUser);
@@ -179,8 +175,6 @@ export function usePlatformDashboard(): {
     logoUrl,
 
     brandingLoading,
-
-    effectiveLicenseTier,
 
     organizationRoleLabel,
 

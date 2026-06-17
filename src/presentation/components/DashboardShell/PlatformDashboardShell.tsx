@@ -110,7 +110,6 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
           <>
             <PlatformDashboardHeader
               user={dash.user ? { email: dash.user.email } : null}
-              effectiveLicenseTier={dash.effectiveLicenseTier}
               organizationRoleLabel={dash.organizationRoleLabel}
               avatarUrl={null}
               avatarLoading={false}
