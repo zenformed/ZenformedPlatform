@@ -31,6 +31,9 @@ import type {
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
+/** Next.js caches server `fetch` GETs by default in production unless opted out. */
+const NO_STORE_FETCH: Pick<RequestInit, 'cache'> = { cache: 'no-store' };
+
 function normalizeBaseUrl(raw: string): string {
   return raw.replace(/\/+$/, '');
 }
@@ -50,6 +53,7 @@ async function fetchWithBearer(
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     return await fetch(url, {
+      ...NO_STORE_FETCH,
       method: 'GET',
       signal: controller.signal,
       headers: {
@@ -114,7 +118,7 @@ async function mutateJson<T>(
       Accept: 'application/json',
       Authorization: `Bearer ${accessToken}`,
     };
-    const init: RequestInit = { method, signal: controller.signal, headers };
+    const init: RequestInit = { ...NO_STORE_FETCH, method, signal: controller.signal, headers };
     if (body !== undefined) {
       headers['Content-Type'] = 'application/json';
       init.body = JSON.stringify(body);

@@ -3,6 +3,7 @@ import { cancelOrganizationInvite } from '@/infrastructure/coreApi/organizationW
 import { relayOrganizationMutate } from '../../../coreOrganizationRelay';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function PATCH(
   request: NextRequest,
