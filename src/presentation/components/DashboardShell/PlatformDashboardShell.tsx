@@ -88,7 +88,6 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
               }}
               onRequestSignOutConfirm={() => dash.setSignOutModalOpen(true)}
               onRequestProfilePhotoModal={() => dash.setProfilePhotoModalOpen(true)}
-              profilePhotoChangeEnabled={false}
             />
             <main className={shellStyles.mainContent}>
               <div className={pageStyles.dashboardBrand}>
