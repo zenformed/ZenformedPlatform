@@ -30,11 +30,17 @@ function RegisterPageContent(): ReactElement {
     email: string;
     password: string;
     confirmPassword: string;
+    firstName?: string;
+    lastName?: string;
   }): Promise<void> {
     setRegistering(true);
     setRegisterError(null);
     try {
-      const result = await signUp(input.email, input.password);
+      const result = await signUp(input.email, input.password, {
+        firstName: input.firstName,
+        lastName: input.lastName,
+        bootstrapDefaultOrganization: true,
+      });
       if (!result.ok) {
         const message = result.error ?? 'Could not create account.';
         setRegisterError(message);
@@ -55,7 +61,12 @@ function RegisterPageContent(): ReactElement {
     >
       {!isLoading && !registering ? (
         <>
-          <ZenformedRegisterForm onSubmit={handleSubmit} error={registerError} />
+          <ZenformedRegisterForm
+            onSubmit={handleSubmit}
+            error={registerError}
+            collectName
+            requireName
+          />
           <ZenformedAuthPageLinks>
             <ZenformedAuthNavLink href={buildAuthEntryHref(nav.routes.login, authEntryParams)}>
               {DEFAULT_AUTH_LABELS.backToSignIn}

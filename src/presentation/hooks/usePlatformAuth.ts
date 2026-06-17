@@ -21,7 +21,11 @@ export interface UsePlatformAuthState {
   signUp: (
     email: string,
     password: string,
-    options?: { firstName?: string | null; lastName?: string | null }
+    options?: {
+      firstName?: string | null;
+      lastName?: string | null;
+      bootstrapDefaultOrganization?: boolean;
+    }
   ) => Promise<SignUpWithPasswordResult>;
   waitForSessionSync: () => Promise<void>;
   signOut: (options?: { redirectTo?: string | null }) => Promise<void>;
@@ -72,7 +76,11 @@ export function usePlatformAuth(): UsePlatformAuthState {
     async (
       email: string,
       password: string,
-      options?: { firstName?: string | null; lastName?: string | null }
+      options?: {
+        firstName?: string | null;
+        lastName?: string | null;
+        bootstrapDefaultOrganization?: boolean;
+      }
     ) => {
       const supabase = getSupabaseClient();
       const result = await signUpWithPassword(supabase, email, password, options);
