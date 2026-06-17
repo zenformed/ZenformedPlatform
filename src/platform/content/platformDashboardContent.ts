@@ -36,6 +36,8 @@ export const platformDashboardContent = {
     statusComingSoon: 'Coming Soon',
     viewPlansAction: 'View Plans',
     comingSoonAction: 'Coming Soon',
+    developmentNotice:
+      'More products are in development. Check back soon for updates.',
   },
   teamMembers: {
     sectionTitle: 'Team Members',

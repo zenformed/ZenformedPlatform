@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { ReactElement, ReactNode } from 'react';
 import { platformAppIconSrc } from '@/platform/assets/platformAppIcon';
 import { platformAppDefinition } from '@/platform/appDefinitions/platform';
-import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
+import { ProductsPublicAccountNav } from '@/presentation/components/Products/ProductsPublicAccountNav';
 import styles from '../../../../app/products/products.module.css';
 
 export type ProductsPublicShellProps = {
@@ -37,9 +37,7 @@ export function ProductsPublicShell({
                 {backLabel}
               </Link>
             ) : null}
-            <Link href={nav.routes.login} className={styles.headerLink}>
-              Sign in
-            </Link>
+            <ProductsPublicAccountNav />
           </nav>
         </div>
       </header>

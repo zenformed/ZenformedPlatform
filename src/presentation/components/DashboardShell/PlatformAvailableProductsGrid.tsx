@@ -3,12 +3,19 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { resolveZenformedAppIconSrc } from '@zenformed/core/dashboard-shell';
-import type { PlatformAppEntry } from '@/platform/appDefinitions/platformApps';
+import type { PlatformAppEntry, PlatformAppId } from '@/platform/appDefinitions/platformApps';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
+import { PricingCheckIcon } from '@/presentation/components/Products/PricingCheckIcon';
 import styles from '../../../../app/(dashboard)/dashboard/platformDashboard.module.css';
 
 export type PlatformAvailableProductsGridProps = {
   readonly products: readonly PlatformAppEntry[];
+};
+
+const PRODUCT_CARD_CLASS: Record<PlatformAppId, string> = {
+  buildcore: styles.productMarketplaceCardBuildcore,
+  forgecore: styles.productMarketplaceCardForgecore,
+  formcore: styles.productMarketplaceCardFormcore,
 };
 
 export function PlatformAvailableProductsGrid({
@@ -19,7 +26,10 @@ export function PlatformAvailableProductsGrid({
       {products.map((product) => {
         const isLive = product.status === 'live';
         return (
-          <article key={product.id} className={styles.productMarketplaceCard}>
+          <article
+            key={product.id}
+            className={`${styles.productMarketplaceCard} ${PRODUCT_CARD_CLASS[product.id]}`}
+          >
             {isLive ? (
               <span className={styles.productMarketplaceLiveBadge}>
                 {content.products.statusLiveBadge}
@@ -36,7 +46,10 @@ export function PlatformAvailableProductsGrid({
             <p className={styles.productMarketplaceCardTagline}>{product.tagline}</p>
             <ul className={styles.productMarketplaceFeatureList}>
               {product.features.map((feature) => (
-                <li key={feature}>{feature}</li>
+                <li key={feature}>
+                  <PricingCheckIcon className={styles.productMarketplaceFeatureCheck} />
+                  <span>{feature}</span>
+                </li>
               ))}
             </ul>
             <div className={styles.productMarketplaceCardFooter}>

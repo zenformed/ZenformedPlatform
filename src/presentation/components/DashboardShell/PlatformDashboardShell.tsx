@@ -237,7 +237,15 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                         {entitlementsLoading ? (
                           <p className={pageStyles.appsSectionHint}>{content.apps.loadingApps}</p>
                         ) : (
-                          <PlatformAvailableProductsGrid products={availableProducts} />
+                          <>
+                            <PlatformAvailableProductsGrid products={availableProducts} />
+                            <p className={pageStyles.availableProductsDevelopmentNotice} role="status">
+                              <span className={pageStyles.availableProductsDevelopmentNoticeMark} aria-hidden>
+                                !
+                              </span>
+                              {content.products.developmentNotice}
+                            </p>
+                          </>
                         )}
                       </div>
                     </section>

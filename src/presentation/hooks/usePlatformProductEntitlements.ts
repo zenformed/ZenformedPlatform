@@ -13,6 +13,10 @@ export type UsePlatformProductEntitlementsResult = {
   error: string | null;
 };
 
+type EntitlementsBatchResponse = {
+  entitlements?: Partial<Record<PlatformAppId, unknown>>;
+};
+
 export function usePlatformProductEntitlements(
   accessToken: string | null | undefined
 ): UsePlatformProductEntitlementsResult {
@@ -33,43 +37,51 @@ export function usePlatformProductEntitlements(
     setIsLoading(true);
     setError(null);
 
-    void Promise.all(
-      PLATFORM_APPS.map(async (app) => {
-        try {
-          const res = await fetch(`/api/internal/apps/${encodeURIComponent(app.id)}/entitlement`, {
-            method: 'GET',
-            cache: 'no-store',
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (!res.ok) {
-            return { id: app.id, owned: false as const };
+    void (async () => {
+      try {
+        const res = await fetch('/api/internal/apps/entitlements', {
+          method: 'GET',
+          cache: 'no-store',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          if (!cancelled) {
+            setError(res.status === 401 ? null : 'Could not load your app access.');
+            setOwnedAppIds(new Set());
           }
-          const json: unknown = await res.json();
-          return { id: app.id, owned: isPlatformAppOwned(json) };
-        } catch {
-          return { id: app.id, owned: false as const };
+          return;
         }
-      })
-    )
-      .then((results) => {
-        if (cancelled) return;
+
+        const json = (await res.json()) as EntitlementsBatchResponse;
         const owned = new Set<PlatformAppId>();
-        for (const row of results) {
-          if (row.owned) owned.add(row.id);
+        for (const app of PLATFORM_APPS) {
+          const entitlement = json.entitlements?.[app.id];
+          if (
+            isPlatformAppOwned({
+              entitlement,
+            })
+          ) {
+            owned.add(app.id);
+          }
         }
-        setOwnedAppIds(owned);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setError('Could not load your app access.');
-        setOwnedAppIds(new Set());
-      })
-      .finally(() => {
+
+        if (!cancelled) {
+          setOwnedAppIds(owned);
+          setError(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Could not load your app access.');
+          setOwnedAppIds(new Set());
+        }
+      } finally {
         if (!cancelled) setIsLoading(false);
-      });
+      }
+    })();
 
     return () => {
       cancelled = true;
