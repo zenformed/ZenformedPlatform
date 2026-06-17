@@ -25,6 +25,8 @@ export interface UsePlatformAuthState {
       firstName?: string | null;
       lastName?: string | null;
       bootstrapDefaultOrganization?: boolean;
+      emailRedirectTo?: string | null;
+      requireEmailConfirmation?: boolean;
     }
   ) => Promise<SignUpWithPasswordResult>;
   waitForSessionSync: () => Promise<void>;
@@ -80,11 +82,13 @@ export function usePlatformAuth(): UsePlatformAuthState {
         firstName?: string | null;
         lastName?: string | null;
         bootstrapDefaultOrganization?: boolean;
+        emailRedirectTo?: string | null;
+        requireEmailConfirmation?: boolean;
       }
     ) => {
       const supabase = getSupabaseClient();
       const result = await signUpWithPassword(supabase, email, password, options);
-      if (result.ok) {
+      if (result.ok && result.session && !result.pendingEmailVerification) {
         setSession(result.session);
         setUser(result.user);
       }

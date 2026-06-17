@@ -1,30 +1,30 @@
 'use client';
 
 import { Suspense, useState, type ReactElement } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
   DEFAULT_AUTH_LABELS,
   ZenformedAuthNavLink,
   ZenformedAuthPageLinks,
   ZenformedRegisterForm,
+  authFormStyles,
   buildAuthEntryHref,
   parseAuthEntryQueryParams,
-  resolvePostAuthRedirectTarget,
 } from '@zenformed/core/auth';
 import { PlatformAuthPageShell } from '@/presentation/components/PlatformAuthPageShell';
+import { resolvePlatformRegistrationEmailRedirectUrl } from '@/infrastructure/auth/platformRegistrationEmailRedirect';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import pageStyles from '@/presentation/components/platformAuthPage.module.css';
 
 function RegisterPageContent(): ReactElement {
-  const { signUp, waitForSessionSync, isLoading } = usePlatformAuth();
-  const router = useRouter();
+  const { signUp, isLoading } = usePlatformAuth();
   const searchParams = useSearchParams();
   const [registering, setRegistering] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [registrationComplete, setRegistrationComplete] = useState(false);
 
   const authEntryParams = parseAuthEntryQueryParams(searchParams);
-  const redirectTarget = resolvePostAuthRedirectTarget(authEntryParams, nav.routes.dashboard);
 
   async function handleSubmit(input: {
     email: string;
@@ -40,14 +40,18 @@ function RegisterPageContent(): ReactElement {
         firstName: input.firstName,
         lastName: input.lastName,
         bootstrapDefaultOrganization: true,
+        requireEmailConfirmation: true,
+        emailRedirectTo: resolvePlatformRegistrationEmailRedirectUrl(),
       });
+      if (result.ok && result.pendingEmailVerification) {
+        setRegistrationComplete(true);
+        return;
+      }
       if (!result.ok) {
         const message = result.error ?? 'Could not create account.';
         setRegisterError(message);
         throw new Error(message);
       }
-      await waitForSessionSync();
-      router.replace(redirectTarget);
     } finally {
       setRegistering(false);
     }
@@ -60,19 +64,32 @@ function RegisterPageContent(): ReactElement {
       loadingMessage={isLoading ? 'Checking session…' : 'Creating account…'}
     >
       {!isLoading && !registering ? (
-        <>
-          <ZenformedRegisterForm
-            onSubmit={handleSubmit}
-            error={registerError}
-            collectName
-            requireName
-          />
-          <ZenformedAuthPageLinks>
-            <ZenformedAuthNavLink href={buildAuthEntryHref(nav.routes.login, authEntryParams)}>
-              {DEFAULT_AUTH_LABELS.backToSignIn}
-            </ZenformedAuthNavLink>
-          </ZenformedAuthPageLinks>
-        </>
+        registrationComplete ? (
+          <>
+            <p className={authFormStyles.success} role="status">
+              {DEFAULT_AUTH_LABELS.registerEmailVerificationSuccess}
+            </p>
+            <ZenformedAuthPageLinks align="center">
+              <ZenformedAuthNavLink href={buildAuthEntryHref(nav.routes.login, authEntryParams)}>
+                {DEFAULT_AUTH_LABELS.backToSignIn}
+              </ZenformedAuthNavLink>
+            </ZenformedAuthPageLinks>
+          </>
+        ) : (
+          <>
+            <ZenformedRegisterForm
+              onSubmit={handleSubmit}
+              error={registerError}
+              collectName
+              requireName
+            />
+            <ZenformedAuthPageLinks>
+              <ZenformedAuthNavLink href={buildAuthEntryHref(nav.routes.login, authEntryParams)}>
+                {DEFAULT_AUTH_LABELS.backToSignIn}
+              </ZenformedAuthNavLink>
+            </ZenformedAuthPageLinks>
+          </>
+        )
       ) : null}
     </PlatformAuthPageShell>
   );
