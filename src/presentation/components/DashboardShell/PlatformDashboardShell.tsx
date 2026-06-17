@@ -14,6 +14,7 @@ import {
   ZenformedDashboardSidebarRow,
   ZenformedSidebarBranding,
 } from '@zenformed/core/dashboard-shell';
+import { SettingsIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformAppIconSrc } from '@/platform/assets/platformAppIcon';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
@@ -125,11 +126,23 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                 <div className={pageStyles.dashboardLayout}>
                   <div className={pageStyles.dashboardLeftColumn}>
                     <header className={pageStyles.dashboardPanel}>
-                      <h1
-                        className={`${pageStyles.dashboardHeadingBar} ${pageStyles.dashboardPageTitle}`}
+                      <div
+                        className={`${pageStyles.dashboardHeadingBar} ${pageStyles.dashboardPanelHeadingRow}`}
                       >
-                        {content.dashboard.accountTitle}
-                      </h1>
+                        <h1 className={pageStyles.dashboardPageTitle}>
+                          {content.dashboard.accountTitle}
+                        </h1>
+                        <button
+                          type="button"
+                          className={pageStyles.dashboardPanelHeadingSettingsButton}
+                          aria-label={nav.header.account.settingsButton.label}
+                          onClick={() => {
+                            requestAnimationFrame(() => dash.openSettings('account'));
+                          }}
+                        >
+                          <SettingsIcon className={pageStyles.dashboardPanelHeadingSettingsIcon} />
+                        </button>
+                      </div>
                       <div className={pageStyles.dashboardPanelBody}>
                         <p className={pageStyles.dashboardPageSubtitle}>
                           {content.dashboard.accountSubtitle}
