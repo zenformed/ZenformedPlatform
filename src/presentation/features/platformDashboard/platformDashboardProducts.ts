@@ -3,6 +3,11 @@ import {
   type PlatformAppEntry,
   type PlatformAppId,
 } from '@/platform/appDefinitions/platformApps';
+export {
+  getAppPlanCatalogEntries,
+  listPurchasablePlansForApp,
+  PLATFORM_APP_PLAN_CATALOG,
+} from '@zenformed/core';
 
 export function isPlatformAppOwned(
   entitlementBody: unknown

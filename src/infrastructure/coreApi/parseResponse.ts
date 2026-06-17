@@ -605,31 +605,13 @@ export function parseUserAvatarMetaJson(body: unknown): ZenformedCoreUserAvatarM
   };
 
 }
-
-const ENTITLEMENT_RESOLUTION_SOURCES = new Set([
-  'legacy_profiles',
-  'platform_tables',
-  'offline_snapshot',
-  'dual_read_legacy_authoritative',
-]);
+import { parseSaaSEntitlementSnapshotJson } from '@zenformed/core';
 
 export function parseEntitlementSnapshotJson(
-  raw: unknown
+  raw: unknown,
+  fallbackAppSlug?: string
 ): import('@/infrastructure/coreApi/types').SaaSEntitlementSnapshot | null {
-  if (raw == null || typeof raw !== 'object') return null;
-  const o = raw as Record<string, unknown>;
-  if (typeof o.subscriptionActive !== 'boolean') return null;
-  if (typeof o.licenseTier !== 'string') return null;
-  const src = o.resolutionSource;
-  if (typeof src !== 'string' || !ENTITLEMENT_RESOLUTION_SOURCES.has(src)) return null;
-  const offline = o.offlineExpiresAt;
-  if (offline != null && typeof offline !== 'string') return null;
-  return {
-    subscriptionActive: o.subscriptionActive,
-    licenseTier: o.licenseTier,
-    resolutionSource: src as import('@/infrastructure/coreApi/types').SaaSEntitlementSnapshot['resolutionSource'],
-    ...(typeof offline === 'string' ? { offlineExpiresAt: offline } : {}),
-  };
+  return parseSaaSEntitlementSnapshotJson(raw, fallbackAppSlug);
 }
 
 export function parseAppEntitlementEnvelopeJson(
@@ -638,7 +620,7 @@ export function parseAppEntitlementEnvelopeJson(
   if (body == null || typeof body !== 'object') return null;
   const o = body as Record<string, unknown>;
   if (typeof o.appSlug !== 'string') return null;
-  const ent = parseEntitlementSnapshotJson(o.entitlement);
+  const ent = parseEntitlementSnapshotJson(o.entitlement, o.appSlug);
   if (ent == null) return null;
   return { appSlug: o.appSlug, entitlement: ent };
 }
