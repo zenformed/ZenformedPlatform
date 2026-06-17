@@ -8,6 +8,8 @@ export const platformNavigation = {
     register: '/register',
     forgotPassword: '/forgot-password',
     resetPassword: '/reset-password',
+    products: '/products',
+    productPricing: (appSlug: string) => `/products/${appSlug}`,
   },
 } as const;
 

@@ -41,16 +41,13 @@ export function PlatformAvailableProductsGrid({
             </ul>
             <div className={styles.productMarketplaceCardFooter}>
               {isLive ? (
-                <Link href="/products" className={styles.productMarketplaceActionGhost}>
+                <Link href={`/products/${product.id}`} className={styles.productMarketplaceActionGhost}>
                   {content.products.viewPlansAction}
                 </Link>
               ) : (
-                <span
-                  className={`${styles.productMarketplaceActionGhost} ${styles.productMarketplaceActionGhostDisabled}`}
-                  aria-disabled="true"
-                >
-                  {content.products.comingSoonAction}
-                </span>
+                <Link href={`/products/${product.id}`} className={styles.productMarketplaceActionGhost}>
+                  Preview plans
+                </Link>
               )}
             </div>
           </article>

@@ -16,6 +16,7 @@ const PUBLIC_PATHS = [
   nav.routes.register,
   nav.routes.forgotPassword,
   nav.routes.resetPassword,
+  '/products',
 ] as const;
 
 const LoadingShell = (): React.ReactElement => (
