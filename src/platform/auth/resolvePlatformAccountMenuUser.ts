@@ -1,6 +1,6 @@
 import type { AccountMenuUserIdentity } from '@zenformed/core/dashboard-shell';
 
-export function readNameFieldsFromUserMetadata(
+function readNameFieldsFromUserMetadata(
   metadata: unknown
 ): Pick<AccountMenuUserIdentity, 'firstName' | 'lastName' | 'displayName'> {
   if (metadata == null || typeof metadata !== 'object') {
@@ -19,7 +19,11 @@ export function readNameFieldsFromUserMetadata(
   const displayName =
     typeof record.display_name === 'string' && record.display_name.trim() !== ''
       ? record.display_name.trim()
-      : null;
+      : typeof record.full_name === 'string' && record.full_name.trim() !== ''
+        ? record.full_name.trim()
+        : typeof record.name === 'string' && record.name.trim() !== ''
+          ? record.name.trim()
+          : null;
 
   return { firstName, lastName, displayName };
 }
