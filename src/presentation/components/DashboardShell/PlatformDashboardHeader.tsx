@@ -13,6 +13,7 @@ import {
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
+import { PlatformCartNavButton } from '@/presentation/components/Cart/PlatformCartNavButton';
 import {
   AppsIcon,
   CameraIcon,
@@ -94,6 +95,7 @@ export function PlatformDashboardHeader({
             showAccountSection={false}
             appsIcon={<AppsIcon />}
           />
+          <PlatformCartNavButton />
         </>
       }
       onOpenSettings={onOpenSettings}

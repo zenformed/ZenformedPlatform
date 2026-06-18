@@ -8,6 +8,7 @@ import { platformNavigation as nav } from '@/platform/navigation/platformNavigat
 import { parseUserSettingsEnvelopeJson } from '@/infrastructure/coreApi/parseResponse';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
+import { PlatformCartNavButton } from '@/presentation/components/Cart/PlatformCartNavButton';
 import styles from '../../../../app/products/products.module.css';
 
 function PersonIcon(): ReactElement {
@@ -145,7 +146,9 @@ export function ProductsPublicAccountNav(): ReactElement {
   const displayName = resolveAccountFirstName(firstName, user.user_metadata, user.email);
 
   return (
-    <div className={styles.accountNavWrap} ref={menuRef}>
+    <>
+      <PlatformCartNavButton />
+      <div className={styles.accountNavWrap} ref={menuRef}>
       <button
         type="button"
         className={styles.accountNavPill}
@@ -180,6 +183,7 @@ export function ProductsPublicAccountNav(): ReactElement {
           </button>
         </div>
       ) : null}
-    </div>
+      </div>
+    </>
   );
 }

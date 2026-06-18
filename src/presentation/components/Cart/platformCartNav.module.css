@@ -1,0 +1,61 @@
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--color-text-muted, var(--products-text-muted));
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.link:hover {
+  color: var(--color-text, var(--products-text));
+  opacity: 0.9;
+}
+
+.link:focus,
+.link:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.icon svg {
+  flex-shrink: 0;
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.badge {
+  position: absolute;
+  top: 0.125rem;
+  right: 0.125rem;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--products-accent, #119247);
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1rem;
+  text-align: center;
+  pointer-events: none;
+  transform: translate(25%, -25%);
+}
