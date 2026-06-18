@@ -57,7 +57,13 @@ function ChevronDownIcon(): ReactElement {
   );
 }
 
-export function ProductsPublicAccountNav(): ReactElement {
+export function ProductsPublicAccountNav({
+  mobileBackHref,
+  mobileBackLabel,
+}: {
+  readonly mobileBackHref?: string;
+  readonly mobileBackLabel?: string;
+}): ReactElement {
   const pathname = usePathname();
   const { session, user, loading } = useSaaSProfile();
   const { signOut } = usePlatformAuth();
@@ -134,6 +140,10 @@ export function ProductsPublicAccountNav(): ReactElement {
   }, [settingsFirstName, settingsLastName, user]);
 
   const canShowName = displayName !== '' || settingsReady;
+  const hasMobileBackLink =
+    mobileBackHref != null &&
+    mobileBackLabel != null &&
+    mobileBackLabel.trim() !== '';
 
   if (loading) {
     return <span className={styles.accountNavPlaceholder} aria-hidden />;
@@ -169,6 +179,16 @@ export function ProductsPublicAccountNav(): ReactElement {
         </button>
         {menuOpen ? (
           <div className={styles.accountNavMenu} role="menu">
+            {hasMobileBackLink ? (
+              <Link
+                href={mobileBackHref}
+                className={`${styles.accountNavMenuItem} ${styles.accountNavMenuBackLink}`}
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+              >
+                {mobileBackLabel}
+              </Link>
+            ) : null}
             <Link
               href={dashboardNav.routes.dashboard}
               className={styles.accountNavMenuItem}
