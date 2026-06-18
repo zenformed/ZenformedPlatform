@@ -130,6 +130,14 @@
   white-space: nowrap;
 }
 
+.accountNavNamePending {
+  display: inline-block;
+  width: 4.5rem;
+  height: 0.875rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .accountNavChevron {
   flex-shrink: 0;
   margin-left: 0.125rem;

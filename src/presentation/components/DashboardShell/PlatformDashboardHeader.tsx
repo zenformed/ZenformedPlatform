@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactElement } from 'react';
+import { useMemo, type ReactElement } from 'react';
 import { ThemeToggle } from '@/presentation/components/ThemeToggle/ThemeToggle';
 import {
   pickHeaderShellClassNames,
@@ -8,11 +8,13 @@ import {
   ZenformedAppsLauncher,
   ZenformedDashboardHeader,
   useZenformedAppLaunch,
+  type AccountMenuUserIdentity,
   type ZenformedAccountMenuLabels,
 } from '@zenformed/core/dashboard-shell';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
+import { resolvePlatformAccountMenuUser } from '@/platform/auth/resolvePlatformAccountMenuUser';
 import { PlatformCartNavButton } from '@/presentation/components/Cart/PlatformCartNavButton';
 import {
   AppsIcon,
@@ -65,7 +67,11 @@ export function PlatformDashboardHeader({
   onRequestSignOutConfirm,
   onRequestProfilePhotoModal,
 }: PlatformDashboardHeaderProps): ReactElement {
-  const { session } = useSaaSProfile();
+  const { session, user: saasUser } = useSaaSProfile();
+  const accountUser = useMemo<AccountMenuUserIdentity | null>(() => {
+    if (user == null) return null;
+    return resolvePlatformAccountMenuUser(user.email, saasUser?.user_metadata);
+  }, [saasUser?.user_metadata, user]);
   const { launchApp, launchingAppId, launchError } = useZenformedAppLaunch({
     launchApiUrl: '/api/internal/app-launch',
     getAccessToken: () => session?.access_token ?? null,
@@ -74,7 +80,7 @@ export function PlatformDashboardHeader({
   return (
     <ZenformedDashboardHeader
       classNames={headerShellClassNames}
-      user={user}
+      user={accountUser}
       avatarUrl={avatarUrl}
       avatarLoading={avatarLoading}
       organizationRoleLabel={organizationRoleLabel}

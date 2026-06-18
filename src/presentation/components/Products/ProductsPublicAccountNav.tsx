@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState, type ReactElement } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
+import { resolveAccountMenuDisplayName } from '@zenformed/core/dashboard-shell';
 import { platformDashboardNavigation as dashboardNav } from '@/platform/navigation/platformDashboardNavigation';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
+import { resolvePlatformAccountMenuUser } from '@/platform/auth/resolvePlatformAccountMenuUser';
 import { parseUserSettingsEnvelopeJson } from '@/infrastructure/coreApi/parseResponse';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
@@ -55,46 +57,28 @@ function ChevronDownIcon(): ReactElement {
   );
 }
 
-function resolveAccountFirstName(
-  settingsFirstName: string | null,
-  userMetadata: unknown,
-  email: string | null | undefined
-): string {
-  const fromSettings = settingsFirstName?.trim();
-  if (fromSettings) return fromSettings;
-
-  if (userMetadata != null && typeof userMetadata === 'object') {
-    const firstName = (userMetadata as Record<string, unknown>).first_name;
-    if (typeof firstName === 'string' && firstName.trim() !== '') {
-      return firstName.trim();
-    }
-  }
-
-  const normalizedEmail = email?.trim() ?? '';
-  if (normalizedEmail) {
-    const localPart = normalizedEmail.split('@')[0]?.trim();
-    if (localPart) return localPart;
-  }
-
-  return 'Account';
-}
-
 export function ProductsPublicAccountNav(): ReactElement {
   const pathname = usePathname();
   const { session, user, loading } = useSaaSProfile();
   const { signOut } = usePlatformAuth();
-  const [firstName, setFirstName] = useState<string | null>(null);
+  const [settingsFirstName, setSettingsFirstName] = useState<string | null>(null);
+  const [settingsLastName, setSettingsLastName] = useState<string | null>(null);
+  const [settingsReady, setSettingsReady] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = session?.access_token?.trim() ?? '';
     if (!token) {
-      setFirstName(null);
+      setSettingsFirstName(null);
+      setSettingsLastName(null);
+      setSettingsReady(false);
       return;
     }
 
     let cancelled = false;
+    setSettingsReady(false);
+
     void (async () => {
       try {
         const res = await fetch(dashboardNav.apis.usersMeSettings, {
@@ -108,10 +92,18 @@ export function ProductsPublicAccountNav(): ReactElement {
         const json: unknown = await res.json();
         const parsed = parseUserSettingsEnvelopeJson(json);
         if (!cancelled) {
-          setFirstName(parsed?.settings.firstName ?? null);
+          setSettingsFirstName(parsed?.settings.firstName ?? null);
+          setSettingsLastName(parsed?.settings.lastName ?? null);
         }
       } catch {
-        if (!cancelled) setFirstName(null);
+        if (!cancelled) {
+          setSettingsFirstName(null);
+          setSettingsLastName(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setSettingsReady(true);
+        }
       }
     })();
 
@@ -131,6 +123,18 @@ export function ProductsPublicAccountNav(): ReactElement {
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, [menuOpen]);
 
+  const displayName = useMemo(() => {
+    if (user?.email == null) return '';
+    const identity = resolvePlatformAccountMenuUser(user.email, user.user_metadata);
+    return resolveAccountMenuDisplayName({
+      ...identity,
+      firstName: settingsFirstName ?? identity.firstName ?? null,
+      lastName: settingsLastName ?? identity.lastName ?? null,
+    });
+  }, [settingsFirstName, settingsLastName, user]);
+
+  const canShowName = displayName !== '' || settingsReady;
+
   if (loading) {
     return <span className={styles.accountNavPlaceholder} aria-hidden />;
   }
@@ -143,46 +147,49 @@ export function ProductsPublicAccountNav(): ReactElement {
     );
   }
 
-  const displayName = resolveAccountFirstName(firstName, user.user_metadata, user.email);
-
   return (
     <>
       <PlatformCartNavButton />
       <div className={styles.accountNavWrap} ref={menuRef}>
-      <button
-        type="button"
-        className={styles.accountNavPill}
-        aria-haspopup="menu"
-        aria-expanded={menuOpen}
-        onClick={() => setMenuOpen((open) => !open)}
-      >
-        <PersonIcon />
-        <span className={styles.accountNavName}>{displayName}</span>
-        <ChevronDownIcon />
-      </button>
-      {menuOpen ? (
-        <div className={styles.accountNavMenu} role="menu">
-          <Link
-            href={dashboardNav.routes.dashboard}
-            className={styles.accountNavMenuItem}
-            role="menuitem"
-            onClick={() => setMenuOpen(false)}
-          >
-            Dashboard
-          </Link>
-          <button
-            type="button"
-            className={styles.accountNavMenuItem}
-            role="menuitem"
-            onClick={() => {
-              setMenuOpen(false);
-              void signOut({ redirectTo: pathname ?? nav.routes.products });
-            }}
-          >
-            Sign out
-          </button>
-        </div>
-      ) : null}
+        <button
+          type="button"
+          className={styles.accountNavPill}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          aria-label={canShowName && displayName ? `Account menu, ${displayName}` : 'Account menu'}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <PersonIcon />
+          {canShowName ? (
+            <span className={styles.accountNavName}>{displayName || 'Account'}</span>
+          ) : (
+            <span className={styles.accountNavNamePending} aria-hidden />
+          )}
+          <ChevronDownIcon />
+        </button>
+        {menuOpen ? (
+          <div className={styles.accountNavMenu} role="menu">
+            <Link
+              href={dashboardNav.routes.dashboard}
+              className={styles.accountNavMenuItem}
+              role="menuitem"
+              onClick={() => setMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
+            <button
+              type="button"
+              className={styles.accountNavMenuItem}
+              role="menuitem"
+              onClick={() => {
+                setMenuOpen(false);
+                void signOut({ redirectTo: pathname ?? nav.routes.products });
+              }}
+            >
+              Sign out
+            </button>
+          </div>
+        ) : null}
       </div>
     </>
   );
