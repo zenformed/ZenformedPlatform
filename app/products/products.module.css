@@ -23,24 +23,16 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  isolation: isolate;
-  border-bottom: 1px solid var(--products-border);
-  background-color: rgba(12, 14, 18, 0.78);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 14, 18, 0.12);
+  backdrop-filter: blur(64px) saturate(140%);
+  -webkit-backdrop-filter: blur(64px) saturate(140%);
 }
 
-.header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 55% 45% at 15% -5%, rgba(74, 222, 128, 0.1), transparent),
-    radial-gradient(ellipse 45% 35% at 85% 0%, rgba(167, 139, 250, 0.12), transparent),
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(96, 165, 250, 0.12), transparent),
-    var(--products-bg);
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .header {
+    background: var(--products-bg);
+  }
 }
 
 .headerInner {
