@@ -50,10 +50,10 @@ export function PricingPlanCard({
           {priceDetail ? <p className={styles.planPriceDetail}>{priceDetail}</p> : null}
         </div>
         <dl className={styles.planSpecs}>
-          {plan.seats != null ? (
+          {plan.primarySpec != null ? (
             <div className={styles.planSpec}>
-              <dt>Seats</dt>
-              <dd>{plan.seats}</dd>
+              <dt>{plan.primarySpec.label}</dt>
+              <dd>{plan.primarySpec.value}</dd>
             </div>
           ) : null}
         </dl>

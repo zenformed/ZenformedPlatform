@@ -8,12 +8,18 @@ export type ProductPricingAppSlug = PlatformAppId;
 
 export type BillingPeriod = 'monthly' | 'annual';
 
+export type ProductPlanPrimarySpec = {
+  readonly label: string;
+  readonly value: string;
+};
+
 export type ProductPlanDisplay = {
   readonly planSlug: NormalizedPlanSlug;
   readonly displayName: string;
   readonly monthlyAmount: number;
   readonly annualAmount: number;
   readonly seats: number | null;
+  readonly primarySpec: ProductPlanPrimarySpec | null;
   readonly trialDays: number;
   readonly supportLevel: string;
   readonly features: readonly string[];
@@ -47,6 +53,25 @@ function isProductPricingAppSlug(value: string): value is ProductPricingAppSlug 
   return PLATFORM_APPS.some((app) => app.id === value);
 }
 
+function resolvePlanPrimarySpec(
+  planPrimarySpec: 'seats' | 'activeForms',
+  plan: ZenformedCoreProductCatalogDetail['plans'][number]
+): ProductPlanPrimarySpec | null {
+  if (planPrimarySpec === 'activeForms') {
+    return {
+      label: 'Active Forms',
+      value: plan.activeFormsLimit == null ? 'Unlimited' : String(plan.activeFormsLimit),
+    };
+  }
+  if (plan.seatsIncluded != null) {
+    return {
+      label: 'Seats',
+      value: String(plan.seatsIncluded),
+    };
+  }
+  return null;
+}
+
 function mapCatalogDetailToPageConfig(detail: ZenformedCoreProductCatalogDetail): ProductPricingPageConfig | null {
   const { product } = detail;
   if (!isProductPricingAppSlug(product.productSlug)) {
@@ -71,6 +96,7 @@ function mapCatalogDetailToPageConfig(detail: ZenformedCoreProductCatalogDetail)
       monthlyAmount: plan.monthlyAmountCents / 100,
       annualAmount: plan.annualAmountCents / 100,
       seats: plan.seatsIncluded,
+      primarySpec: resolvePlanPrimarySpec(product.planPrimarySpec, plan),
       trialDays: plan.trialDays,
       supportLevel: plan.supportLevel ?? 'Email support',
       features: plan.features,

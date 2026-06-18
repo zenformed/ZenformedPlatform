@@ -367,6 +367,7 @@ export type ZenformedCoreProductCatalogPlan = {
   monthlyAmountCents: number;
   annualAmountCents: number;
   seatsIncluded: number | null;
+  activeFormsLimit: number | null;
   recommended: boolean;
   trialDays: number;
   features: string[];
@@ -388,6 +389,7 @@ export type ZenformedCoreProductCatalogProduct = {
   purchasesEnabled: boolean;
   annualToggleLabel: string;
   storageHighlights: string[];
+  planPrimarySpec: 'seats' | 'activeForms';
 };
 
 export type ZenformedCoreProductCatalogDetail = {

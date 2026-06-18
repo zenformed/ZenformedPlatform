@@ -669,6 +669,7 @@ function parseProductCatalogPlan(value: unknown): import('@/infrastructure/coreA
   if (typeof o.monthlyAmountCents !== 'number') return null;
   if (typeof o.annualAmountCents !== 'number') return null;
   if (o.seatsIncluded != null && typeof o.seatsIncluded !== 'number') return null;
+  if (o.activeFormsLimit != null && typeof o.activeFormsLimit !== 'number') return null;
   if (typeof o.recommended !== 'boolean') return null;
   if (typeof o.trialDays !== 'number') return null;
   const features = parseStringArray(o.features);
@@ -681,6 +682,7 @@ function parseProductCatalogPlan(value: unknown): import('@/infrastructure/coreA
     monthlyAmountCents: o.monthlyAmountCents,
     annualAmountCents: o.annualAmountCents,
     seatsIncluded: o.seatsIncluded == null ? null : o.seatsIncluded,
+    activeFormsLimit: o.activeFormsLimit == null ? null : o.activeFormsLimit,
     recommended: o.recommended,
     trialDays: o.trialDays,
     features,
@@ -706,6 +708,7 @@ function parseProductCatalogProduct(value: unknown): import('@/infrastructure/co
   if (typeof o.annualToggleLabel !== 'string') return null;
   const storageHighlights = parseStringArray(o.storageHighlights);
   if (storageHighlights == null) return null;
+  const planPrimarySpec = o.planPrimarySpec === 'activeForms' ? 'activeForms' : 'seats';
   return {
     productSlug: o.productSlug,
     name: o.name,
@@ -720,6 +723,7 @@ function parseProductCatalogProduct(value: unknown): import('@/infrastructure/co
     purchasesEnabled: o.purchasesEnabled,
     annualToggleLabel: o.annualToggleLabel,
     storageHighlights,
+    planPrimarySpec,
   };
 }
 
