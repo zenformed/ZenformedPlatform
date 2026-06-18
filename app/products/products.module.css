@@ -295,7 +295,8 @@
 }
 
 .indexCardBadgeLive,
-.indexCardBadgeSoon {
+.indexCardBadgeSoon,
+.indexCardBadgeOwned {
   position: absolute;
   top: 0;
   right: 0;
@@ -306,6 +307,11 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   border-radius: 0 0.625rem 0 0.375rem;
+}
+
+.indexCardBadgeOwned {
+  color: #dbeafe;
+  background: #2563eb;
 }
 
 .indexCardBadgeLive {
@@ -737,6 +743,23 @@
   box-shadow: 0 0 16px rgba(17, 146, 71, 0.4);
 }
 
+.planBadgeOwned {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  padding: 0.3125rem 0.875rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.35);
+}
+
 .planCardRecommended .planCardContent {
   padding-top: 0.625rem;
 }
@@ -896,6 +919,11 @@
   flex: 2 1 66.667%;
 }
 
+.planCtaChooseFull {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
 .planCta:disabled {
   cursor: not-allowed;
   opacity: 0.72;
@@ -969,4 +997,53 @@
   border-radius: 0.25rem;
   background: rgba(255, 255, 255, 0.08);
   font-size: 0.8125rem;
+}
+
+.productNoticeToast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 80;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.productNoticeToastInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  width: min(100%, 42rem);
+  padding: 0.875rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  background: rgba(22, 25, 34, 0.96);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+.productNoticeToastMessage {
+  flex: 1;
+  margin: 0;
+  color: var(--products-text-soft);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.productNoticeToastDismiss {
+  flex-shrink: 0;
+  padding: 0.4375rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--products-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.productNoticeToastDismiss:hover {
+  background: rgba(255, 255, 255, 0.1);
 }

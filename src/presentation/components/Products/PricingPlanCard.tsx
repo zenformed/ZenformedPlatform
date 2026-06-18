@@ -8,6 +8,7 @@ import {
   type BillingPeriod,
   type ProductPlanDisplay,
 } from '@/platform/products/productPricingCatalog';
+import type { PlanCardOwnershipAction } from '@/platform/products/productPlanOwnership';
 import { PlanTierIcon } from '@/presentation/components/Products/PlanTierIcon';
 import { PricingCheckIcon } from '@/presentation/components/Products/PricingCheckIcon';
 import styles from '../../../../app/products/products.module.css';
@@ -15,6 +16,7 @@ import styles from '../../../../app/products/products.module.css';
 export type PricingPlanCardProps = {
   readonly plan: ProductPlanDisplay;
   readonly billingPeriod: BillingPeriod;
+  readonly ownershipAction: PlanCardOwnershipAction;
   readonly onSelectTrial: () => void;
   readonly onSelectPaid: () => void;
 };
@@ -22,6 +24,7 @@ export type PricingPlanCardProps = {
 export function PricingPlanCard({
   plan,
   billingPeriod,
+  ownershipAction,
   onSelectTrial,
   onSelectPaid,
 }: PricingPlanCardProps): ReactElement {
@@ -32,14 +35,21 @@ export function PricingPlanCard({
   const priceDetail = isAnnual
     ? `≈ ${formatPlanAnnualEquivalent(plan.annualAmount)} billed annually`
     : null;
+  const showRecommendedBadge = plan.recommended === true && ownershipAction.kind !== 'current';
+  const showOwnedBadge = ownershipAction.kind === 'current';
+  const showTrialButton = ownershipAction.kind === 'purchase';
+  const primaryDisabled =
+    ownershipAction.kind === 'current' ||
+    (ownershipAction.kind === 'purchase' && plan.ctaDisabled === true);
 
   const card = (
     <article
-      className={`${styles.planCard} ${plan.recommended ? styles.planCardRecommended : ''}`}
+      className={`${styles.planCard} ${showRecommendedBadge ? styles.planCardRecommended : ''}`}
       data-monthly-amount={plan.monthlyAmount}
       data-annual-amount={plan.annualAmount}
     >
-      {plan.recommended ? <div className={styles.planBadge}>Recommended</div> : null}
+      {showRecommendedBadge ? <div className={styles.planBadge}>Recommended</div> : null}
+      {showOwnedBadge ? <div className={styles.planBadgeOwned}>Owned</div> : null}
       <div className={styles.planCardContent}>
         <div className={styles.planTitleRow}>
           <h3 className={styles.planTitle}>{plan.displayName}</h3>
@@ -73,30 +83,32 @@ export function PricingPlanCard({
           </li>
         </ul>
         <div className={styles.planCtaRow}>
+          {showTrialButton ? (
+            <button
+              type="button"
+              className={`${styles.planCta} ${styles.planCtaTry} ${styles.planCtaAccent}`}
+              disabled={plan.ctaDisabled === true}
+              onClick={onSelectTrial}
+              aria-disabled={plan.ctaDisabled === true}
+            >
+              Try for free
+            </button>
+          ) : null}
           <button
             type="button"
-            className={`${styles.planCta} ${styles.planCtaTry} ${styles.planCtaAccent}`}
-            disabled={plan.ctaDisabled === true}
-            onClick={onSelectTrial}
-            aria-disabled={plan.ctaDisabled === true}
-          >
-            Try for free
-          </button>
-          <button
-            type="button"
-            className={`${styles.planCta} ${styles.planCtaChoose} ${styles.planCtaChooseDark}`}
-            disabled={plan.ctaDisabled === true}
+            className={`${styles.planCta} ${showTrialButton ? styles.planCtaChoose : styles.planCtaChooseFull} ${styles.planCtaChooseDark}`}
+            disabled={primaryDisabled}
             onClick={onSelectPaid}
-            aria-disabled={plan.ctaDisabled === true}
+            aria-disabled={primaryDisabled}
           >
-            {plan.ctaLabel}
+            {ownershipAction.primaryLabel}
           </button>
         </div>
       </div>
     </article>
   );
 
-  if (plan.recommended) {
+  if (showRecommendedBadge) {
     return <div className={styles.planCardRgbWrap}>{card}</div>;
   }
 

@@ -6,8 +6,14 @@ import { resolveZenformedAppIconSrc } from '@zenformed/core/dashboard-shell';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
 import type { PlatformAppId } from '@/platform/appDefinitions/platformApps';
 import { getProductPricingIndexEntries } from '@/platform/products/productPricingCatalog';
+import {
+  resolveProductListingCtaLabel,
+  STANDARD_TIERED_PLAN_SLUGS,
+} from '@/platform/products/productPlanOwnership';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { PricingCheckIcon } from '@/presentation/components/Products/PricingCheckIcon';
+import { usePlatformProductEntitlements } from '@/presentation/hooks/usePlatformProductEntitlements';
+import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import styles from '../../../../app/products/products.module.css';
 
 const INDEX_CARD_CLASS: Record<PlatformAppId, string> = {
@@ -40,14 +46,29 @@ function ProductIndexIcon({ appId }: { appId: PlatformAppId }): ReactElement {
 
 export function ProductsIndexGrid(): ReactElement {
   const products = getProductPricingIndexEntries();
+  const { session } = useSaaSProfile();
+  const { entitlementsByApp } = usePlatformProductEntitlements(session?.access_token);
 
   return (
     <div className={styles.indexGrid}>
       {products.map((product) => {
         const isLive = product.status === 'live';
+        const entitlement = entitlementsByApp[product.id];
+        const owned = entitlement?.owned === true;
+        const ctaLabel = resolveProductListingCtaLabel({
+          isLive,
+          owned,
+          currentPlanSlug: entitlement?.planSlug ?? null,
+          catalogPlanSlugs: STANDARD_TIERED_PLAN_SLUGS,
+          viewPlansLabel: content.products.viewPlansAction,
+          previewPlansLabel: 'Preview plans',
+        });
+
         return (
           <article key={product.id} className={`${styles.indexCard} ${INDEX_CARD_CLASS[product.id]}`}>
-            {isLive ? (
+            {owned ? (
+              <span className={styles.indexCardBadgeOwned}>Owned</span>
+            ) : isLive ? (
               <span className={styles.indexCardBadgeLive}>{content.products.statusLiveBadge}</span>
             ) : (
               <span className={styles.indexCardBadgeSoon}>{content.products.statusComingSoon}</span>
@@ -68,7 +89,7 @@ export function ProductsIndexGrid(): ReactElement {
             </ul>
             <div className={styles.indexCardFooter}>
               <Link href={product.pricingHref} className={styles.indexCardAction}>
-                {isLive ? content.products.viewPlansAction : 'Preview plans'}
+                {ctaLabel}
               </Link>
             </div>
           </article>
