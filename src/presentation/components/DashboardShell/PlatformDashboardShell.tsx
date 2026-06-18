@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import type { ReactElement } from 'react';
 import {
   pickAppsLauncherClassNames,
@@ -14,7 +13,7 @@ import {
   ZenformedDashboardSidebarRow,
   ZenformedSidebarBranding,
 } from '@zenformed/core/dashboard-shell';
-import { SettingsIcon } from '@/platform/icons/platformDashboardShellIcons';
+import { SettingsIcon, ShopIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformAppIconSrc } from '@/platform/assets/platformAppIcon';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
@@ -27,6 +26,7 @@ import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import { usePlatformProductEntitlements } from '@/presentation/hooks/usePlatformProductEntitlements';
 import { partitionPlatformAppsByOwnership, countActivePlatformSubscriptions } from '@/presentation/features/platformDashboard/platformDashboardProducts';
 import { PlatformAvailableProductsGrid } from '@/presentation/components/DashboardShell/PlatformAvailableProductsGrid';
+import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import { PlatformDashboardAppsBillingSection } from '@/presentation/components/DashboardShell/PlatformDashboardAppsBillingSection';
 import { PlatformDashboardTeamMembersSection } from '@/presentation/components/DashboardShell/PlatformDashboardTeamMembersSection';
 import {
@@ -125,23 +125,11 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                 <div className={pageStyles.dashboardLayout}>
                   <div className={pageStyles.dashboardLeftColumn}>
                     <header className={pageStyles.dashboardPanel}>
-                      <div
-                        className={`${pageStyles.dashboardHeadingBar} ${pageStyles.dashboardPanelHeadingRow}`}
+                      <h1
+                        className={`${pageStyles.dashboardHeadingBar} ${pageStyles.dashboardPageTitle}`}
                       >
-                        <h1 className={pageStyles.dashboardPageTitle}>
-                          {content.dashboard.accountTitle}
-                        </h1>
-                        <button
-                          type="button"
-                          className={pageStyles.dashboardPanelHeadingSettingsButton}
-                          aria-label={nav.header.account.settingsButton.label}
-                          onClick={() => {
-                            requestAnimationFrame(() => dash.openSettings('account'));
-                          }}
-                        >
-                          <SettingsIcon className={pageStyles.dashboardPanelHeadingSettingsIcon} />
-                        </button>
-                      </div>
+                        {content.dashboard.accountTitle}
+                      </h1>
                       <div className={pageStyles.dashboardPanelBody}>
                         <p className={pageStyles.dashboardPageSubtitle}>
                           {content.dashboard.accountSubtitle}
@@ -174,6 +162,13 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                             </dd>
                           </div>
                         </dl>
+                        <PlatformDashboardPanelAction
+                          icon={<SettingsIcon />}
+                          label={content.dashboard.manageAccountAction}
+                          onClick={() => {
+                            requestAnimationFrame(() => dash.openSettings('account'));
+                          }}
+                        />
                       </div>
                     </header>
 
@@ -190,25 +185,29 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                           <p className={pageStyles.appsLaunchError} role="alert">
                             {entitlementsError}
                           </p>
-                        ) : myApps.length === 0 ? (
-                          <div className={pageStyles.myAppsEmpty}>
-                            <p className={pageStyles.myAppsEmptyState}>
-                              {content.apps.myAppsEmptyState}
-                            </p>
-                            <Link href="/products" className={pageStyles.myAppsBrowseButton}>
-                              {content.apps.browseProductsAction}
-                            </Link>
-                          </div>
                         ) : (
-                          <ZenformedAppList
-                            apps={myApps}
-                            classNames={appsLauncherClassNames}
-                            labels={appsLauncherLabels}
-                            variant="cards"
-                            launchApp={launchApp}
-                            launchingAppId={launchingAppId}
-                            launchError={launchError}
-                          />
+                          <>
+                            {myApps.length === 0 ? (
+                              <p className={pageStyles.myAppsEmptyState}>
+                                {content.apps.myAppsEmptyState}
+                              </p>
+                            ) : (
+                              <ZenformedAppList
+                                apps={myApps}
+                                classNames={appsLauncherClassNames}
+                                labels={appsLauncherLabels}
+                                variant="cards"
+                                launchApp={launchApp}
+                                launchingAppId={launchingAppId}
+                                launchError={launchError}
+                              />
+                            )}
+                            <PlatformDashboardPanelAction
+                              icon={<ShopIcon />}
+                              label={content.apps.browseProductsAction}
+                              href="/products"
+                            />
+                          </>
                         )}
                       </div>
                     </section>

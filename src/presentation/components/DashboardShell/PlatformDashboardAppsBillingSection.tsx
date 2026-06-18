@@ -1,7 +1,9 @@
 'use client';
 
 import type { ReactElement } from 'react';
+import { BillIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
+import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import {
   formatPlatformDashboardActiveSubscriptions,
   formatPlatformDashboardMonthlySpend,
@@ -60,13 +62,11 @@ export function PlatformDashboardAppsBillingSection({
                 </dd>
               </div>
             </dl>
-            <button
-              type="button"
-              className={styles.myAppsBrowseButton}
+            <PlatformDashboardPanelAction
+              icon={<BillIcon />}
+              label={content.appsBilling.manageAction}
               onClick={onManageBilling}
-            >
-              {content.appsBilling.manageAction}
-            </button>
+            />
           </>
         )}
       </div>

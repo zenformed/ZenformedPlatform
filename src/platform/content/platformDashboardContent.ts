@@ -11,6 +11,7 @@ export const platformDashboardContent = {
   dashboard: {
     title: 'Zenformed Core',
     accountTitle: 'My Account',
+    manageAccountAction: 'Manage my Account',
     accountSubtitle:
       'Manage your applications, organization, team members, subscriptions, and billing from one place.',
     organizationLabel: 'Organization',
@@ -26,6 +27,7 @@ export const platformDashboardContent = {
     availableProductsSectionTitle: 'Available Products',
     myAppsEmptyState: "You don't have any active applications yet.",
     browseProductsAction: 'Browse Products',
+    seeAllProductsAction: 'See all Products',
     loadingApps: 'Loading your apps…',
     comingSoonLabel: 'Coming soon',
   },
@@ -44,7 +46,7 @@ export const platformDashboardContent = {
     activeMembersLabel: 'Active Members',
     pendingInvitesLabel: 'Pending Invites',
     seatsAvailableLabel: 'Seats Available',
-    manageAction: 'Manage Team Members',
+    manageAction: 'Manage Team',
   },
   appsBilling: {
     sectionTitle: 'Apps & Billing',

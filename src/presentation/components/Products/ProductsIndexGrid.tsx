@@ -7,11 +7,21 @@ import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
 import type { PlatformAppId } from '@/platform/appDefinitions/platformApps';
 import { getProductPricingIndexEntries } from '@/platform/products/productPricingCatalog';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
+import { PricingCheckIcon } from '@/presentation/components/Products/PricingCheckIcon';
 import styles from '../../../../app/products/products.module.css';
+
+const INDEX_CARD_CLASS: Record<PlatformAppId, string> = {
+  buildcore: styles.indexCardBuildcore,
+  forgecore: styles.indexCardForgecore,
+  formcore: styles.indexCardFormcore,
+  analyticscore: styles.indexCardAnalyticscore,
+};
 
 function ProductIndexIcon({ appId }: { appId: PlatformAppId }): ReactElement {
   const product = PLATFORM_APPS.find((app) => app.id === appId);
-  const iconSrc = product != null ? resolveZenformedAppIconSrc(product) : undefined;
+  const iconSrc =
+    product?.iconSrc?.trim() ||
+    (product != null ? resolveZenformedAppIconSrc(product) : undefined);
 
   if (iconSrc) {
     return (
@@ -36,7 +46,7 @@ export function ProductsIndexGrid(): ReactElement {
       {products.map((product) => {
         const isLive = product.status === 'live';
         return (
-          <article key={product.id} className={styles.indexCard}>
+          <article key={product.id} className={`${styles.indexCard} ${INDEX_CARD_CLASS[product.id]}`}>
             {isLive ? (
               <span className={styles.indexCardBadgeLive}>{content.products.statusLiveBadge}</span>
             ) : (
@@ -50,7 +60,10 @@ export function ProductsIndexGrid(): ReactElement {
             <p className={styles.indexCardDescription}>{product.description}</p>
             <ul className={styles.indexFeatureList}>
               {product.features.map((feature) => (
-                <li key={feature}>{feature}</li>
+                <li key={feature}>
+                  <PricingCheckIcon className={styles.indexFeatureCheck} />
+                  <span>{feature}</span>
+                </li>
               ))}
             </ul>
             <div className={styles.indexCardFooter}>

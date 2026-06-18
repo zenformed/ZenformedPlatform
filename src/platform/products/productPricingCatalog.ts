@@ -8,6 +8,7 @@ export const PRODUCT_PRICING_APP_SLUGS: readonly ProductPricingAppSlug[] = [
   'buildcore',
   'forgecore',
   'formcore',
+  'analyticscore',
 ];
 
 export type BillingPeriod = 'monthly' | 'annual';
@@ -71,13 +72,55 @@ const FORMCORE_SHARED_FEATURES = [
   'Organization-wide document library',
 ] as const;
 
+const ANALYTICSCORE_STARTER_FEATURES = [
+  'Executive dashboard',
+  'Revenue analytics',
+  'Profit analytics',
+  'Project performance reporting',
+  'Pipeline reporting',
+  'MTD / QTD / YTD reporting',
+  'Team performance metrics',
+  'Historical reporting',
+] as const;
+
+const ANALYTICSCORE_GROWTH_FEATURES = [
+  'Everything in Starter',
+  'Forecasting dashboards',
+  'Revenue trend analysis',
+  'Margin analysis',
+  'Budget vs actual reporting',
+  'Workflow bottleneck reporting',
+  'Advanced team analytics',
+  'Custom KPI dashboards',
+  'Department-level reporting',
+  'Exportable analytics reports',
+] as const;
+
+const ANALYTICSCORE_PRO_FEATURES = [
+  'Everything in Growth',
+  'Cross-app analytics',
+  'Executive scorecards',
+  'Multi-organization analytics',
+  'Custom report builder',
+  'Advanced forecasting',
+  'Cohort and trend analysis',
+  'White-label executive reporting',
+  'API access',
+] as const;
+
 function cartItemKey(appSlug: string, planSlug: string): string {
   return `${appSlug}-${planSlug}`;
 }
 
+function formatPlanSlugDisplayName(planSlug: string): string {
+  const trimmed = planSlug.trim();
+  if (trimmed.length === 0) return trimmed;
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
 function catalogDisplayName(appSlug: ProductPricingAppSlug, planSlug: NormalizedPlanSlug): string {
   const entry = getAppPlanCatalogEntries(appSlug).find((p) => p.planSlug === planSlug);
-  return entry?.displayName ?? planSlug;
+  return entry?.displayName ?? formatPlanSlugDisplayName(planSlug);
 }
 
 const BUILDCORE_PRICING: ProductPricingPageConfig = {
@@ -205,8 +248,8 @@ const FORMCORE_PRICING: ProductPricingPageConfig = {
     {
       planSlug: 'standard',
       displayName: catalogDisplayName('formcore', 'standard'),
-      monthlyAmount: 199,
-      annualAmount: 1990,
+      monthlyAmount: 39,
+      annualAmount: 390,
       seats: 15,
       supportLevel: 'Email and chat support',
       features: FORMCORE_SHARED_FEATURES,
@@ -218,10 +261,67 @@ const FORMCORE_PRICING: ProductPricingPageConfig = {
   ],
 };
 
+
+const ANALYTICSCORE_PRICING: ProductPricingPageConfig = {
+  appSlug: 'analyticscore',
+  productName: 'AnalyticsCore',
+  tagline: 'Business Intelligence',
+  label: 'AnalyticsCore',
+  title: 'Choose the plan that',
+  titleHighlight: 'fits your business',
+  intro:
+    'AnalyticsCore brings dashboards, KPIs, and reporting together across your Zenformed apps so owners and operators can monitor performance and act faster.',
+  annualToggleLabel: 'SAVE 20%',
+  purchasesEnabled: false,
+  plans: [
+    {
+      planSlug: 'starter',
+      displayName: catalogDisplayName('analyticscore', 'starter'),
+      monthlyAmount: 99,
+      annualAmount: 990,
+      seats: 3,
+      supportLevel: 'Email support',
+      features: ANALYTICSCORE_STARTER_FEATURES,
+      tagline: 'For business owners who want visibility.',
+      ctaLabel: 'Choose Starter',
+      ctaDisabled: true,
+      cartItemKey: cartItemKey('analyticscore', 'starter'),
+    },
+    {
+      planSlug: 'growth',
+      displayName: catalogDisplayName('analyticscore', 'growth'),
+      monthlyAmount: 249,
+      annualAmount: 2490,
+      seats: 10,
+      supportLevel: 'Priority email support',
+      features: ANALYTICSCORE_GROWTH_FEATURES,
+      tagline: 'Forecasting, margin analysis, and custom KPI dashboards for growing teams.',
+      recommended: true,
+      ctaLabel: 'Choose Growth',
+      ctaDisabled: true,
+      cartItemKey: cartItemKey('analyticscore', 'growth'),
+    },
+    {
+      planSlug: 'pro',
+      displayName: catalogDisplayName('analyticscore', 'pro'),
+      monthlyAmount: 499,
+      annualAmount: 4990,
+      seats: 25,
+      supportLevel: 'Priority support',
+      features: ANALYTICSCORE_PRO_FEATURES,
+      tagline: 'Cross-app analytics, executive scorecards, and white-label reporting at scale.',
+      ctaLabel: 'Choose Pro',
+      ctaDisabled: true,
+      cartItemKey: cartItemKey('analyticscore', 'pro'),
+    },
+  ],
+};
+
 const PRICING_BY_APP: Record<ProductPricingAppSlug, ProductPricingPageConfig> = {
   buildcore: BUILDCORE_PRICING,
   forgecore: FORGECORE_PRICING,
   formcore: FORMCORE_PRICING,
+  analyticscore: ANALYTICSCORE_PRICING,
 };
 
 export function isProductPricingAppSlug(value: string): value is ProductPricingAppSlug {

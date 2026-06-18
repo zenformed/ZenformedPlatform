@@ -1,15 +1,14 @@
-export type PlatformAppId = 'buildcore' | 'forgecore' | 'formcore';
+export type PlatformAppId = 'buildcore' | 'forgecore' | 'formcore' | 'analyticscore';
 
 export type PlatformAppStatus = 'live' | 'coming_soon';
 
 export type PlatformAppEntry = {
   readonly id: PlatformAppId;
   readonly name: string;
-  /** Short marketplace headline (catalog metadata). */
   readonly tagline: string;
   readonly description: string;
   readonly features: readonly string[];
-  /** When set, opens via one-time launch handoff instead of a direct href. */
+  readonly iconSrc?: string;
   readonly launchTarget?: PlatformAppId;
   readonly href?: string;
   readonly status: PlatformAppStatus;
@@ -40,6 +39,22 @@ export const PLATFORM_APPS: readonly PlatformAppEntry[] = [
     tagline: 'Forms & Document Automation',
     description: 'Digital forms, documents, and approval workflows for your organization.',
     features: ['Custom Forms', 'PDF Generation', 'E-Signatures', 'Approval Workflows', 'Mobile Capture'],
+    status: 'coming_soon',
+  },
+  {
+    id: 'analyticscore',
+    name: 'AnalyticsCore',
+    tagline: 'Business Intelligence',
+    description:
+      'Dashboards, KPIs, and reporting across your Zenformed apps — turn operational data into actionable insight.',
+    features: [
+      'Executive dashboard',
+      'Revenue analytics',
+      'Profit analytics',
+      'Project performance reporting',
+      'Pipeline reporting',
+    ],
+    iconSrc: '/zenformed-app-icons/analyticscore.png',
     status: 'coming_soon',
   },
 ];

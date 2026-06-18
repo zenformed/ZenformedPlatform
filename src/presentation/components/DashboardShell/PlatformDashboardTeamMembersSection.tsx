@@ -1,7 +1,9 @@
 'use client';
 
 import type { ReactElement } from 'react';
+import { UsersIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
+import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import {
   formatPlatformDashboardSummaryMetric,
   type PlatformOrganizationWorkspaceSummary,
@@ -57,13 +59,11 @@ export function PlatformDashboardTeamMembersSection({
                 </dd>
               </div>
             </dl>
-            <button
-              type="button"
-              className={styles.myAppsBrowseButton}
+            <PlatformDashboardPanelAction
+              icon={<UsersIcon />}
+              label={content.teamMembers.manageAction}
               onClick={onManageTeamMembers}
-            >
-              {content.teamMembers.manageAction}
-            </button>
+            />
           </>
         )}
       </div>

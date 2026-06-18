@@ -15,6 +15,12 @@ export default function ProductsPage(): ReactElement {
         </p>
       </div>
       <ProductsIndexGrid />
+      <p className={styles.indexDevelopmentNotice} role="status">
+        <span className={styles.indexDevelopmentNoticeMark} aria-hidden>
+          !
+        </span>
+        {content.products.developmentNotice}
+      </p>
     </ProductsPublicShell>
   );
 }
