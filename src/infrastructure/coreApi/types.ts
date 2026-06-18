@@ -345,3 +345,53 @@ export type ZenformedCoreAppEntitlementEnvelope = {
   appSlug: string;
   entitlement: SaaSEntitlementSnapshot;
 };
+
+/** `GET /products` — public product catalog index. */
+export type ZenformedCoreProductCatalogListItem = {
+  productSlug: string;
+  name: string;
+  description: string;
+  isAvailable: boolean;
+  sortOrder: number;
+  tagline: string;
+};
+
+export type ZenformedCoreProductCatalogList = {
+  products: ZenformedCoreProductCatalogListItem[];
+};
+
+/** `GET /products/:productSlug` — public product detail with display-safe pricing. */
+export type ZenformedCoreProductCatalogPlan = {
+  planSlug: string;
+  name: string;
+  monthlyAmountCents: number;
+  annualAmountCents: number;
+  seatsIncluded: number | null;
+  recommended: boolean;
+  trialDays: number;
+  features: string[];
+  tagline: string | null;
+  supportLevel: string | null;
+};
+
+export type ZenformedCoreProductCatalogProduct = {
+  productSlug: string;
+  name: string;
+  description: string;
+  isAvailable: boolean;
+  sortOrder: number;
+  tagline: string;
+  intro: string;
+  title: string;
+  titleHighlight: string | null;
+  label: string;
+  purchasesEnabled: boolean;
+  annualToggleLabel: string;
+  storageHighlights: string[];
+};
+
+export type ZenformedCoreProductCatalogDetail = {
+  product: ZenformedCoreProductCatalogProduct;
+  plans: ZenformedCoreProductCatalogPlan[];
+  features: string[];
+};

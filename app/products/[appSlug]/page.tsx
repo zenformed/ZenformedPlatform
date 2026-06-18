@@ -2,22 +2,25 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
 import {
-  getProductPricingPageConfig,
-  PRODUCT_PRICING_APP_SLUGS,
+  fetchProductCatalogSlugs,
+  fetchProductPricingPageConfig,
 } from '@/platform/products/productPricingCatalog';
 import { ProductPricingPageView } from '@/presentation/components/Products/ProductPricingPageView';
 import { ProductsPublicShell } from '@/presentation/components/Products/ProductsPublicShell';
+
+export const dynamic = 'force-dynamic';
 
 type ProductPricingRouteProps = {
   readonly params: { appSlug: string };
 };
 
-export function generateStaticParams(): { appSlug: string }[] {
-  return PRODUCT_PRICING_APP_SLUGS.map((appSlug) => ({ appSlug }));
+export async function generateStaticParams(): Promise<{ appSlug: string }[]> {
+  const slugs = await fetchProductCatalogSlugs();
+  return slugs.map((appSlug) => ({ appSlug }));
 }
 
-export function generateMetadata({ params }: ProductPricingRouteProps): Metadata {
-  const config = getProductPricingPageConfig(params.appSlug);
+export async function generateMetadata({ params }: ProductPricingRouteProps): Promise<Metadata> {
+  const config = await fetchProductPricingPageConfig(params.appSlug);
   if (config == null) {
     return { title: 'Product not found — Zenformed' };
   }
@@ -27,8 +30,10 @@ export function generateMetadata({ params }: ProductPricingRouteProps): Metadata
   };
 }
 
-export default function ProductPricingPage({ params }: ProductPricingRouteProps): ReactElement {
-  const config = getProductPricingPageConfig(params.appSlug);
+export default async function ProductPricingPage({
+  params,
+}: ProductPricingRouteProps): Promise<ReactElement> {
+  const config = await fetchProductPricingPageConfig(params.appSlug);
   if (config == null) {
     notFound();
   }

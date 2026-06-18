@@ -625,3 +625,116 @@ export function parseAppEntitlementEnvelopeJson(
   return { appSlug: o.appSlug, entitlement: ent };
 }
 
+function parseStringArray(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null;
+  if (!value.every((item) => typeof item === 'string')) return null;
+  return value;
+}
+
+function parseProductCatalogListItem(value: unknown): import('@/infrastructure/coreApi/types').ZenformedCoreProductCatalogListItem | null {
+  if (value == null || typeof value !== 'object') return null;
+  const o = value as Record<string, unknown>;
+  if (typeof o.productSlug !== 'string') return null;
+  if (typeof o.name !== 'string') return null;
+  if (typeof o.description !== 'string') return null;
+  if (typeof o.isAvailable !== 'boolean') return null;
+  if (typeof o.sortOrder !== 'number') return null;
+  if (typeof o.tagline !== 'string') return null;
+  return {
+    productSlug: o.productSlug,
+    name: o.name,
+    description: o.description,
+    isAvailable: o.isAvailable,
+    sortOrder: o.sortOrder,
+    tagline: o.tagline,
+  };
+}
+
+export function parseProductCatalogListJson(
+  body: unknown
+): import('@/infrastructure/coreApi/types').ZenformedCoreProductCatalogList | null {
+  if (body == null || typeof body !== 'object') return null;
+  const o = body as Record<string, unknown>;
+  if (!Array.isArray(o.products)) return null;
+  const products = o.products.map(parseProductCatalogListItem).filter((item) => item != null);
+  if (products.length !== o.products.length) return null;
+  return { products };
+}
+
+function parseProductCatalogPlan(value: unknown): import('@/infrastructure/coreApi/types').ZenformedCoreProductCatalogPlan | null {
+  if (value == null || typeof value !== 'object') return null;
+  const o = value as Record<string, unknown>;
+  if (typeof o.planSlug !== 'string') return null;
+  if (typeof o.name !== 'string') return null;
+  if (typeof o.monthlyAmountCents !== 'number') return null;
+  if (typeof o.annualAmountCents !== 'number') return null;
+  if (o.seatsIncluded != null && typeof o.seatsIncluded !== 'number') return null;
+  if (typeof o.recommended !== 'boolean') return null;
+  if (typeof o.trialDays !== 'number') return null;
+  const features = parseStringArray(o.features);
+  if (features == null) return null;
+  if (o.tagline != null && typeof o.tagline !== 'string') return null;
+  if (o.supportLevel != null && typeof o.supportLevel !== 'string') return null;
+  return {
+    planSlug: o.planSlug,
+    name: o.name,
+    monthlyAmountCents: o.monthlyAmountCents,
+    annualAmountCents: o.annualAmountCents,
+    seatsIncluded: o.seatsIncluded == null ? null : o.seatsIncluded,
+    recommended: o.recommended,
+    trialDays: o.trialDays,
+    features,
+    tagline: o.tagline == null ? null : o.tagline,
+    supportLevel: o.supportLevel == null ? null : o.supportLevel,
+  };
+}
+
+function parseProductCatalogProduct(value: unknown): import('@/infrastructure/coreApi/types').ZenformedCoreProductCatalogProduct | null {
+  if (value == null || typeof value !== 'object') return null;
+  const o = value as Record<string, unknown>;
+  if (typeof o.productSlug !== 'string') return null;
+  if (typeof o.name !== 'string') return null;
+  if (typeof o.description !== 'string') return null;
+  if (typeof o.isAvailable !== 'boolean') return null;
+  if (typeof o.sortOrder !== 'number') return null;
+  if (typeof o.tagline !== 'string') return null;
+  if (typeof o.intro !== 'string') return null;
+  if (typeof o.title !== 'string') return null;
+  if (o.titleHighlight != null && typeof o.titleHighlight !== 'string') return null;
+  if (typeof o.label !== 'string') return null;
+  if (typeof o.purchasesEnabled !== 'boolean') return null;
+  if (typeof o.annualToggleLabel !== 'string') return null;
+  const storageHighlights = parseStringArray(o.storageHighlights);
+  if (storageHighlights == null) return null;
+  return {
+    productSlug: o.productSlug,
+    name: o.name,
+    description: o.description,
+    isAvailable: o.isAvailable,
+    sortOrder: o.sortOrder,
+    tagline: o.tagline,
+    intro: o.intro,
+    title: o.title,
+    titleHighlight: o.titleHighlight == null ? null : o.titleHighlight,
+    label: o.label,
+    purchasesEnabled: o.purchasesEnabled,
+    annualToggleLabel: o.annualToggleLabel,
+    storageHighlights,
+  };
+}
+
+export function parseProductCatalogDetailJson(
+  body: unknown
+): import('@/infrastructure/coreApi/types').ZenformedCoreProductCatalogDetail | null {
+  if (body == null || typeof body !== 'object') return null;
+  const o = body as Record<string, unknown>;
+  const product = parseProductCatalogProduct(o.product);
+  if (product == null) return null;
+  if (!Array.isArray(o.plans)) return null;
+  const plans = o.plans.map(parseProductCatalogPlan).filter((item) => item != null);
+  if (plans.length !== o.plans.length) return null;
+  const features = parseStringArray(o.features);
+  if (features == null) return null;
+  return { product, plans, features };
+}
+

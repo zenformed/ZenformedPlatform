@@ -43,10 +43,12 @@ export function PricingPlanCard({ plan, billingPeriod }: PricingPlanCardProps): 
           {priceDetail ? <p className={styles.planPriceDetail}>{priceDetail}</p> : null}
         </div>
         <dl className={styles.planSpecs}>
-          <div className={styles.planSpec}>
-            <dt>Seats</dt>
-            <dd>{plan.seats}</dd>
-          </div>
+          {plan.seats != null ? (
+            <div className={styles.planSpec}>
+              <dt>Seats</dt>
+              <dd>{plan.seats}</dd>
+            </div>
+          ) : null}
         </dl>
         {plan.tagline != null && plan.tagline.trim() !== '' ? (
           <p className={styles.planTagline}>{plan.tagline}</p>

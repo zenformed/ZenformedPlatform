@@ -1,15 +1,10 @@
-import { getAppPlanCatalogEntries, type NormalizedPlanSlug } from '@zenformed/core';
+import type { NormalizedPlanSlug } from '@zenformed/core';
 import type { PlatformAppId } from '@/platform/appDefinitions/platformApps';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
+import { getProductCatalogListFromCore, getProductCatalogProductFromCore } from '@/infrastructure/coreApi/productCatalogClient';
+import type { ZenformedCoreProductCatalogDetail } from '@/infrastructure/coreApi/types';
 
 export type ProductPricingAppSlug = PlatformAppId;
-
-export const PRODUCT_PRICING_APP_SLUGS: readonly ProductPricingAppSlug[] = [
-  'buildcore',
-  'forgecore',
-  'formcore',
-  'analyticscore',
-];
 
 export type BillingPeriod = 'monthly' | 'annual';
 
@@ -18,7 +13,8 @@ export type ProductPlanDisplay = {
   readonly displayName: string;
   readonly monthlyAmount: number;
   readonly annualAmount: number;
-  readonly seats: number;
+  readonly seats: number | null;
+  readonly trialDays: number;
   readonly supportLevel: string;
   readonly features: readonly string[];
   readonly tagline?: string;
@@ -43,296 +39,69 @@ export type ProductPricingPageConfig = {
   readonly purchasesEnabled: boolean;
 };
 
-const BUILDCORE_SHARED_FEATURES = [
-  'Construction CRM',
-  'Project and subproject management',
-  'Workflow tasks',
-  'Customer uploads',
-  'Unlimited project photos and documents',
-  'Milestone payments',
-  'Budgets',
-  'Reporting and PDF exports',
-] as const;
-
-const FORGECORE_SHARED_FEATURES = [
-  'Inventory and supplier management',
-  'Purchase orders',
-  'Fabrication workflows',
-  'Work order board',
-  'Quote to production',
-  'Reporting exports',
-] as const;
-
-const FORMCORE_SHARED_FEATURES = [
-  'Custom forms and templates',
-  'PDF generation',
-  'E-signatures',
-  'Approval workflows',
-  'Mobile capture',
-  'Organization-wide document library',
-] as const;
-
-const ANALYTICSCORE_STARTER_FEATURES = [
-  'Executive dashboard',
-  'Revenue analytics',
-  'Profit analytics',
-  'Project performance reporting',
-  'Pipeline reporting',
-  'MTD / QTD / YTD reporting',
-  'Team performance metrics',
-  'Historical reporting',
-] as const;
-
-const ANALYTICSCORE_GROWTH_FEATURES = [
-  'Everything in Starter',
-  'Forecasting dashboards',
-  'Revenue trend analysis',
-  'Margin analysis',
-  'Budget vs actual reporting',
-  'Workflow bottleneck reporting',
-  'Advanced team analytics',
-  'Custom KPI dashboards',
-  'Department-level reporting',
-  'Exportable analytics reports',
-] as const;
-
-const ANALYTICSCORE_PRO_FEATURES = [
-  'Everything in Growth',
-  'Cross-app analytics',
-  'Executive scorecards',
-  'Multi-organization analytics',
-  'Custom report builder',
-  'Advanced forecasting',
-  'Cohort and trend analysis',
-  'White-label executive reporting',
-  'API access',
-] as const;
-
 function cartItemKey(appSlug: string, planSlug: string): string {
   return `${appSlug}-${planSlug}`;
 }
 
-function formatPlanSlugDisplayName(planSlug: string): string {
-  const trimmed = planSlug.trim();
-  if (trimmed.length === 0) return trimmed;
-  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+function isProductPricingAppSlug(value: string): value is ProductPricingAppSlug {
+  return PLATFORM_APPS.some((app) => app.id === value);
 }
 
-function catalogDisplayName(appSlug: ProductPricingAppSlug, planSlug: NormalizedPlanSlug): string {
-  const entry = getAppPlanCatalogEntries(appSlug).find((p) => p.planSlug === planSlug);
-  return entry?.displayName ?? formatPlanSlugDisplayName(planSlug);
+function mapCatalogDetailToPageConfig(detail: ZenformedCoreProductCatalogDetail): ProductPricingPageConfig | null {
+  const { product } = detail;
+  if (!isProductPricingAppSlug(product.productSlug)) {
+    return null;
+  }
+
+  return {
+    appSlug: product.productSlug,
+    productName: product.name,
+    tagline: product.tagline,
+    label: product.label,
+    title: product.title,
+    titleHighlight: product.titleHighlight ?? undefined,
+    intro: product.intro,
+    storageHighlights:
+      product.storageHighlights.length > 0 ? product.storageHighlights : undefined,
+    annualToggleLabel: product.annualToggleLabel,
+    purchasesEnabled: product.purchasesEnabled,
+    plans: detail.plans.map((plan) => ({
+      planSlug: plan.planSlug as NormalizedPlanSlug,
+      displayName: plan.name,
+      monthlyAmount: plan.monthlyAmountCents / 100,
+      annualAmount: plan.annualAmountCents / 100,
+      seats: plan.seatsIncluded,
+      trialDays: plan.trialDays,
+      supportLevel: plan.supportLevel ?? 'Email support',
+      features: plan.features,
+      tagline: plan.tagline ?? undefined,
+      recommended: plan.recommended ? true : undefined,
+      ctaLabel: `Choose ${plan.name}`,
+      ctaDisabled: !product.purchasesEnabled,
+      cartItemKey: cartItemKey(product.productSlug, plan.planSlug),
+    })),
+  };
 }
 
-const BUILDCORE_PRICING: ProductPricingPageConfig = {
-  appSlug: 'buildcore',
-  productName: 'BuildCore',
-  tagline: 'Construction CRM',
-  label: 'BuildCore',
-  title: 'Choose the plan that',
-  titleHighlight: 'fits your team',
-  intro:
-    'BuildCore is a construction CRM for project and subproject management, workflow tasks, customer uploads, milestone payments, budgets, and reporting.',
-  storageHighlights: [
-    'Unlimited project photos',
-    'Documents',
-    'Customer uploads included',
-  ],
-  annualToggleLabel: 'SAVE 20%',
-  purchasesEnabled: true,
-  plans: [
-    {
-      planSlug: 'starter',
-      displayName: catalogDisplayName('buildcore', 'starter'),
-      monthlyAmount: 129,
-      annualAmount: 1290,
-      seats: 3,
-      supportLevel: 'Email support',
-      features: BUILDCORE_SHARED_FEATURES,
-      tagline: 'Everything you need to get started with project management.',
-      ctaLabel: 'Choose Starter',
-      cartItemKey: cartItemKey('buildcore', 'starter'),
-    },
-    {
-      planSlug: 'growth',
-      displayName: catalogDisplayName('buildcore', 'growth'),
-      monthlyAmount: 299,
-      annualAmount: 2990,
-      seats: 10,
-      supportLevel: 'Priority email support',
-      features: BUILDCORE_SHARED_FEATURES,
-      tagline: 'For growing teams who need more seats and priority support.',
-      recommended: true,
-      ctaLabel: 'Choose Growth',
-      cartItemKey: cartItemKey('buildcore', 'growth'),
-    },
-    {
-      planSlug: 'pro',
-      displayName: catalogDisplayName('buildcore', 'pro'),
-      monthlyAmount: 499,
-      annualAmount: 4990,
-      seats: 25,
-      supportLevel: 'Priority support and onboarding',
-      features: BUILDCORE_SHARED_FEATURES,
-      tagline: 'For large teams with advanced needs and dedicated onboarding.',
-      ctaLabel: 'Choose Pro',
-      cartItemKey: cartItemKey('buildcore', 'pro'),
-    },
-  ],
-};
-
-const FORGECORE_PRICING: ProductPricingPageConfig = {
-  appSlug: 'forgecore',
-  productName: 'ForgeCore',
-  tagline: 'Manufacturing ERP',
-  label: 'ForgeCore',
-  title: 'Manufacturing operations plans',
-  intro:
-    'ForgeCore helps fabricators and manufacturers manage inventory, suppliers, purchase orders, and production workflows from quote to shop floor.',
-  annualToggleLabel: '2 months free',
-  purchasesEnabled: false,
-  plans: [
-    {
-      planSlug: 'starter',
-      displayName: catalogDisplayName('forgecore', 'starter'),
-      monthlyAmount: 149,
-      annualAmount: 1490,
-      seats: 3,
-      supportLevel: 'Email support',
-      features: FORGECORE_SHARED_FEATURES,
-      tagline: 'Get started with core manufacturing workflows.',
-      ctaLabel: 'Choose Starter',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('forgecore', 'starter'),
-    },
-    {
-      planSlug: 'growth',
-      displayName: catalogDisplayName('forgecore', 'growth'),
-      monthlyAmount: 349,
-      annualAmount: 3490,
-      seats: 10,
-      supportLevel: 'Priority email support',
-      features: FORGECORE_SHARED_FEATURES,
-      tagline: 'Scale production with more seats and priority support.',
-      recommended: true,
-      ctaLabel: 'Choose Growth',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('forgecore', 'growth'),
-    },
-    {
-      planSlug: 'pro',
-      displayName: catalogDisplayName('forgecore', 'pro'),
-      monthlyAmount: 549,
-      annualAmount: 5490,
-      seats: 25,
-      supportLevel: 'Priority support and onboarding',
-      features: FORGECORE_SHARED_FEATURES,
-      tagline: 'For high-volume shops with advanced operational needs.',
-      ctaLabel: 'Choose Pro',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('forgecore', 'pro'),
-    },
-  ],
-};
-
-const FORMCORE_PRICING: ProductPricingPageConfig = {
-  appSlug: 'formcore',
-  productName: 'FormCore',
-  tagline: 'Forms & Document Automation',
-  label: 'FormCore',
-  title: 'One plan for your whole organization',
-  intro:
-    'FormCore delivers digital forms, document automation, e-signatures, and approval workflows with a single organization-wide subscription.',
-  annualToggleLabel: '2 months free',
-  purchasesEnabled: false,
-  plans: [
-    {
-      planSlug: 'standard',
-      displayName: catalogDisplayName('formcore', 'standard'),
-      monthlyAmount: 39,
-      annualAmount: 390,
-      seats: 15,
-      supportLevel: 'Email and chat support',
-      features: FORMCORE_SHARED_FEATURES,
-      tagline: 'One subscription for forms, documents, and approvals across your org.',
-      ctaLabel: 'Choose Standard',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('formcore', 'standard'),
-    },
-  ],
-};
-
-
-const ANALYTICSCORE_PRICING: ProductPricingPageConfig = {
-  appSlug: 'analyticscore',
-  productName: 'AnalyticsCore',
-  tagline: 'Business Intelligence',
-  label: 'AnalyticsCore',
-  title: 'Choose the plan that',
-  titleHighlight: 'fits your business',
-  intro:
-    'AnalyticsCore brings dashboards, KPIs, and reporting together across your Zenformed apps so owners and operators can monitor performance and act faster.',
-  annualToggleLabel: 'SAVE 20%',
-  purchasesEnabled: false,
-  plans: [
-    {
-      planSlug: 'starter',
-      displayName: catalogDisplayName('analyticscore', 'starter'),
-      monthlyAmount: 99,
-      annualAmount: 990,
-      seats: 3,
-      supportLevel: 'Email support',
-      features: ANALYTICSCORE_STARTER_FEATURES,
-      tagline: 'For business owners who want visibility.',
-      ctaLabel: 'Choose Starter',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('analyticscore', 'starter'),
-    },
-    {
-      planSlug: 'growth',
-      displayName: catalogDisplayName('analyticscore', 'growth'),
-      monthlyAmount: 249,
-      annualAmount: 2490,
-      seats: 10,
-      supportLevel: 'Priority email support',
-      features: ANALYTICSCORE_GROWTH_FEATURES,
-      tagline: 'Forecasting, margin analysis, and custom KPI dashboards for growing teams.',
-      recommended: true,
-      ctaLabel: 'Choose Growth',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('analyticscore', 'growth'),
-    },
-    {
-      planSlug: 'pro',
-      displayName: catalogDisplayName('analyticscore', 'pro'),
-      monthlyAmount: 499,
-      annualAmount: 4990,
-      seats: 25,
-      supportLevel: 'Priority support',
-      features: ANALYTICSCORE_PRO_FEATURES,
-      tagline: 'Cross-app analytics, executive scorecards, and white-label reporting at scale.',
-      ctaLabel: 'Choose Pro',
-      ctaDisabled: true,
-      cartItemKey: cartItemKey('analyticscore', 'pro'),
-    },
-  ],
-};
-
-const PRICING_BY_APP: Record<ProductPricingAppSlug, ProductPricingPageConfig> = {
-  buildcore: BUILDCORE_PRICING,
-  forgecore: FORGECORE_PRICING,
-  formcore: FORMCORE_PRICING,
-  analyticscore: ANALYTICSCORE_PRICING,
-};
-
-export function isProductPricingAppSlug(value: string): value is ProductPricingAppSlug {
-  return (PRODUCT_PRICING_APP_SLUGS as readonly string[]).includes(value);
+export async function fetchProductCatalogSlugs(): Promise<readonly ProductPricingAppSlug[]> {
+  const result = await getProductCatalogListFromCore();
+  if (!result.ok) {
+    return PLATFORM_APPS.map((app) => app.id);
+  }
+  const slugs = result.data.products
+    .map((product) => product.productSlug)
+    .filter(isProductPricingAppSlug);
+  return slugs.length > 0 ? slugs : PLATFORM_APPS.map((app) => app.id);
 }
 
-export function getProductPricingPageConfig(
+export async function fetchProductPricingPageConfig(
   appSlug: string
-): ProductPricingPageConfig | null {
-  if (!isProductPricingAppSlug(appSlug)) return null;
-  return PRICING_BY_APP[appSlug];
+): Promise<ProductPricingPageConfig | null> {
+  const result = await getProductCatalogProductFromCore(appSlug);
+  if (!result.ok) {
+    return null;
+  }
+  return mapCatalogDetailToPageConfig(result.data);
 }
 
 export function getProductPricingIndexEntries(): readonly {
