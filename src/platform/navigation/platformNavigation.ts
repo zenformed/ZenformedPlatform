@@ -10,6 +10,7 @@ export const platformNavigation = {
     resetPassword: '/reset-password',
     products: '/products',
     productPricing: (appSlug: string) => `/products/${appSlug}`,
+    cart: '/cart',
   },
 } as const;
 

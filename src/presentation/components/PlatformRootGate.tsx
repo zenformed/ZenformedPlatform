@@ -5,6 +5,7 @@ import { env } from '@/infrastructure/config/env';
 import { PlatformAuthGate } from '@/presentation/components/PlatformAuthGate';
 import { BrandingProvider } from '@/presentation/providers/BrandingProvider';
 import { SaaSProfileProvider } from '@/presentation/providers/SaaSProfileProvider';
+import { CartIntentProvider } from '@/presentation/providers/CartIntentProvider';
 
 export interface PlatformRootGateProps {
   children: React.ReactNode;
@@ -25,9 +26,11 @@ export function PlatformRootGate({ children }: PlatformRootGateProps): React.Rea
 
   return (
     <SaaSProfileProvider>
-      <BrandingProvider>
-        <PlatformAuthGate>{children}</PlatformAuthGate>
-      </BrandingProvider>
+      <CartIntentProvider>
+        <BrandingProvider>
+          <PlatformAuthGate>{children}</PlatformAuthGate>
+        </BrandingProvider>
+      </CartIntentProvider>
     </SaaSProfileProvider>
   );
 }

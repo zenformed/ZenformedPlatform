@@ -1,0 +1,153 @@
+.main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--products-text, #ffffff);
+}
+
+.intro {
+  margin: 0 0 1.5rem;
+  color: var(--products-text-muted, #9ca3af);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.card {
+  border: 1px solid var(--products-border, rgba(255, 255, 255, 0.1));
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 40px rgba(0, 0, 0, 0.22);
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.cardTitle {
+  margin: 0 0 1rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--products-text, #ffffff);
+}
+
+.summaryList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.summaryLabel {
+  color: var(--products-text-muted, #9ca3af);
+}
+
+.summaryValue {
+  text-align: right;
+  font-weight: 500;
+  color: var(--products-text, #ffffff);
+}
+
+.modeBanner {
+  margin: 0 0 1rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--products-accent-muted, rgba(17, 146, 71, 0.18));
+  color: #bbf7d0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.primaryButton,
+.secondaryButton,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8125rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.primaryButton {
+  color: #ffffff;
+  background: var(--products-accent, #119247);
+  border: 1px solid var(--products-accent-strong, #0d7a3c);
+}
+
+.primaryButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  color: var(--products-text, #ffffff);
+  background: transparent;
+  border: 1px solid var(--products-border, rgba(255, 255, 255, 0.1));
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ghostButton {
+  color: var(--products-text-muted, #9ca3af);
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.ghostButton:hover {
+  color: var(--products-text, #ffffff);
+}
+
+.emptyState,
+.errorState,
+.loadingState {
+  margin: 0;
+  color: var(--products-text-muted, #9ca3af);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.backLink {
+  display: inline-flex;
+  margin-top: 1rem;
+  color: var(--products-text, #ffffff);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  opacity: 0.85;
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding-top: 2.5rem;
+  }
+}

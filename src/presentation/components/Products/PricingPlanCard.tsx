@@ -15,9 +15,16 @@ import styles from '../../../../app/products/products.module.css';
 export type PricingPlanCardProps = {
   readonly plan: ProductPlanDisplay;
   readonly billingPeriod: BillingPeriod;
+  readonly onSelectTrial: () => void;
+  readonly onSelectPaid: () => void;
 };
 
-export function PricingPlanCard({ plan, billingPeriod }: PricingPlanCardProps): ReactElement {
+export function PricingPlanCard({
+  plan,
+  billingPeriod,
+  onSelectTrial,
+  onSelectPaid,
+}: PricingPlanCardProps): ReactElement {
   const isAnnual = billingPeriod === 'annual';
   const priceDisplay = isAnnual
     ? formatPlanPriceAnnual(plan.annualAmount)
@@ -70,9 +77,7 @@ export function PricingPlanCard({ plan, billingPeriod }: PricingPlanCardProps): 
             type="button"
             className={`${styles.planCta} ${styles.planCtaTry} ${styles.planCtaAccent}`}
             disabled={plan.ctaDisabled === true}
-            data-action="trial"
-            data-app-slug={plan.cartItemKey.split('-')[0]}
-            data-plan-slug={plan.planSlug}
+            onClick={onSelectTrial}
             aria-disabled={plan.ctaDisabled === true}
           >
             Try for free
@@ -81,9 +86,7 @@ export function PricingPlanCard({ plan, billingPeriod }: PricingPlanCardProps): 
             type="button"
             className={`${styles.planCta} ${styles.planCtaChoose} ${styles.planCtaChooseDark}`}
             disabled={plan.ctaDisabled === true}
-            data-cart-item={plan.cartItemKey}
-            data-app-slug={plan.cartItemKey.split('-')[0]}
-            data-plan-slug={plan.planSlug}
+            onClick={onSelectPaid}
             aria-disabled={plan.ctaDisabled === true}
           >
             {plan.ctaLabel}

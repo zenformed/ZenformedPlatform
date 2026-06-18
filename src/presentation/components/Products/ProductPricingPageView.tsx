@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactElement } from 'react';
+import { useCallback, useState, type ReactElement } from 'react';
 import Link from 'next/link';
 import { resolveZenformedAppIconSrc } from '@zenformed/core/dashboard-shell';
 import { PLATFORM_APPS } from '@/platform/appDefinitions/platformApps';
@@ -8,6 +8,7 @@ import type { ProductPricingPageConfig } from '@/platform/products/productPricin
 import { BillingPeriodToggle } from '@/presentation/components/Products/BillingPeriodToggle';
 import { PricingCheckIcon } from '@/presentation/components/Products/PricingCheckIcon';
 import { PricingPlanCard } from '@/presentation/components/Products/PricingPlanCard';
+import { useCheckoutIntentSelection } from '@/presentation/hooks/useCheckoutIntentSelection';
 import styles from '../../../../app/products/products.module.css';
 
 export type ProductPricingPageViewProps = {
@@ -38,8 +39,33 @@ function PricingFootnoteIcon(): ReactElement {
 
 export function ProductPricingPageView({ config }: ProductPricingPageViewProps): ReactElement {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+  const { selectCheckoutIntent } = useCheckoutIntentSelection();
   const singlePlan = config.plans.length === 1;
   const productIconSrc = resolveProductIconSrc(config);
+
+  const handleSelectTrial = useCallback(
+    (planSlug: string) => {
+      void selectCheckoutIntent({
+        productSlug: config.appSlug,
+        planSlug,
+        billingCycle: billingPeriod,
+        checkoutMode: 'trial',
+      });
+    },
+    [billingPeriod, config.appSlug, selectCheckoutIntent]
+  );
+
+  const handleSelectPaid = useCallback(
+    (planSlug: string) => {
+      void selectCheckoutIntent({
+        productSlug: config.appSlug,
+        planSlug,
+        billingCycle: billingPeriod,
+        checkoutMode: 'paid',
+      });
+    },
+    [billingPeriod, config.appSlug, selectCheckoutIntent]
+  );
 
   return (
     <section
@@ -90,7 +116,13 @@ export function ProductPricingPageView({ config }: ProductPricingPageViewProps):
       </div>
       <div className={singlePlan ? styles.pricingCardsSingle : styles.pricingGrid}>
         {config.plans.map((plan) => (
-          <PricingPlanCard key={plan.cartItemKey} plan={plan} billingPeriod={billingPeriod} />
+          <PricingPlanCard
+            key={plan.cartItemKey}
+            plan={plan}
+            billingPeriod={billingPeriod}
+            onSelectTrial={() => handleSelectTrial(plan.planSlug)}
+            onSelectPaid={() => handleSelectPaid(plan.planSlug)}
+          />
         ))}
       </div>
       {!config.purchasesEnabled ? (

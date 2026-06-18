@@ -6,3 +6,4 @@ export {
   type LicenseTier,
 } from './SaaSProfileProvider';
 export { BrandingProvider, useBrandingContext, type BrandingState } from './BrandingProvider';
+export { CartIntentProvider, useCartIntent } from './CartIntentProvider';
