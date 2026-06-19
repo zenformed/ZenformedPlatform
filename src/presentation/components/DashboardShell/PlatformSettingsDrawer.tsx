@@ -40,7 +40,9 @@ export function PlatformSettingsDrawer({
   const router = useRouter();
   const { refetch: refetchShellBranding } = useBrandingContext();
   const [cancelingAppSlug, setCancelingAppSlug] = useState<string | null>(null);
+  const [reactivatingAppSlug, setReactivatingAppSlug] = useState<string | null>(null);
   const [cancelSubscriptionError, setCancelSubscriptionError] = useState<string | null>(null);
+  const [reactivateSubscriptionError, setReactivateSubscriptionError] = useState<string | null>(null);
 
   const userSettings = useZenformedUserSettings({
     settingsApiUrl: nav.apis.usersMeSettings,

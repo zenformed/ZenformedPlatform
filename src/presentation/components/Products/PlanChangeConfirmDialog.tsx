@@ -9,6 +9,7 @@ import {
   formatPlanChangeBillingDate,
   formatPlanChangeMoney,
   formatPlanChangeRenewalAmount,
+  isScheduledDowngradePreview,
   resolvePlanChangeConfirmLabel,
 } from '@/platform/billing/planChangeFormatting';
 import styles from '../../../../app/products/products.module.css';
@@ -47,8 +48,12 @@ export function PlanChangeConfirmDialog({
 
   if (!open || preview == null) return <></>;
 
-  const dueToday =
-    preview.estimatedAmountDueNow > 0
+  const scheduledDowngrade = isScheduledDowngradePreview(preview);
+  const effectiveDate = preview.effectivePlanChangeDate ?? preview.nextBillingDate;
+
+  const dueToday = scheduledDowngrade
+    ? formatPlanChangeMoney(0, preview.currency)
+    : preview.estimatedAmountDueNow > 0
       ? formatPlanChangeMoney(preview.estimatedAmountDueNow, preview.currency)
       : preview.estimatedCreditIfAny > 0
         ? `${formatPlanChangeMoney(preview.estimatedCreditIfAny, preview.currency)} credit`
@@ -77,14 +82,24 @@ export function PlanChangeConfirmDialog({
           <p className={styles.planChangeDialogValue}>{formatPlanPriceLine(preview.newPlan, preview.currency)}</p>
         </div>
 
-        <div className={styles.planChangeDialogSection}>
-          <p className={styles.planChangeDialogLabel}>Estimated due today</p>
-          <p className={styles.planChangeDialogAmount}>{dueToday}</p>
-          <p className={styles.planChangeDialogHint}>{buildPlanChangeProrationNote(preview)}</p>
-        </div>
+        {scheduledDowngrade ? (
+          <div className={styles.planChangeDialogSection}>
+            <p className={styles.planChangeDialogLabel}>Effective date</p>
+            <p className={styles.planChangeDialogAmount}>{formatPlanChangeBillingDate(effectiveDate)}</p>
+            <p className={styles.planChangeDialogHint}>{buildPlanChangeProrationNote(preview)}</p>
+          </div>
+        ) : (
+          <div className={styles.planChangeDialogSection}>
+            <p className={styles.planChangeDialogLabel}>Estimated due today</p>
+            <p className={styles.planChangeDialogAmount}>{dueToday}</p>
+            <p className={styles.planChangeDialogHint}>{buildPlanChangeProrationNote(preview)}</p>
+          </div>
+        )}
 
         <div className={styles.planChangeDialogSection}>
-          <p className={styles.planChangeDialogLabel}>Next renewal</p>
+          <p className={styles.planChangeDialogLabel}>
+            {scheduledDowngrade ? 'First renewal on new plan' : 'Next renewal'}
+          </p>
           <p className={styles.planChangeDialogValue}>
             {formatPlanChangeRenewalAmount(
               preview.nextRenewalAmount,

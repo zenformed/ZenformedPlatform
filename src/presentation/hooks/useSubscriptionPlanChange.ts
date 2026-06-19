@@ -6,6 +6,9 @@ import type { PlanChangeType } from '@/platform/cart/cartIntentTypes';
 import type { BillingPeriod } from '@/platform/products/productPricingCatalog';
 import type { PlanChangePreviewResponse } from '@/infrastructure/coreApi/subscriptionChangePlanPreviewClient';
 import {
+  buildPlanChangeSuccessMessage,
+} from '@/platform/billing/planChangeFormatting';
+import {
   canContinuePlanChange,
   formatPlanDowngradeBlockedMessage,
 } from '@/platform/products/productPlanOwnership';
@@ -231,7 +234,10 @@ export function useSubscriptionPlanChange(input: {
         return { successMessage: null, errorMessage: message };
       }
 
-      const successMessage = `Your subscription is now on ${pendingRequest.targetPlanName}.`;
+      const successMessage =
+        preview != null
+          ? buildPlanChangeSuccessMessage(preview)
+          : `Your subscription is now on ${pendingRequest.targetPlanName}.`;
       cancelPlanChange();
       return { successMessage, errorMessage: null };
     } catch {
@@ -240,7 +246,7 @@ export function useSubscriptionPlanChange(input: {
       setIsConfirmLoading(false);
       return { successMessage: null, errorMessage: message };
     }
-  }, [cancelPlanChange, input.accessToken, pendingRequest, preview?.prorationDate, router]);
+  }, [cancelPlanChange, input.accessToken, pendingRequest, preview, router]);
 
   return {
     preview,

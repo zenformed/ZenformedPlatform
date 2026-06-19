@@ -35,16 +35,37 @@ export function resolvePlanChangeConfirmLabel(changeType: PlanChangeType | null 
   return 'Confirm Change';
 }
 
+export function isScheduledDowngradePreview(preview: PlanChangePreviewResponse): boolean {
+  return preview.scheduledDowngrade === true;
+}
+
 export function buildPlanChangeProrationNote(preview: PlanChangePreviewResponse): string {
+  if (isScheduledDowngradePreview(preview)) {
+    const effectiveDate = formatPlanChangeBillingDate(
+      preview.effectivePlanChangeDate ?? preview.nextBillingDate
+    );
+    return `Your plan will change to ${preview.newPlan.planName} on ${effectiveDate}. You will keep ${preview.currentPlan.planName} access until then. No charge or credit applies today.`;
+  }
+
   const isUpgrade = preview.newPlan.amountCents > preview.currentPlan.amountCents;
   if (isUpgrade) {
     return `This estimate includes a credit for unused ${preview.currentPlan.planName} time and a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
   }
-  if (preview.estimatedCreditIfAny > 0 && preview.estimatedAmountDueNow > 0) {
-    return `This estimate includes a credit for unused ${preview.currentPlan.planName} time and a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
-  }
   if (preview.estimatedCreditIfAny > 0) {
-    return `This estimate includes a credit for unused ${preview.currentPlan.planName} time. Any remaining credit may apply to future invoices.`;
+    return `This estimate includes a credit for unused ${preview.currentPlan.planName} time. The credit will apply to your next invoice. No charge is due today.`;
   }
-  return `This estimate includes a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
+  if (preview.estimatedAmountDueNow > 0) {
+    return `This estimate includes a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
+  }
+  return `Your plan will change to ${preview.newPlan.planName} with no charge due today.`;
+}
+
+export function buildPlanChangeSuccessMessage(preview: PlanChangePreviewResponse): string {
+  if (isScheduledDowngradePreview(preview)) {
+    const effectiveDate = formatPlanChangeBillingDate(
+      preview.effectivePlanChangeDate ?? preview.nextBillingDate
+    );
+    return `Your plan will change to ${preview.newPlan.planName} on ${effectiveDate}. You will keep ${preview.currentPlan.planName} access until then.`;
+  }
+  return `Your subscription is now on ${preview.newPlan.planName}.`;
 }
