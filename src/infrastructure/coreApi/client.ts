@@ -168,7 +168,7 @@ export async function getAppEntitlement(
 ): Promise<CoreApiResult<ZenformedCoreAppEntitlementEnvelope>> {
   const encoded = encodeURIComponent(appSlug);
   return getFromCoreWithBearer(
-    `/apps/${encoded}/entitlement`,
+    `/apps/${encoded}/entitlement?authority_mode=platform`,
     accessToken,
     parseAppEntitlementEnvelopeJson
   );
