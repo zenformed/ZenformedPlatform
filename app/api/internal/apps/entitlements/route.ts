@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { inactiveAppEntitlementSnapshot, type SaaSEntitlementSnapshot } from '@zenformed/core';
 import { PLATFORM_APPS, type PlatformAppId } from '@/platform/appDefinitions/platformApps';
-import { PlatformTableEntitlementReader } from '@/infrastructure/entitlements/PlatformTableEntitlementReader';
 import { ORGANIZATION_WORKSPACE_NO_STORE_HEADERS } from '@/infrastructure/coreApi/zenformedCoreRelayHttp';
 import { runtimeModes } from '@/infrastructure/config/runtimeModes';
 import { getSupabaseUserFromToken } from '@/infrastructure/supabase/supabaseServer';
+import { env } from '@/infrastructure/config/env';
+import { fetchCoreAppEntitlementSnapshot } from '@/infrastructure/coreApi/coreAppEntitlementRelay';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
-const platformEntitlementReader = new PlatformTableEntitlementReader();
 
 function entitlementsJson(body: unknown, init?: ResponseInit): NextResponse {
   return NextResponse.json(body, {
@@ -42,21 +41,48 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return entitlementsJson({ error: 'unauthenticated' }, { status: 401 });
   }
 
+  if (env.zenformedCoreApiBaseUrl == null) {
+    return entitlementsJson(
+      {
+        error: 'server_misconfigured',
+        message: 'ZENFORMED_CORE_API_URL is required for entitlement resolution.',
+      },
+      { status: 503 }
+    );
+  }
+
   const entitlements: Partial<Record<PlatformAppId, SaaSEntitlementSnapshot>> = {};
+  let hadUnreachable = false;
+
   await Promise.all(
     PLATFORM_APPS.map(async (app) => {
-      const snapshot =
-        (await platformEntitlementReader.loadEntitlementsForApp({
-          userId: user.id,
-          appSlug: app.id,
-          accessToken: raw,
-        })) ?? inactiveAppEntitlementSnapshot(app.id);
-      entitlements[app.id] = snapshot;
+      const result = await fetchCoreAppEntitlementSnapshot(app.id, raw);
+      if (result.ok) {
+        entitlements[app.id] = result.snapshot;
+        return;
+      }
+      if (result.kind === 'unauthenticated') {
+        return;
+      }
+      if (result.kind === 'unreachable') {
+        hadUnreachable = true;
+      }
+      entitlements[app.id] = inactiveAppEntitlementSnapshot(app.id);
     })
   );
 
+  if (hadUnreachable && Object.keys(entitlements).length === 0) {
+    return entitlementsJson(
+      {
+        error: 'zenformed_core_unreachable',
+        message: 'Could not load app entitlements from ZenformedCore.',
+      },
+      { status: 502 }
+    );
+  }
+
   return entitlementsJson({
-    relay: 'platform_tables',
+    relay: 'zenformed_core',
     entitlements,
   });
 }
