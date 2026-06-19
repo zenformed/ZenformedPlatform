@@ -2,14 +2,22 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import type { ReactElement } from 'react';
+import { useEffect, type ReactElement } from 'react';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import { ProductsPublicShell } from '@/presentation/components/Products/ProductsPublicShell';
+import { useCartIntent } from '@/presentation/providers/CartIntentProvider';
 import styles from './checkoutSuccess.module.css';
 
 export function CheckoutSuccessPageView(): ReactElement {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const { clearIntent } = useCartIntent();
+
+  useEffect(() => {
+    const id = sessionId?.trim() ?? '';
+    if (id === '') return;
+    clearIntent();
+  }, [sessionId, clearIntent]);
 
   return (
     <ProductsPublicShell backHref={nav.routes.dashboard} backLabel="Dashboard">
