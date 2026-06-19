@@ -5,6 +5,7 @@ import type { ReactElement } from 'react';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import { ProductsPublicShell } from '@/presentation/components/Products/ProductsPublicShell';
 import { useCartSummary } from '@/presentation/hooks/useCartSummary';
+import { useCreateCheckoutSession } from '@/presentation/hooks/useCreateCheckoutSession';
 import { useCartIntent } from '@/presentation/providers/CartIntentProvider';
 import styles from './cart.module.css';
 
@@ -15,6 +16,10 @@ function formatBillingCycleLabel(billingCycle: 'monthly' | 'annual'): string {
 export function CartPageView(): ReactElement {
   const { intent, hydrated, clearIntent } = useCartIntent();
   const summaryState = useCartSummary(intent, hydrated);
+  const { state: checkoutState, startCheckout } = useCreateCheckoutSession();
+
+  const checkoutLoading = checkoutState.status === 'loading';
+  const checkoutError = checkoutState.status === 'error' ? checkoutState.message : null;
 
   return (
     <ProductsPublicShell backHref={nav.routes.products} backLabel="All products">
@@ -84,11 +89,25 @@ export function CartPageView(): ReactElement {
               <p className={styles.modeBanner}>Paid plan selected</p>
             )}
 
+            {checkoutError != null ? (
+              <p className={styles.checkoutError} role="alert">
+                {checkoutError}
+              </p>
+            ) : null}
+
             <div className={styles.actions}>
-              <button type="button" className={styles.primaryButton} disabled>
-                Checkout coming soon
+              <button
+                type="button"
+                className={styles.primaryButton}
+                disabled={checkoutLoading}
+                onClick={() => {
+                  if (intent == null) return;
+                  void startCheckout(intent);
+                }}
+              >
+                {checkoutLoading ? 'Starting checkout…' : 'Continue to checkout'}
               </button>
-              <button type="button" className={styles.ghostButton} onClick={clearIntent}>
+              <button type="button" className={styles.ghostButton} onClick={clearIntent} disabled={checkoutLoading}>
                 Remove item
               </button>
             </div>

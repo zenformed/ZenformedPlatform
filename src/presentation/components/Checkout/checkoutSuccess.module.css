@@ -1,0 +1,71 @@
+.main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--products-text, #ffffff);
+}
+
+.intro {
+  margin: 0 0 1rem;
+  color: var(--products-text-muted, #9ca3af);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.reference {
+  margin: 0 0 1.5rem;
+  color: var(--products-text-muted, #9ca3af);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8125rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.primaryButton {
+  color: #ffffff;
+  background: var(--products-accent, #119247);
+  border: 1px solid var(--products-accent-strong, #0d7a3c);
+}
+
+.secondaryButton {
+  color: var(--products-text, #ffffff);
+  background: transparent;
+  border: 1px solid var(--products-border, rgba(255, 255, 255, 0.1));
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (min-width: 768px) {
+  .main {
+    padding-top: 2.5rem;
+  }
+}

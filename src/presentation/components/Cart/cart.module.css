@@ -124,6 +124,16 @@
   color: var(--products-text, #ffffff);
 }
 
+.checkoutError {
+  margin: 0 0 1rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
 .emptyState,
 .errorState,
 .loadingState {

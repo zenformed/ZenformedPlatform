@@ -11,6 +11,7 @@ export const platformNavigation = {
     products: '/products',
     productPricing: (appSlug: string) => `/products/${appSlug}`,
     cart: '/cart',
+    checkoutSuccess: '/checkout/success',
   },
 } as const;
 
