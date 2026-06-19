@@ -30,6 +30,8 @@ export const platformDashboardNavigation = {
 
     reactivateAppSubscription: '/api/internal/billing/subscriptions/reactivate',
 
+    removeScheduledPlanChange: '/api/internal/billing/subscriptions/remove-scheduled-change',
+
     changeAppSubscriptionPlan: '/api/internal/billing/subscriptions/change-plan',
 
     previewAppSubscriptionPlanChange: '/api/internal/billing/subscriptions/change-plan/preview',

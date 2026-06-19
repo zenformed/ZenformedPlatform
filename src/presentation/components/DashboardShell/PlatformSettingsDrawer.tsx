@@ -41,8 +41,10 @@ export function PlatformSettingsDrawer({
   const { refetch: refetchShellBranding } = useBrandingContext();
   const [cancelingAppSlug, setCancelingAppSlug] = useState<string | null>(null);
   const [reactivatingAppSlug, setReactivatingAppSlug] = useState<string | null>(null);
+  const [removingScheduledChangeAppSlug, setRemovingScheduledChangeAppSlug] = useState<string | null>(null);
   const [cancelSubscriptionError, setCancelSubscriptionError] = useState<string | null>(null);
   const [reactivateSubscriptionError, setReactivateSubscriptionError] = useState<string | null>(null);
+  const [removeScheduledChangeError, setRemoveScheduledChangeError] = useState<string | null>(null);
 
   const userSettings = useZenformedUserSettings({
     settingsApiUrl: nav.apis.usersMeSettings,
@@ -99,6 +101,72 @@ export function PlatformSettingsDrawer({
         return false;
       } finally {
         setCancelingAppSlug(null);
+      }
+    },
+    [getAccessToken, orgWorkspace.refetch]
+  );
+
+  const handleReactivateAppSubscription = useCallback(
+    async (appSlug: string) => {
+      const token = getAccessToken()?.trim() ?? '';
+      if (!token) return false;
+      setReactivateSubscriptionError(null);
+      setReactivatingAppSlug(appSlug);
+      try {
+        const res = await fetch(nav.apis.reactivateAppSubscription, {
+          method: 'POST',
+          cache: 'no-store',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ productSlug: appSlug }),
+        });
+        if (!res.ok) {
+          setReactivateSubscriptionError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.reactivateSubscriptionFailed);
+          return false;
+        }
+        await orgWorkspace.refetch();
+        return true;
+      } catch {
+        setReactivateSubscriptionError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.reactivateSubscriptionFailed);
+        return false;
+      } finally {
+        setReactivatingAppSlug(null);
+      }
+    },
+    [getAccessToken, orgWorkspace.refetch]
+  );
+
+  const handleRemoveScheduledPlanChange = useCallback(
+    async (appSlug: string) => {
+      const token = getAccessToken()?.trim() ?? '';
+      if (!token) return false;
+      setRemoveScheduledChangeError(null);
+      setRemovingScheduledChangeAppSlug(appSlug);
+      try {
+        const res = await fetch(nav.apis.removeScheduledPlanChange, {
+          method: 'POST',
+          cache: 'no-store',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ productSlug: appSlug }),
+        });
+        if (!res.ok) {
+          setRemoveScheduledChangeError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.removeScheduledDowngradeFailed);
+          return false;
+        }
+        await orgWorkspace.refetch();
+        return true;
+      } catch {
+        setRemoveScheduledChangeError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.removeScheduledDowngradeFailed);
+        return false;
+      } finally {
+        setRemovingScheduledChangeAppSlug(null);
       }
     },
     [getAccessToken, orgWorkspace.refetch]
@@ -204,9 +272,17 @@ export function PlatformSettingsDrawer({
       currentUserRole: orgWorkspace.snapshot?.membershipContext?.role ?? null,
       onManageAppSubscription: handleManageAppSubscription,
       onCancelAppSubscription: handleCancelAppSubscription,
+      onReactivateAppSubscription: handleReactivateAppSubscription,
+      onRemoveScheduledPlanChange: handleRemoveScheduledPlanChange,
       cancelingAppSlug,
+      reactivatingAppSlug,
+      removingScheduledChangeAppSlug,
       cancelSubscriptionError,
+      reactivateSubscriptionError,
+      removeScheduledChangeError,
       onDismissCancelSubscriptionError: () => setCancelSubscriptionError(null),
+      onDismissReactivateSubscriptionError: () => setReactivateSubscriptionError(null),
+      onDismissRemoveScheduledChangeError: () => setRemoveScheduledChangeError(null),
     },
   }), [
     workspacePermissions,
@@ -253,8 +329,14 @@ export function PlatformSettingsDrawer({
     orgWorkspace.removeMember,
     handleManageAppSubscription,
     handleCancelAppSubscription,
+    handleReactivateAppSubscription,
+    handleRemoveScheduledPlanChange,
     cancelingAppSlug,
+    reactivatingAppSlug,
+    removingScheduledChangeAppSlug,
     cancelSubscriptionError,
+    reactivateSubscriptionError,
+    removeScheduledChangeError,
   ]);
 
   return (
