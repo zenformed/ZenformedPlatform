@@ -36,11 +36,15 @@ export function resolvePlanChangeConfirmLabel(changeType: PlanChangeType | null 
 }
 
 export function buildPlanChangeProrationNote(preview: PlanChangePreviewResponse): string {
+  const isUpgrade = preview.newPlan.amountCents > preview.currentPlan.amountCents;
+  if (isUpgrade) {
+    return `This estimate includes a credit for unused ${preview.currentPlan.planName} time and a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
+  }
   if (preview.estimatedCreditIfAny > 0 && preview.estimatedAmountDueNow > 0) {
-    return 'This estimate includes a credit for unused time on your current plan and a prorated charge for the new plan for the rest of the billing period.';
+    return `This estimate includes a credit for unused ${preview.currentPlan.planName} time and a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
   }
   if (preview.estimatedCreditIfAny > 0) {
-    return 'This estimate includes a credit for unused time on your current plan. Any remaining credit may apply to future invoices.';
+    return `This estimate includes a credit for unused ${preview.currentPlan.planName} time. Any remaining credit may apply to future invoices.`;
   }
-  return 'This estimate includes a prorated charge for the new plan for the rest of the billing period.';
+  return `This estimate includes a prorated charge for ${preview.newPlan.planName} for the rest of the billing period.`;
 }

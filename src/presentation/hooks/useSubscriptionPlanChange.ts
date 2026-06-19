@@ -207,6 +207,7 @@ export function useSubscriptionPlanChange(input: {
           productSlug: pendingRequest.productSlug,
           planSlug: pendingRequest.planSlug,
           billingCycle: pendingRequest.billingCycle,
+          ...(preview?.prorationDate != null ? { prorationDate: preview.prorationDate } : {}),
         }),
       });
 
@@ -239,7 +240,7 @@ export function useSubscriptionPlanChange(input: {
       setIsConfirmLoading(false);
       return { successMessage: null, errorMessage: message };
     }
-  }, [cancelPlanChange, input.accessToken, pendingRequest, router]);
+  }, [cancelPlanChange, input.accessToken, pendingRequest, preview?.prorationDate, router]);
 
   return {
     preview,
