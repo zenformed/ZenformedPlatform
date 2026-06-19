@@ -1047,3 +1047,113 @@
 .productNoticeToastDismiss:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+.planChangeDialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.planChangeDialog {
+  width: min(100%, 32rem);
+  padding: 1.5rem;
+  border: 1px solid var(--products-border-strong);
+  border-radius: 1rem;
+  background: #12151b;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.planChangeDialogTitle {
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--products-text);
+}
+
+.planChangeDialogSection {
+  margin-bottom: 1rem;
+}
+
+.planChangeDialogLabel {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--products-text-muted);
+}
+
+.planChangeDialogValue {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--products-text-soft);
+}
+
+.planChangeDialogAmount {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--products-text);
+}
+
+.planChangeDialogHint {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--products-text-muted);
+}
+
+.planChangeDialogError {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #fca5a5;
+}
+
+.planChangeDialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.planChangeDialogCancelBtn,
+.planChangeDialogConfirmBtn {
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.planChangeDialogCancelBtn {
+  border: 1px solid var(--products-border);
+  background: transparent;
+  color: var(--products-text-soft);
+}
+
+.planChangeDialogCancelBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.planChangeDialogConfirmBtn {
+  border: none;
+  background: linear-gradient(135deg, var(--products-accent-light), var(--products-accent));
+  color: #ffffff;
+}
+
+.planChangeDialogConfirmBtn:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.planChangeDialogCancelBtn:disabled,
+.planChangeDialogConfirmBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

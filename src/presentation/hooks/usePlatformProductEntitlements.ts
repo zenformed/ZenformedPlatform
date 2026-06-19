@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   isPlatformEntitlementStatusGrantingAccess,
   parseSaaSEntitlementSnapshotJson,
@@ -22,6 +22,7 @@ export type UsePlatformProductEntitlementsResult = {
   entitlementsByApp: Partial<Record<PlatformAppId, ProductEntitlementState>>;
   isLoading: boolean;
   error: string | null;
+  refetch: () => void;
 };
 
 type EntitlementsBatchResponse = {
@@ -52,6 +53,11 @@ export function usePlatformProductEntitlements(
   >({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refetchKey, setRefetchKey] = useState(0);
+
+  const refetch = useCallback(() => {
+    setRefetchKey((value) => value + 1);
+  }, []);
 
   useEffect(() => {
     const token = accessToken?.trim() ?? '';
@@ -119,7 +125,7 @@ export function usePlatformProductEntitlements(
     return () => {
       cancelled = true;
     };
-  }, [accessToken]);
+  }, [accessToken, refetchKey]);
 
-  return { ownedAppIds, entitlementsByApp, isLoading, error };
+  return { ownedAppIds, entitlementsByApp, isLoading, error, refetch };
 }

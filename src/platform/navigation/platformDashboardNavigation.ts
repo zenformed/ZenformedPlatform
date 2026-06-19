@@ -30,6 +30,8 @@ export const platformDashboardNavigation = {
 
     changeAppSubscriptionPlan: '/api/internal/billing/subscriptions/change-plan',
 
+    previewAppSubscriptionPlanChange: '/api/internal/billing/subscriptions/change-plan/preview',
+
   },
 
   routes: {
