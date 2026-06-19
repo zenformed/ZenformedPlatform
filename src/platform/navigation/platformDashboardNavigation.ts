@@ -26,6 +26,8 @@ export const platformDashboardNavigation = {
 
     organizationAppEntitlements: '/api/internal/apps/entitlements',
 
+    cancelAppSubscription: '/api/internal/billing/subscriptions/cancel',
+
   },
 
   routes: {
