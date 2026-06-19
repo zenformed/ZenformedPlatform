@@ -70,7 +70,7 @@ export function usePlatformOrganizationWorkspaceSummary(
       members: nav.apis.organizationMembers,
       invites: nav.apis.organizationInvites,
       seats: nav.apis.organizationSeats,
-      appAccess: nav.apis.organizationAppAccess,
+      appEntitlements: nav.apis.organizationAppEntitlements,
       memberRole: nav.apis.organizationMemberRole,
     },
     getAccessToken,

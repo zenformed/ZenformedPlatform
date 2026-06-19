@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, type ReactElement } from 'react';
+import { useRouter } from 'next/navigation';
 import { useOrganizationLogoUpload } from '@zenformed/core/dashboard-shell';
 import {
   brandingProfileToViewModelOverrides,
@@ -35,6 +36,7 @@ export function PlatformSettingsDrawer({
   shellContext,
   getAccessToken,
 }: PlatformSettingsDrawerProps): ReactElement | null {
+  const router = useRouter();
   const { refetch: refetchShellBranding } = useBrandingContext();
 
   const userSettings = useZenformedUserSettings({
@@ -49,12 +51,20 @@ export function PlatformSettingsDrawer({
       members: nav.apis.organizationMembers,
       invites: nav.apis.organizationInvites,
       seats: nav.apis.organizationSeats,
-      appAccess: nav.apis.organizationAppAccess,
+      appEntitlements: nav.apis.organizationAppEntitlements,
       memberRole: nav.apis.organizationMemberRole,
     },
     getAccessToken,
     enabled: open,
   });
+
+  const handleManageAppSubscription = useCallback(
+    (appSlug: string) => {
+      onClose();
+      router.push(platformNavigation.routes.productPricing(appSlug));
+    },
+    [onClose, router]
+  );
 
   const workspacePermissions = orgWorkspace.snapshot?.membershipContext?.permissions ?? null;
 
@@ -154,6 +164,7 @@ export function PlatformSettingsDrawer({
       onUpdateMemberProfile: orgWorkspace.updateMemberProfile,
       onRemoveMember: orgWorkspace.removeMember,
       currentUserRole: orgWorkspace.snapshot?.membershipContext?.role ?? null,
+      onManageAppSubscription: handleManageAppSubscription,
     },
   }), [
     workspacePermissions,
@@ -198,6 +209,7 @@ export function PlatformSettingsDrawer({
     orgWorkspace.updateMemberRole,
     orgWorkspace.updateMemberProfile,
     orgWorkspace.removeMember,
+    handleManageAppSubscription,
   ]);
 
   return (

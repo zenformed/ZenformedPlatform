@@ -24,6 +24,8 @@ export const platformDashboardNavigation = {
 
     organizationAppAccess: '/api/internal/organizations-me-app-access',
 
+    organizationAppEntitlements: '/api/internal/apps/entitlements',
+
   },
 
   routes: {
