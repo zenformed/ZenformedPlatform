@@ -110,6 +110,8 @@ export function ProductPricingPageView({ config }: ProductPricingPageViewProps):
         });
         if (result.blockedMessage != null) {
           setNoticeMessage(result.blockedMessage);
+        } else if (result.successMessage != null) {
+          setNoticeMessage(result.successMessage);
         }
       })();
     },

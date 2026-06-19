@@ -28,6 +28,8 @@ export const platformDashboardNavigation = {
 
     cancelAppSubscription: '/api/internal/billing/subscriptions/cancel',
 
+    changeAppSubscriptionPlan: '/api/internal/billing/subscriptions/change-plan',
+
   },
 
   routes: {
