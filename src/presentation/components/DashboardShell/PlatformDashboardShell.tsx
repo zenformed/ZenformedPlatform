@@ -24,7 +24,7 @@ import { PlatformSettingsDrawer } from '@/presentation/components/DashboardShell
 import { PlatformSidebar } from '@/presentation/components/DashboardShell/PlatformSidebar';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import { usePlatformProductEntitlements } from '@/presentation/hooks/usePlatformProductEntitlements';
-import { partitionPlatformAppsByOwnership, countActivePlatformSubscriptions } from '@/presentation/features/platformDashboard/platformDashboardProducts';
+import { partitionPlatformAppsByOwnership, countActivePlatformSubscriptions, enrichMyAppsWithEntitlementBadges } from '@/presentation/features/platformDashboard/platformDashboardProducts';
 import { PlatformAvailableProductsGrid } from '@/presentation/components/DashboardShell/PlatformAvailableProductsGrid';
 import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import { PlatformDashboardAppsBillingSection } from '@/presentation/components/DashboardShell/PlatformDashboardAppsBillingSection';
@@ -47,9 +47,10 @@ export type PlatformDashboardShellProps = {
 
 export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): ReactElement {
   const { session } = useSaaSProfile();
-  const { ownedAppIds, isLoading: entitlementsLoading, error: entitlementsError } =
+  const { ownedAppIds, entitlementsByApp, isLoading: entitlementsLoading, error: entitlementsError } =
     usePlatformProductEntitlements(session?.access_token);
   const { myApps, availableProducts } = partitionPlatformAppsByOwnership(ownedAppIds);
+  const myAppsWithBadges = enrichMyAppsWithEntitlementBadges(myApps, entitlementsByApp);
   const activeSubscriptionsCount = countActivePlatformSubscriptions(ownedAppIds);
   const activeSubscriptionsDisplay = formatPlatformDashboardActiveSubscriptions(
     activeSubscriptionsCount,
@@ -193,7 +194,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                               </p>
                             ) : (
                               <ZenformedAppList
-                                apps={myApps}
+                                apps={myAppsWithBadges}
                                 classNames={appsLauncherClassNames}
                                 labels={appsLauncherLabels}
                                 variant="cards"

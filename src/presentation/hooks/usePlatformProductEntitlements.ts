@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { parseSaaSEntitlementSnapshotJson, type SaaSEntitlementSnapshot } from '@zenformed/core';
+import {
+  isPlatformEntitlementStatusGrantingAccess,
+  parseSaaSEntitlementSnapshotJson,
+  type SaaSEntitlementSnapshot,
+} from '@zenformed/core';
 import {
   PLATFORM_APPS,
   type PlatformAppId,
@@ -10,6 +14,7 @@ import {
 export type ProductEntitlementState = {
   readonly owned: boolean;
   readonly planSlug: string | null;
+  readonly entitlementStatus: string | null;
 };
 
 export type UsePlatformProductEntitlementsResult = {
@@ -25,14 +30,16 @@ type EntitlementsBatchResponse = {
 
 function readProductEntitlementState(snapshot: unknown, appId: PlatformAppId): ProductEntitlementState {
   const parsed = parseSaaSEntitlementSnapshotJson(snapshot, appId);
-  if (parsed == null || !parsed.subscriptionActive) {
-    return { owned: false, planSlug: null };
+  if (parsed == null || !isPlatformEntitlementStatusGrantingAccess(parsed.entitlementStatus)) {
+    return { owned: false, planSlug: null, entitlementStatus: null };
   }
 
   const planSlug = parsed.planSlugNormalized.trim();
+  const entitlementStatus = parsed.entitlementStatus.trim();
   return {
     owned: true,
     planSlug: planSlug !== '' ? planSlug : null,
+    entitlementStatus: entitlementStatus !== '' ? entitlementStatus : null,
   };
 }
 

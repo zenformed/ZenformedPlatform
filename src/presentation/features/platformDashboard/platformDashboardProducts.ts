@@ -3,6 +3,9 @@ import {
   type PlatformAppEntry,
   type PlatformAppId,
 } from '@/platform/appDefinitions/platformApps';
+import { resolveAppEntitlementBadges } from '@zenformed/core/organization-settings';
+import type { ZenformedAppRegistryEntry } from '@zenformed/core/dashboard-shell';
+import type { ProductEntitlementState } from '@/presentation/hooks/usePlatformProductEntitlements';
 export {
   getAppPlanCatalogEntries,
   listPurchasablePlansForApp,
@@ -41,4 +44,28 @@ export function partitionPlatformAppsByOwnership(
     }
   }
   return { myApps, availableProducts };
+}
+
+export function enrichMyAppsWithEntitlementBadges(
+  myApps: readonly PlatformAppEntry[],
+  entitlementsByApp: Partial<Record<PlatformAppId, ProductEntitlementState>>
+): ZenformedAppRegistryEntry[] {
+  return myApps.map((app) => {
+    const entitlement = entitlementsByApp[app.id];
+    if (
+      entitlement?.owned &&
+      entitlement.planSlug != null &&
+      entitlement.entitlementStatus != null
+    ) {
+      return {
+        ...app,
+        entitlementBadges: resolveAppEntitlementBadges(
+          app.id,
+          entitlement.planSlug,
+          entitlement.entitlementStatus
+        ),
+      };
+    }
+    return app;
+  });
 }
