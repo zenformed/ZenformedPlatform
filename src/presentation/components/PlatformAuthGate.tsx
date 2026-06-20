@@ -18,6 +18,7 @@ const PUBLIC_PATHS = [
   nav.routes.resetPassword,
   '/products',
   nav.routes.checkoutSuccess,
+  '/legal',
 ] as const;
 
 const LoadingShell = (): React.ReactElement => (

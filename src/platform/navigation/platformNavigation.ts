@@ -12,6 +12,8 @@ export const platformNavigation = {
     productPricing: (appSlug: string) => `/products/${appSlug}`,
     cart: '/cart',
     checkoutSuccess: '/checkout/success',
+    legalTerms: '/legal/terms',
+    legalPrivacy: '/legal/privacy',
   },
 } as const;
 

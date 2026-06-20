@@ -1,6 +1,7 @@
 import { env } from '@/infrastructure/config/env';
 import type { CoreApiResult } from '@/infrastructure/coreApi/types';
 import type { CartCheckoutIntent } from '@/platform/cart/cartIntentTypes';
+import type { CheckoutLegalAcceptancePayload } from '@zenformed/core/legal';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 
@@ -22,7 +23,8 @@ function parseCheckoutSessionJson(json: unknown): CheckoutSessionResponse | null
 /** `POST /checkout/session` — create Stripe Checkout Session from catalog-validated intent. */
 export async function createCheckoutSessionOnCore(
   accessToken: string,
-  body: Pick<CartCheckoutIntent, 'productSlug' | 'planSlug' | 'billingCycle' | 'checkoutMode'>
+  body: Pick<CartCheckoutIntent, 'productSlug' | 'planSlug' | 'billingCycle' | 'checkoutMode'> &
+    CheckoutLegalAcceptancePayload
 ): Promise<CoreApiResult<CheckoutSessionResponse>> {
   const base = env.zenformedCoreApiBaseUrl;
   if (base == null) {
@@ -45,6 +47,8 @@ export async function createCheckoutSessionOnCore(
         planSlug: body.planSlug,
         billingCycle: body.billingCycle,
         checkoutMode: body.checkoutMode,
+        acceptedTermsVersion: body.acceptedTermsVersion,
+        acceptedPrivacyVersion: body.acceptedPrivacyVersion,
       }),
     });
     let json: unknown;

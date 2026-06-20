@@ -4,19 +4,37 @@ import { coreUpstreamHttpResponsePayload } from '@/infrastructure/coreApi/zenfor
 import { env } from '@/infrastructure/config/env';
 import { runtimeModes } from '@/infrastructure/config/runtimeModes';
 import { parseCartCheckoutIntent } from '@/platform/cart/cartIntentTypes';
+import type { CheckoutLegalAcceptancePayload } from '@zenformed/core/legal';
 import { getSupabaseUserFromToken } from '@/infrastructure/supabase/supabaseServer';
 
 export const dynamic = 'force-dynamic';
 
-function readCheckoutIntentBody(body: unknown): ReturnType<typeof parseCartCheckoutIntent> {
+function readNonEmptyString(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed === '' ? null : trimmed;
+}
+
+function readCheckoutSessionBody(body: unknown): (ReturnType<typeof parseCartCheckoutIntent> & CheckoutLegalAcceptancePayload) | null {
   if (body == null || typeof body !== 'object') return null;
   const record = body as Record<string, unknown>;
-  return parseCartCheckoutIntent({
+  const intent = parseCartCheckoutIntent({
     productSlug: record.productSlug,
     planSlug: record.planSlug,
     billingCycle: record.billingCycle,
     checkoutMode: record.checkoutMode,
   });
+  if (intent == null) return null;
+
+  const acceptedTermsVersion = readNonEmptyString(record.acceptedTermsVersion);
+  const acceptedPrivacyVersion = readNonEmptyString(record.acceptedPrivacyVersion);
+  if (acceptedTermsVersion == null || acceptedPrivacyVersion == null) return null;
+
+  return {
+    ...intent,
+    acceptedTermsVersion,
+    acceptedPrivacyVersion,
+  };
 }
 
 function mapUpstreamCheckoutError(status: number, body: unknown): NextResponse {
@@ -77,12 +95,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'invalid_body', message: 'JSON body required' }, { status: 400 });
   }
 
-  const intent = readCheckoutIntentBody(body);
+  const intent = readCheckoutSessionBody(body);
   if (intent == null) {
     return NextResponse.json(
       {
         error: 'invalid_body',
-        message: 'productSlug, planSlug, billingCycle, and checkoutMode are required.',
+        message:
+          'productSlug, planSlug, billingCycle, checkoutMode, acceptedTermsVersion, and acceptedPrivacyVersion are required.',
       },
       { status: 400 }
     );

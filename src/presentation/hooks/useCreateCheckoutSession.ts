@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { CartCheckoutIntent } from '@/platform/cart/cartIntentTypes';
+import type { CheckoutLegalAcceptancePayload } from '@zenformed/core/legal';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 
@@ -26,12 +27,18 @@ function readCheckoutErrorMessage(body: unknown): string {
 
 export function useCreateCheckoutSession(): {
   readonly state: CreateCheckoutSessionState;
-  readonly startCheckout: (intent: CartCheckoutIntent) => Promise<void>;
+  readonly startCheckout: (
+    intent: CartCheckoutIntent,
+    legalAcceptance: CheckoutLegalAcceptancePayload
+  ) => Promise<void>;
 } {
   const router = useRouter();
   const [state, setState] = useState<CreateCheckoutSessionState>({ status: 'idle' });
 
-  const startCheckout = useCallback(async (intent: CartCheckoutIntent) => {
+  const startCheckout = useCallback(async (
+    intent: CartCheckoutIntent,
+    legalAcceptance: CheckoutLegalAcceptancePayload
+  ) => {
     setState({ status: 'loading' });
 
     const {
@@ -58,6 +65,8 @@ export function useCreateCheckoutSession(): {
           planSlug: intent.planSlug,
           billingCycle: intent.billingCycle,
           checkoutMode: intent.checkoutMode,
+          acceptedTermsVersion: legalAcceptance.acceptedTermsVersion,
+          acceptedPrivacyVersion: legalAcceptance.acceptedPrivacyVersion,
         }),
       });
 

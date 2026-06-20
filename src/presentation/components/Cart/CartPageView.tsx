@@ -1,7 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
+import {
+  CheckoutLegalAcceptance,
+  CHECKOUT_LEGAL_ACCEPTANCE_VALIDATION_MESSAGE,
+  DEFAULT_LEGAL_PRIVACY_PATH,
+  DEFAULT_LEGAL_TERMS_PATH,
+  buildCheckoutLegalAcceptancePayload,
+} from '@zenformed/core/legal';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 import { ProductsPublicShell } from '@/presentation/components/Products/ProductsPublicShell';
 import { useCartSummary } from '@/presentation/hooks/useCartSummary';
@@ -17,9 +24,12 @@ export function CartPageView(): ReactElement {
   const { intent, hydrated, clearIntent } = useCartIntent();
   const summaryState = useCartSummary(intent, hydrated);
   const { state: checkoutState, startCheckout } = useCreateCheckoutSession();
+  const [legalAccepted, setLegalAccepted] = useState(false);
+  const [legalValidationMessage, setLegalValidationMessage] = useState<string | null>(null);
 
   const checkoutLoading = checkoutState.status === 'loading';
   const checkoutError = checkoutState.status === 'error' ? checkoutState.message : null;
+  const canContinueToCheckout = legalAccepted && !checkoutLoading;
 
   return (
     <ProductsPublicShell backHref={nav.routes.products} backLabel="All products">
@@ -95,14 +105,32 @@ export function CartPageView(): ReactElement {
               </p>
             ) : null}
 
+            <CheckoutLegalAcceptance
+              termsHref={nav.routes.legalTerms ?? DEFAULT_LEGAL_TERMS_PATH}
+              privacyHref={nav.routes.legalPrivacy ?? DEFAULT_LEGAL_PRIVACY_PATH}
+              checked={legalAccepted}
+              onCheckedChange={(checked) => {
+                setLegalAccepted(checked);
+                if (checked) {
+                  setLegalValidationMessage(null);
+                }
+              }}
+              validationMessage={legalValidationMessage}
+            />
+
             <div className={styles.actions}>
               <button
                 type="button"
                 className={styles.primaryButton}
-                disabled={checkoutLoading}
+                disabled={!canContinueToCheckout}
                 onClick={() => {
                   if (intent == null) return;
-                  void startCheckout(intent);
+                  if (!legalAccepted) {
+                    setLegalValidationMessage(CHECKOUT_LEGAL_ACCEPTANCE_VALIDATION_MESSAGE);
+                    return;
+                  }
+                  setLegalValidationMessage(null);
+                  void startCheckout(intent, buildCheckoutLegalAcceptancePayload());
                 }}
               >
                 {checkoutLoading ? 'Starting checkout…' : 'Continue to checkout'}
