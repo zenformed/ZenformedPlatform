@@ -43,8 +43,6 @@ export function PlatformSettingsDrawer({
   const [reactivatingAppSlug, setReactivatingAppSlug] = useState<string | null>(null);
   const [removingScheduledChangeAppSlug, setRemovingScheduledChangeAppSlug] = useState<string | null>(null);
   const [cancelSubscriptionError, setCancelSubscriptionError] = useState<string | null>(null);
-  const [reactivateSubscriptionError, setReactivateSubscriptionError] = useState<string | null>(null);
-  const [removeScheduledChangeError, setRemoveScheduledChangeError] = useState<string | null>(null);
 
   const userSettings = useZenformedUserSettings({
     settingsApiUrl: nav.apis.usersMeSettings,
@@ -110,7 +108,6 @@ export function PlatformSettingsDrawer({
     async (appSlug: string) => {
       const token = getAccessToken()?.trim() ?? '';
       if (!token) return false;
-      setReactivateSubscriptionError(null);
       setReactivatingAppSlug(appSlug);
       try {
         const res = await fetch(nav.apis.reactivateAppSubscription, {
@@ -124,13 +121,11 @@ export function PlatformSettingsDrawer({
           body: JSON.stringify({ productSlug: appSlug }),
         });
         if (!res.ok) {
-          setReactivateSubscriptionError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.reactivateSubscriptionFailed);
           return false;
         }
         await orgWorkspace.refetch();
         return true;
       } catch {
-        setReactivateSubscriptionError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.reactivateSubscriptionFailed);
         return false;
       } finally {
         setReactivatingAppSlug(null);
@@ -143,7 +138,6 @@ export function PlatformSettingsDrawer({
     async (appSlug: string) => {
       const token = getAccessToken()?.trim() ?? '';
       if (!token) return false;
-      setRemoveScheduledChangeError(null);
       setRemovingScheduledChangeAppSlug(appSlug);
       try {
         const res = await fetch(nav.apis.removeScheduledPlanChange, {
@@ -157,13 +151,11 @@ export function PlatformSettingsDrawer({
           body: JSON.stringify({ productSlug: appSlug }),
         });
         if (!res.ok) {
-          setRemoveScheduledChangeError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.removeScheduledDowngradeFailed);
           return false;
         }
         await orgWorkspace.refetch();
         return true;
       } catch {
-        setRemoveScheduledChangeError(DEFAULT_ORGANIZATION_SETTINGS_LABELS.removeScheduledDowngradeFailed);
         return false;
       } finally {
         setRemovingScheduledChangeAppSlug(null);
@@ -278,11 +270,7 @@ export function PlatformSettingsDrawer({
       reactivatingAppSlug,
       removingScheduledChangeAppSlug,
       cancelSubscriptionError,
-      reactivateSubscriptionError,
-      removeScheduledChangeError,
       onDismissCancelSubscriptionError: () => setCancelSubscriptionError(null),
-      onDismissReactivateSubscriptionError: () => setReactivateSubscriptionError(null),
-      onDismissRemoveScheduledChangeError: () => setRemoveScheduledChangeError(null),
     },
   }), [
     workspacePermissions,
@@ -335,8 +323,6 @@ export function PlatformSettingsDrawer({
     reactivatingAppSlug,
     removingScheduledChangeAppSlug,
     cancelSubscriptionError,
-    reactivateSubscriptionError,
-    removeScheduledChangeError,
   ]);
 
   return (
