@@ -9,10 +9,7 @@ export default function ProductsPage(): ReactElement {
     <ProductsPublicShell>
       <div className={styles.indexHeader}>
         <h1 className={styles.indexTitle}>{content.products.pageTitle}</h1>
-        <p className={styles.indexIntro}>
-          Compare plans for BuildCore, ForgeCore, and FormCore. Pricing pages are store-ready —
-          checkout and billing activation will connect here later.
-        </p>
+        <p className={styles.indexIntro}>Explore the Zenformed product suite.</p>
       </div>
       <ProductsIndexGrid />
       <p className={styles.indexDevelopmentNotice} role="status">
