@@ -2,7 +2,7 @@
 
 
 
-import { useCallback, useMemo, useState, type ReactElement } from 'react';
+import { useCallback, useMemo, useRef, useState, type ReactElement } from 'react';
 
 import Link from 'next/link';
 
@@ -106,18 +106,20 @@ export function ProductPricingPageView({ config }: ProductPricingPageViewProps):
 
   const { session, loading: authLoading } = useSaaSProfile();
 
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+  const getAccessToken = useCallback(
+    (): string | null => sessionRef.current?.access_token ?? null,
+    []
+  );
+
   const { entitlementsByApp, refetch: refetchEntitlements } = usePlatformProductEntitlements(
-
     session?.access_token
-
   );
 
   const organizationSummary = usePlatformOrganizationWorkspaceSummary(
-
-    () => session?.access_token ?? null,
-
+    getAccessToken,
     session != null && !authLoading
-
   );
 
   const planChange = useSubscriptionPlanChange({ accessToken: session?.access_token });
