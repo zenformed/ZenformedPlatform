@@ -5,6 +5,7 @@ import {
   fetchProductCatalogSlugs,
   fetchProductPricingPageConfig,
 } from '@/platform/products/productPricingCatalog';
+import { BuildCoreSalesPageView } from '@/presentation/components/Products/BuildCoreSalesPageView';
 import { ProductPricingPageView } from '@/presentation/components/Products/ProductPricingPageView';
 import { ProductsPublicShell } from '@/presentation/components/Products/ProductsPublicShell';
 
@@ -25,7 +26,10 @@ export async function generateMetadata({ params }: ProductPricingRouteProps): Pr
     return { title: 'Product not found — Zenformed' };
   }
   return {
-    title: `${config.productName} Plans — Zenformed`,
+    title:
+      params.appSlug === 'buildcore'
+        ? 'BuildCore — Construction CRM — Zenformed'
+        : `${config.productName} Plans — Zenformed`,
     description: config.intro,
   };
 }
@@ -38,9 +42,15 @@ export default async function ProductPricingPage({
     notFound();
   }
 
+  const isBuildCore = params.appSlug === 'buildcore';
+
   return (
     <ProductsPublicShell backHref="/products" backLabel="All products">
-      <ProductPricingPageView config={config} />
+      {isBuildCore ? (
+        <BuildCoreSalesPageView config={config} />
+      ) : (
+        <ProductPricingPageView config={config} />
+      )}
     </ProductsPublicShell>
   );
 }
