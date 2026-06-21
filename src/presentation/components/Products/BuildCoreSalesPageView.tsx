@@ -8,6 +8,7 @@ import {
   BUILDCORE_PRICING_SECTION_ID,
   BUILDCORE_SALES_BENEFITS,
   BUILDCORE_SALES_FAQ,
+  BUILDCORE_SALES_FEATURES_SECTION,
   BUILDCORE_SALES_FINAL_CTA,
   BUILDCORE_SALES_HERO,
   BUILDCORE_SALES_SCREENSHOTS,
@@ -75,9 +76,9 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
 
   return (
     <div className={styles.salesPage}>
-      <section className={styles.salesIntro} aria-labelledby="buildcore-hero-title">
-        <div className={styles.salesIntroInner}>
-          <div className={styles.salesIntroCopy}>
+      <section className={styles.salesHero} aria-labelledby="buildcore-hero-title">
+        <div className={styles.salesHeroInner}>
+          <div className={styles.salesHeroCopy}>
             <div className={styles.pricingLabelPill}>
               {productIconSrc ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -116,30 +117,43 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
             </ul>
           </div>
 
-          <div className={styles.salesIntroBenefits}>
-            <div className={styles.salesBenefitsGrid}>
-              {BUILDCORE_SALES_BENEFITS.map((benefit) => (
-                <article key={benefit.title} className={styles.salesGlassCard}>
-                  <div className={styles.salesCardHeader}>
-                    <BuildCoreSalesBenefitIcon icon={benefit.icon} />
-                    <h2 className={styles.salesCardTitle}>{benefit.title}</h2>
-                  </div>
-                  <p className={styles.salesCardBody}>{benefit.description}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.salesIntroCarousel}>
-            <h2 id="buildcore-screenshots-title" className={styles.salesIntroCarouselTitle}>
-              See BuildCore in action
-            </h2>
-            <SalesScreenshotCarousel slides={screenshotSlides} ariaLabel="BuildCore product screenshots" />
+          <div className={styles.salesHeroScreenshotRgbWrap}>
+            <figure className={styles.salesHeroScreenshotFrame}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={BUILDCORE_SALES_HERO.screenshotSrc}
+                alt={BUILDCORE_SALES_HERO.screenshotAlt}
+                className={styles.salesHeroScreenshot}
+                loading="eager"
+              />
+            </figure>
           </div>
         </div>
       </section>
 
-      <section className={`${styles.salesSection} ${styles.salesSectionWhy}`} aria-labelledby="buildcore-why-title">
+      <section
+        className={`${styles.salesSection} ${styles.salesSectionAfterHero}`}
+        aria-labelledby="buildcore-features-title"
+      >
+        <div className={styles.salesSectionInner}>
+          <h2 id="buildcore-features-title" className={styles.salesSectionTitle}>
+            {BUILDCORE_SALES_FEATURES_SECTION.title}
+          </h2>
+          <div className={styles.salesBenefitsGrid}>
+            {BUILDCORE_SALES_BENEFITS.map((benefit) => (
+              <article key={benefit.title} className={styles.salesGlassCard}>
+                <div className={styles.salesCardHeader}>
+                  <BuildCoreSalesBenefitIcon icon={benefit.icon} />
+                  <h3 className={styles.salesCardTitle}>{benefit.title}</h3>
+                </div>
+                <p className={styles.salesCardBody}>{benefit.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.salesSection} aria-labelledby="buildcore-why-title">
         <div className={styles.salesSectionInner}>
           <h2 id="buildcore-why-title" className={styles.salesSectionTitle}>
             {BUILDCORE_SALES_WHY_SECTION.title}
@@ -171,11 +185,18 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
               </div>
             </div>
           </div>
+
+          <div className={styles.salesWhyCarousel}>
+            <h2 id="buildcore-screenshots-title" className={styles.salesWhyCarouselTitle}>
+              See BuildCore in action
+            </h2>
+            <SalesScreenshotCarousel slides={screenshotSlides} ariaLabel="BuildCore product screenshots" />
+          </div>
         </div>
       </section>
 
       <section
-        className={styles.salesSection}
+        className={`${styles.salesSection} ${styles.salesSectionPricing}`}
         id={BUILDCORE_PRICING_SECTION_ID}
         aria-label="Pricing"
       >
@@ -223,7 +244,7 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
         </div>
       </section>
 
-      <section className={styles.salesSection} aria-labelledby="buildcore-final-cta-title">
+      <section className={`${styles.salesSection} ${styles.salesSectionFinal}`} aria-labelledby="buildcore-final-cta-title">
         <div className={styles.salesSectionInner}>
           <div className={styles.salesFinalCtaInner}>
             <h2 id="buildcore-final-cta-title" className={styles.salesFinalCtaTitle}>

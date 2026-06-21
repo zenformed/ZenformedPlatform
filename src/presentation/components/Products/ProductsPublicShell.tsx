@@ -8,17 +8,19 @@ export type ProductsPublicShellProps = {
   readonly children: ReactNode;
   readonly backHref?: string;
   readonly backLabel?: string;
+  readonly salesLayout?: boolean;
 };
 
 export function ProductsPublicShell({
   children,
   backHref,
   backLabel,
+  salesLayout = false,
 }: ProductsPublicShellProps): ReactElement {
   return (
-    <div className={styles.shell}>
+    <div className={`${styles.shell}${salesLayout ? ` ${styles.shellSales}` : ''}`}>
       <ProductsPublicHeader backHref={backHref} backLabel={backLabel} />
-      <main className={styles.main}>{children}</main>
+      <main className={`${styles.main}${salesLayout ? ` ${styles.mainSales}` : ''}`}>{children}</main>
     </div>
   );
 }

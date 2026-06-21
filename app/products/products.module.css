@@ -10,13 +10,25 @@
   --products-accent-strong: #0d7a3c;
   --products-accent-light: #15a852;
   --products-accent-muted: rgba(17, 146, 71, 0.18);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+  overflow-x: clip;
   color: var(--products-text);
   background:
     radial-gradient(ellipse 55% 45% at 15% -5%, rgba(74, 222, 128, 0.1), transparent),
     radial-gradient(ellipse 45% 35% at 85% 0%, rgba(167, 139, 250, 0.12), transparent),
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(96, 165, 250, 0.12), transparent),
     var(--products-bg);
+}
+
+.shell > .header {
+  align-self: stretch;
+  width: 100%;
 }
 
 .header {
@@ -209,14 +221,12 @@
 }
 
 .main {
+  box-sizing: border-box;
+  width: 100%;
   max-width: 72rem;
-  margin: 0 auto;
+  min-width: 0;
+  margin: 0;
   padding: 2rem 1.5rem 4rem;
-}
-
-.shell:has(.salesPage) .main {
-  padding-top: 1rem;
-  padding-bottom: 3rem;
 }
 
 .indexHeader {
@@ -1163,47 +1173,50 @@
   cursor: not-allowed;
 }
 
-/* BuildCore sales page */
+/* BuildCore sales page — wider content column on large screens */
+.shellSales {
+  --sales-content-max: 1180px;
+}
+
+.shellSales .headerInner {
+  max-width: var(--sales-content-max);
+}
+
+.mainSales {
+  max-width: var(--sales-content-max);
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+}
+
 .salesPage {
   --sales-hero-content-max: 62rem;
-  --sales-section-gap: clamp(3rem, 6vw, 4.5rem);
-  --sales-header-offset: 3.75rem;
+  --sales-hero-screenshot-max: 980px;
+  --sales-space-section: clamp(5rem, 8vw, 7.5rem);
+  --sales-space-section-after-hero: clamp(1.5rem, 2.5vw, 2rem);
+  --sales-space-section-before-pricing: clamp(6rem, 25vh, 12rem);
+  --sales-space-carousel: clamp(3rem, 4vw, 4rem);
   width: 100%;
   overflow-x: hidden;
 }
 
-.salesIntro {
-  padding: 0.5rem 0 1.5rem;
+.salesHero {
+  padding: 0.5rem 0 0;
 }
 
-@media (min-width: 1024px) {
-  .salesIntro {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100svh - var(--sales-header-offset));
-    padding-bottom: 2rem;
-  }
-
-  .salesIntroInner {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-  }
-
-  .salesIntroCarousel {
-    margin-top: auto;
-    padding-top: 2.5rem;
-  }
-}
-
-.salesIntroInner,
+.salesHeroInner,
 .salesSectionInner {
   width: 100%;
-  max-width: 72rem;
-  margin: 0 auto;
+  max-width: none;
+  margin-inline: 0;
 }
 
-.salesIntroCopy {
+.salesHeroInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.salesHeroCopy {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1212,15 +1225,78 @@
   margin: 0 auto;
 }
 
-.salesIntroBenefits {
-  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+.salesHeroCopy .pricingLabelPill {
+  align-self: center;
+  margin-bottom: 0.5rem;
 }
 
-.salesIntroCarousel {
-  margin-top: 2.25rem;
+.salesHeroScreenshotRgbWrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--sales-hero-screenshot-max);
+  margin: clamp(1.5rem, 3vw, 2rem) auto 0;
+  padding: 2px;
+  border-radius: calc(1rem + 2px);
+  background: linear-gradient(
+    90deg,
+    #119247,
+    #22d3ee,
+    #818cf8,
+    #c084fc,
+    #f472b6,
+    #119247
+  );
+  background-size: 200% 100%;
+  animation: rgbBorderShift 5s linear infinite;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
 }
 
-.salesIntroCarouselTitle {
+.salesHeroScreenshotFrame {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 1rem;
+  background: #12151b;
+  overflow: hidden;
+}
+
+.salesHeroScreenshot {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+}
+
+.salesSection {
+  padding-top: var(--sales-space-section);
+}
+
+.salesSectionAfterHero {
+  padding-top: var(--sales-space-section-after-hero);
+}
+
+.salesSectionAfterHero .salesSectionTitle {
+  margin-bottom: 1.25rem;
+}
+
+.salesSectionPricing {
+  padding-top: var(--sales-space-section-before-pricing);
+}
+
+.salesSectionFinal {
+  padding-bottom: 1rem;
+}
+
+.salesWhyCarousel {
+  margin-top: var(--sales-space-carousel);
+}
+
+.salesWhyCarouselTitle {
   margin: 0 0 1.25rem;
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;
@@ -1229,24 +1305,8 @@
   text-align: center;
 }
 
-.salesSection {
-  padding: var(--sales-section-gap) 0;
-}
-
-@media (min-width: 1024px) {
-  .salesSectionWhy {
-    min-height: calc(100svh - var(--sales-header-offset));
-    scroll-margin-top: var(--sales-header-offset);
-  }
-}
-
 #buildcore-pricing {
   scroll-margin-top: 4rem;
-}
-
-.salesIntroCopy .pricingLabelPill {
-  align-self: center;
-  margin-bottom: 0.5rem;
 }
 
 .salesHeroTitle {
@@ -1840,6 +1900,64 @@
   color: var(--products-text-muted);
   font-size: clamp(0.9375rem, 2.5vw, 1.0625rem);
   line-height: 1.65;
+}
+
+@media (min-width: 1920px) {
+  .shellSales {
+    --sales-content-max: 1280px;
+  }
+
+  .salesPage {
+    --sales-hero-screenshot-max: 1100px;
+    --sales-space-section-after-hero: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .salesBenefitsGrid {
+    gap: 1.375rem;
+  }
+
+  .salesGlassCard {
+    padding: 1.25rem 1.125rem;
+  }
+
+  .salesWhyPanel {
+    padding: 2rem 2.25rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .salesPage {
+    --sales-hero-screenshot-max: 1250px;
+    --sales-space-section-after-hero: clamp(2.25rem, 3vw, 3rem);
+    --sales-space-carousel: clamp(3.25rem, 4vw, 4.5rem);
+  }
+
+  .salesBenefitsGrid {
+    gap: 1.5rem;
+  }
+
+  .salesGlassCard {
+    padding: 1.375rem 1.25rem;
+  }
+
+  .salesWhyPanel {
+    padding: 2.25rem 2.5rem;
+  }
+
+  .salesCarouselLightboxContent {
+    width: min(100%, var(--sales-content-max, 1440px));
+  }
+}
+
+@media (min-width: 3200px) {
+  .salesPage {
+    --sales-hero-screenshot-max: 1100px;
+    --sales-space-section-before-pricing: clamp(6rem, 12vh, 10rem);
+  }
+
+  .salesCarouselLightboxContent {
+    width: min(100%, var(--sales-content-max, 1280px));
+  }
 }
 
 @media (max-width: 479px) {

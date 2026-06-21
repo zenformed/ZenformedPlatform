@@ -29,6 +29,12 @@ export const BUILDCORE_SALES_HERO = {
     'Documents',
     'Customer uploads included',
   ] as const,
+  screenshotSrc: '/buildcore-sales/dashboard.png',
+  screenshotAlt: 'BuildCore dashboard overview',
+};
+
+export const BUILDCORE_SALES_FEATURES_SECTION = {
+  title: 'Everything you need to run construction projects',
 };
 
 export const BUILDCORE_SALES_BENEFITS: readonly BuildCoreBenefitCard[] = [
@@ -82,6 +88,20 @@ export const BUILDCORE_SALES_SCREENSHOTS: readonly BuildCoreScreenshotCard[] = [
     description: 'MTD, YTD, and all-time reporting for projects and profitability.',
     imageSrc: '/buildcore-sales/reports.png',
     imageAlt: 'BuildCore reporting view',
+  },
+  {
+    id: 'budget',
+    title: 'Budget',
+    description: 'Track project value, collections, costs, and profitability in real time.',
+    imageSrc: '/buildcore-sales/budget.png',
+    imageAlt: 'BuildCore budget view',
+  },
+  {
+    id: 'customer-portal',
+    title: 'Customer Portal',
+    description: 'Give customers a secure place to upload documents and stay on schedule.',
+    imageSrc: '/buildcore-sales/customer-portal.png',
+    imageAlt: 'BuildCore customer portal',
   },
 ];
 
