@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@zenformed/core/dashboard-shell/mobile-shell.css';
 import type { ReactElement, ReactNode } from 'react';
 import '../styles/globals.css';
@@ -7,6 +7,11 @@ import { ThemeProvider } from '@/presentation/providers';
 import { PlatformRootGate } from '@/presentation/components/PlatformRootGate';
 
 export const dynamic = 'force-dynamic';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 const themeStorageKey = platformAppDefinition.themeStorageKey ?? 'zenformed-platform_theme';
 

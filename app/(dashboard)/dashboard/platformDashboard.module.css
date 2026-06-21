@@ -837,7 +837,7 @@
   margin-top: 1.375rem;
   min-width: 17.5rem;
   width: max-content;
-  max-width: calc(100vw - 1.5rem);
+  max-width: calc(100dvw - 1.5rem);
   padding: 1rem 1.125rem 1.125rem;
   background: var(--theme-apps-launcher-bg, #ffffff);
   color: var(--color-text);
