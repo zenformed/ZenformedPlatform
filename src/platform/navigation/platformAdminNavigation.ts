@@ -1,0 +1,24 @@
+export const platformAdminNavigation = {
+  basePath: '/admin',
+  routes: {
+    home: '/admin',
+    accountOwners: '/admin/users',
+    accountOwnerDetail: (userId: string) => `/admin/users/${userId}`,
+    organizations: '/admin/organizations',
+    subscriptions: '/admin/subscriptions',
+  },
+  api: {
+    me: '/api/admin/me',
+    accountOwners: '/api/admin/users',
+    accountOwnerDetail: (userId: string) => `/api/admin/users/${userId}`,
+    organizations: '/api/admin/organizations',
+    subscriptions: '/api/admin/subscriptions',
+  },
+  navItems: [
+    { id: 'accountOwners', href: '/admin/users', label: 'Account Owners' },
+    { id: 'organizations', href: '/admin/organizations', label: 'Organizations' },
+    { id: 'subscriptions', href: '/admin/subscriptions', label: 'Subscriptions' },
+  ],
+} as const;
+
+export type PlatformAdminNavId = (typeof platformAdminNavigation.navItems)[number]['id'];
