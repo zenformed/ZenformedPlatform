@@ -5,6 +5,7 @@ export const platformAdminNavigation = {
     accountOwners: '/admin/users',
     accountOwnerDetail: (userId: string) => `/admin/users/${userId}`,
     organizations: '/admin/organizations',
+    organizationDetail: (organizationId: string) => `/admin/organizations/${organizationId}`,
     subscriptions: '/admin/subscriptions',
   },
   api: {
@@ -12,6 +13,7 @@ export const platformAdminNavigation = {
     accountOwners: '/api/admin/users',
     accountOwnerDetail: (userId: string) => `/api/admin/users/${userId}`,
     organizations: '/api/admin/organizations',
+    organizationDetail: (organizationId: string) => `/api/admin/organizations/${organizationId}`,
     subscriptions: '/api/admin/subscriptions',
   },
   navItems: [

@@ -65,6 +65,7 @@ export const platformAdminContent = {
       organizationsOwned: 'Organizations Owned',
       productsOwned: 'Products Owned',
       subscriptionSummary: 'Subscription Summary',
+      totalStorageUsed: 'Total Storage Across Owned Organizations',
     },
     organizationColumns: {
       name: 'Organization Name',
@@ -92,14 +93,36 @@ export const platformAdminContent = {
       products: 'Products',
       subscriptionStatus: 'Subscription Status',
       createdAt: 'Created Date',
+      storageUsed: 'Storage Used',
+    },
+    detail: {
+      backToList: 'Back to organizations',
+      summaryTitle: 'Organization Summary',
+      storageTitle: 'Storage Usage',
+      storageRows: {
+        buildCoreDocuments: 'BuildCore Documents',
+        buildCoreProjectPhotos: 'BuildCore Project Photos',
+        organizationBranding: 'Organization Branding',
+        userAvatars: 'User Avatars',
+        total: 'Total Storage',
+      },
+      fields: {
+        name: 'Organization',
+        ownerEmail: 'Owner Email',
+        memberCount: 'Member Count',
+        products: 'Products',
+        subscriptionStatus: 'Subscription Status',
+        createdAt: 'Created Date',
+        storageUsed: 'BuildCore Storage Counter',
+      },
+      limitationsTitle: 'Storage notes',
     },
   },
   subscriptions: {
     title: 'Subscriptions',
     columns: {
       organizationName: 'Organization',
-      productSlug: 'Product',
-      planSlug: 'Plan',
+      products: 'Products',
       status: 'Status',
       billingCycle: 'Billing Cycle',
       trialEnd: 'Trial End',
@@ -142,5 +165,6 @@ export function formatAdminStorageBytes(value: number | null): string {
     size /= 1024;
     unitIndex += 1;
   }
-  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+  const decimals = unitIndex >= 3 ? 1 : size >= 10 || unitIndex === 0 ? 0 : 1;
+  return `${size.toFixed(decimals)} ${units[unitIndex]}`;
 }

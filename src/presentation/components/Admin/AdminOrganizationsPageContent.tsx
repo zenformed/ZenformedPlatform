@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactElement } from 'react';
+import Link from 'next/link';
 import {
   AdminDataTable,
   AdminFilterBar,
@@ -15,10 +16,11 @@ import {
   parseAdminOrganizationsResponse,
   type AdminOrganizationListItem,
 } from '@/infrastructure/coreApi/adminTypes';
+import { ProductOwnershipList } from '@/presentation/components/Admin/ProductOwnershipList';
 import {
   formatAdminDate,
-  formatAdminProducts,
   formatAdminStatus,
+  formatAdminStorageBytes,
 } from '@/platform/content/platformAdminContent';
 import adminStyles from './admin.module.css';
 
@@ -27,7 +29,7 @@ export function AdminOrganizationsPageContent(): ReactElement {
   const list = useAdminListQuery<AdminOrganizationListItem>({
     apiPath: nav.api.organizations,
     getAccessToken,
-    defaultSortBy: 'name',
+    defaultSortBy: 'subscriptionStatus',
     parseResponse: parseAdminOrganizationsResponse,
   });
 
@@ -60,7 +62,11 @@ export function AdminOrganizationsPageContent(): ReactElement {
             id: 'name',
             header: content.organizations.columns.name,
             sortable: true,
-            render: (row) => row.name,
+            render: (row) => (
+              <Link href={nav.routes.organizationDetail(row.id)} className={adminStyles.adminLink}>
+                {row.name}
+              </Link>
+            ),
           },
           {
             id: 'ownerEmail',
@@ -77,13 +83,19 @@ export function AdminOrganizationsPageContent(): ReactElement {
           {
             id: 'products',
             header: content.organizations.columns.products,
-            render: (row) => formatAdminProducts(row.products),
+            render: (row) => <ProductOwnershipList items={row.products} />,
           },
           {
             id: 'subscriptionStatus',
             header: content.organizations.columns.subscriptionStatus,
             sortable: true,
             render: (row) => formatAdminStatus(row.subscriptionStatus),
+          },
+          {
+            id: 'storageUsedBytes',
+            header: content.organizations.columns.storageUsed,
+            sortable: true,
+            render: (row) => formatAdminStorageBytes(row.storageUsedBytes ?? 0),
           },
           {
             id: 'createdAt',

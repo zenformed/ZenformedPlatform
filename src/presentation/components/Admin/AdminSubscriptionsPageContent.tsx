@@ -14,6 +14,8 @@ import {
   parseAdminSubscriptionsResponse,
   type AdminSubscriptionListItem,
 } from '@/infrastructure/coreApi/adminTypes';
+import { ProductOwnershipList } from '@/presentation/components/Admin/ProductOwnershipList';
+import { mapSubscriptionStatusToEntitlementStatus } from '@/presentation/components/Admin/productOwnershipDisplay';
 import { formatAdminDate, formatAdminStatus } from '@/platform/content/platformAdminContent';
 import adminStyles from './admin.module.css';
 
@@ -59,16 +61,19 @@ export function AdminSubscriptionsPageContent(): ReactElement {
             render: (row) => row.organizationName,
           },
           {
-            id: 'productSlug',
-            header: content.subscriptions.columns.productSlug,
-            sortable: true,
-            render: (row) => row.productSlug,
-          },
-          {
-            id: 'planSlug',
-            header: content.subscriptions.columns.planSlug,
-            sortable: true,
-            render: (row) => row.planSlug,
+            id: 'products',
+            header: content.subscriptions.columns.products,
+            render: (row) => (
+              <ProductOwnershipList
+                items={[
+                  {
+                    productSlug: row.productSlug,
+                    planSlug: row.planSlug,
+                    entitlementStatus: mapSubscriptionStatusToEntitlementStatus(row.status),
+                  },
+                ]}
+              />
+            ),
           },
           {
             id: 'status',

@@ -42,7 +42,7 @@ export type AdminAccountOwnerOrganization = {
   subscriptionStatus: string | null;
   products: AdminProductOwnershipItem[];
   memberCount: number;
-  storageUsedBytes: number | null;
+  storageUsedBytes: number;
   members: AdminAccountOwnerOrganizationMember[];
 };
 
@@ -57,6 +57,7 @@ export type AdminAccountOwnerDetail = {
   organizationsOwned: number;
   productsOwned: AdminProductOwnershipItem[];
   subscriptionSummary: string | null;
+  totalStorageUsedBytes: number;
   organizations: AdminAccountOwnerOrganization[];
 };
 
@@ -65,9 +66,33 @@ export type AdminOrganizationListItem = {
   name: string;
   ownerEmail: string | null;
   memberCount: number;
-  products: string[];
+  products: AdminProductOwnershipItem[];
   subscriptionStatus: string | null;
   createdAt: string | null;
+  storageUsedBytes: number;
+};
+
+export type AdminOrganizationStorageBreakdown = {
+  buildCoreDocumentsBytes: number;
+  buildCoreProjectPhotosBytes: number;
+  organizationBrandingBytes: number | null;
+  userAvatarsBytes: number | null;
+  buildCoreTrackedBytes: number | null;
+  totalStorageBytes: number;
+  limitations: readonly string[];
+};
+
+export type AdminOrganizationDetail = {
+  id: string;
+  name: string;
+  ownerUserId: string | null;
+  ownerEmail: string | null;
+  memberCount: number;
+  products: AdminProductOwnershipItem[];
+  subscriptionStatus: string | null;
+  createdAt: string | null;
+  storageUsedBytes: number;
+  storage: AdminOrganizationStorageBreakdown;
 };
 
 export type AdminSubscriptionListItem = {
@@ -211,8 +236,7 @@ function parseAccountOwnerOrganization(value: unknown): AdminAccountOwnerOrganiz
       ? value.products.map(parseProductOwnershipItem).filter((item): item is AdminProductOwnershipItem => item != null)
       : [],
     memberCount: typeof value.memberCount === 'number' ? value.memberCount : 0,
-    storageUsedBytes:
-      typeof value.storageUsedBytes === 'number' ? value.storageUsedBytes : null,
+    storageUsedBytes: typeof value.storageUsedBytes === 'number' ? value.storageUsedBytes : 0,
     members: Array.isArray(value.members)
       ? value.members
           .map(parseAccountOwnerOrganizationMember)
@@ -244,6 +268,8 @@ export function parseAdminAccountOwnerDetail(json: unknown): AdminAccountOwnerDe
       : [],
     subscriptionSummary:
       typeof value.subscriptionSummary === 'string' ? value.subscriptionSummary : null,
+    totalStorageUsedBytes:
+      typeof value.totalStorageUsedBytes === 'number' ? value.totalStorageUsedBytes : 0,
     organizations: Array.isArray(value.organizations)
       ? value.organizations
           .map(parseAccountOwnerOrganization)
@@ -265,13 +291,69 @@ export function parseAdminOrganizationsResponse(
       ownerEmail: typeof value.ownerEmail === 'string' ? value.ownerEmail : null,
       memberCount: typeof value.memberCount === 'number' ? value.memberCount : 0,
       products: Array.isArray(value.products)
-        ? value.products.filter((item): item is string => typeof item === 'string')
+        ? value.products
+            .map(parseProductOwnershipItem)
+            .filter((item): item is AdminProductOwnershipItem => item != null)
         : [],
       subscriptionStatus:
         typeof value.subscriptionStatus === 'string' ? value.subscriptionStatus : null,
       createdAt: typeof value.createdAt === 'string' ? value.createdAt : null,
+      storageUsedBytes:
+        typeof value.storageUsedBytes === 'number' ? value.storageUsedBytes : 0,
     };
   });
+}
+
+function parseOrganizationStorageBreakdown(value: unknown): AdminOrganizationStorageBreakdown | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.buildCoreDocumentsBytes !== 'number' ||
+    typeof value.buildCoreProjectPhotosBytes !== 'number' ||
+    typeof value.totalStorageBytes !== 'number'
+  ) {
+    return null;
+  }
+  return {
+    buildCoreDocumentsBytes: value.buildCoreDocumentsBytes,
+    buildCoreProjectPhotosBytes: value.buildCoreProjectPhotosBytes,
+    organizationBrandingBytes:
+      typeof value.organizationBrandingBytes === 'number' ? value.organizationBrandingBytes : null,
+    userAvatarsBytes: typeof value.userAvatarsBytes === 'number' ? value.userAvatarsBytes : null,
+    buildCoreTrackedBytes:
+      typeof value.buildCoreTrackedBytes === 'number' ? value.buildCoreTrackedBytes : null,
+    totalStorageBytes: value.totalStorageBytes,
+    limitations: Array.isArray(value.limitations)
+      ? value.limitations.filter((item): item is string => typeof item === 'string')
+      : [],
+  };
+}
+
+export function parseAdminOrganizationDetail(json: unknown): AdminOrganizationDetail | null {
+  if (!isRecord(json) || !isRecord(json.organization) || typeof json.organization.id !== 'string') {
+    return null;
+  }
+  const value = json.organization;
+  if (typeof value.id !== 'string' || typeof value.name !== 'string') return null;
+  const storage = parseOrganizationStorageBreakdown(value.storage);
+  if (storage == null) return null;
+
+  return {
+    id: value.id,
+    name: value.name,
+    ownerUserId: typeof value.ownerUserId === 'string' ? value.ownerUserId : null,
+    ownerEmail: typeof value.ownerEmail === 'string' ? value.ownerEmail : null,
+    memberCount: typeof value.memberCount === 'number' ? value.memberCount : 0,
+    products: Array.isArray(value.products)
+      ? value.products
+          .map(parseProductOwnershipItem)
+          .filter((item): item is AdminProductOwnershipItem => item != null)
+      : [],
+    subscriptionStatus:
+      typeof value.subscriptionStatus === 'string' ? value.subscriptionStatus : null,
+    createdAt: typeof value.createdAt === 'string' ? value.createdAt : null,
+    storageUsedBytes: typeof value.storageUsedBytes === 'number' ? value.storageUsedBytes : 0,
+    storage,
+  };
 }
 
 export function parseAdminSubscriptionsResponse(

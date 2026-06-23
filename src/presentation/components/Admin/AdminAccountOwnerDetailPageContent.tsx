@@ -132,8 +132,39 @@ export function AdminAccountOwnerDetailPageContent({
             <dt>{content.accountOwnerDetail.fields.subscriptionSummary}</dt>
             <dd>{formatAdminStatus(detail.subscriptionSummary)}</dd>
           </div>
+          <div>
+            <dt>{content.accountOwnerDetail.fields.totalStorageUsed}</dt>
+            <dd>{formatAdminStorageBytes(detail.totalStorageUsedBytes)}</dd>
+          </div>
         </dl>
       </section>
+
+      {detail.organizations.length > 0 ? (
+        <section className={adminStyles.adminDetailSection}>
+          <h2 className={adminStyles.adminSectionTitle}>
+            {content.accountOwnerDetail.fields.totalStorageUsed}
+          </h2>
+          <dl className={adminStyles.adminStorageList}>
+            {detail.organizations.map((organization) => (
+              <div key={organization.id} className={adminStyles.adminStorageRow}>
+                <dt>
+                  <Link
+                    href={nav.routes.organizationDetail(organization.id)}
+                    className={adminStyles.adminLink}
+                  >
+                    {organization.name}
+                  </Link>
+                </dt>
+                <dd>{formatAdminStorageBytes(organization.storageUsedBytes)}</dd>
+              </div>
+            ))}
+            <div className={`${adminStyles.adminStorageRow} ${adminStyles.adminStorageRowTotal}`}>
+              <dt>Total</dt>
+              <dd>{formatAdminStorageBytes(detail.totalStorageUsedBytes)}</dd>
+            </div>
+          </dl>
+        </section>
+      ) : null}
 
       <section className={adminStyles.adminDetailSection}>
         <h2 className={adminStyles.adminSectionTitle}>{content.accountOwnerDetail.organizationsTitle}</h2>

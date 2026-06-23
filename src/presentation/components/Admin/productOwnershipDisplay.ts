@@ -41,6 +41,13 @@ export function mapProductOwnershipToDisplayItem(
   };
 }
 
+export function mapSubscriptionStatusToEntitlementStatus(status: string): string {
+  const normalized = status.trim().toLowerCase();
+  if (normalized === 'trialing') return 'trial';
+  if (normalized === 'active') return 'active';
+  return normalized;
+}
+
 export function mapProductOwnershipList(
   items: readonly ProductOwnershipInput[]
 ): ProductOwnershipDisplayItem[] {
