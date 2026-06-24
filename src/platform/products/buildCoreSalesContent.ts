@@ -89,20 +89,6 @@ export const BUILDCORE_SALES_SCREENSHOTS: readonly BuildCoreScreenshotCard[] = [
     imageSrc: '/buildcore-sales/reports.png',
     imageAlt: 'BuildCore reporting view',
   },
-  {
-    id: 'budget',
-    title: 'Budget',
-    description: 'Track project value, collections, costs, and profitability in real time.',
-    imageSrc: '/buildcore-sales/budget.png',
-    imageAlt: 'BuildCore budget view',
-  },
-  {
-    id: 'customer-portal',
-    title: 'Customer Portal',
-    description: 'Give customers a secure place to upload documents and stay on schedule.',
-    imageSrc: '/buildcore-sales/customer-portal.png',
-    imageAlt: 'BuildCore customer portal',
-  },
 ];
 
 export type BuildCoreWhyFeatureItem = {
