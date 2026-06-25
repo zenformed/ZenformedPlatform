@@ -21,6 +21,7 @@ import { ProductPricingSection } from '@/presentation/components/Products/Produc
 import { SalesScreenshotCarousel } from '@/presentation/components/Products/SalesScreenshotCarousel';
 import { SalesScreenshotLightbox } from '@/presentation/components/Products/SalesScreenshotLightbox';
 import { useCheckoutIntentSelection } from '@/presentation/hooks/useCheckoutIntentSelection';
+import { resolveBuildCoreDemoUrl } from '@/platform/products/resolveBuildCoreDemoUrl';
 import styles from '../../../../app/products/products.module.css';
 
 export type BuildCoreSalesPageViewProps = {
@@ -50,6 +51,8 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
     const recommended = config.plans.find((plan) => plan.recommended === true);
     return recommended?.planSlug ?? config.plans[0]?.planSlug ?? 'starter';
   }, [config.plans]);
+
+  const liveDemoUrl = useMemo(() => resolveBuildCoreDemoUrl(), []);
 
   const screenshotSlides = useMemo(
     () =>
@@ -111,6 +114,9 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
             <p className={styles.salesHeroSubheadline}>{BUILDCORE_SALES_HERO.subheadline}</p>
 
             <div className={styles.salesHeroCtaRow}>
+              <a href={liveDemoUrl} className={styles.salesCtaDemo}>
+                {BUILDCORE_SALES_HERO.liveDemoCta}
+              </a>
               <button type="button" className={styles.salesCtaPrimary} onClick={startFreeTrial}>
                 Start Free Trial
               </button>

@@ -24,6 +24,7 @@ export const BUILDCORE_SALES_HERO = {
   headline: 'Run every project from one place',
   subheadline:
     'Keep projects, customers, workflow, budgets, payments, and reporting connected—so your team spends less time chasing updates and more time delivering jobs.',
+  liveDemoCta: 'Live Demo',
   trustItems: [
     'Unlimited project photos',
     'Documents',
