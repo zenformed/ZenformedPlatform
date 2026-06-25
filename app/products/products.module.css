@@ -1263,6 +1263,25 @@
   overflow: hidden;
 }
 
+.salesHeroScreenshotButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.salesHeroScreenshotButton:hover .salesHeroScreenshot {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.salesHeroScreenshotButton:focus-visible {
+  outline: 2px solid var(--products-accent-light);
+  outline-offset: 2px;
+  border-radius: 0.75rem;
+}
+
 .salesHeroScreenshot {
   display: block;
   width: 100%;
@@ -1648,6 +1667,9 @@
 }
 
 .salesCarouselLightbox {
+  --sales-lightbox-width: 75vw;
+  --sales-lightbox-height: 75vh;
+
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -1664,18 +1686,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(100%, 72rem);
-  max-height: calc(100vh - 3rem);
+  justify-content: center;
+  width: min(92vw, var(--sales-lightbox-width));
+  max-height: var(--sales-lightbox-height);
 }
 
 .salesCarouselLightboxImage {
   display: block;
   width: auto;
-  max-width: 100%;
-  max-height: calc(100vh - 6rem);
+  max-width: min(92vw, var(--sales-lightbox-width));
+  max-height: calc(var(--sales-lightbox-height) - 2.5rem);
   border: 1px solid var(--products-border);
   border-radius: 0.75rem;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  object-fit: contain;
 }
 
 .salesCarouselLightboxCaption {
@@ -1944,19 +1968,12 @@
     padding: 2.25rem 2.5rem;
   }
 
-  .salesCarouselLightboxContent {
-    width: min(100%, var(--sales-content-max, 1440px));
-  }
 }
 
 @media (min-width: 3200px) {
   .salesPage {
     --sales-hero-screenshot-max: 1100px;
     --sales-space-section-before-pricing: clamp(6rem, 12vh, 10rem);
-  }
-
-  .salesCarouselLightboxContent {
-    width: min(100%, var(--sales-content-max, 1280px));
   }
 }
 

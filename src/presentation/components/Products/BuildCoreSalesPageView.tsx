@@ -19,6 +19,7 @@ import { BuildCoreSalesCheckCircleIcon } from '@/presentation/components/Product
 import { PricingCheckIcon } from '@/presentation/components/Products/PricingCheckIcon';
 import { ProductPricingSection } from '@/presentation/components/Products/ProductPricingSection';
 import { SalesScreenshotCarousel } from '@/presentation/components/Products/SalesScreenshotCarousel';
+import { SalesScreenshotLightbox } from '@/presentation/components/Products/SalesScreenshotLightbox';
 import { useCheckoutIntentSelection } from '@/presentation/hooks/useCheckoutIntentSelection';
 import styles from '../../../../app/products/products.module.css';
 
@@ -42,6 +43,7 @@ function scrollToPricing(): void {
 export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps): ReactElement {
   const { selectCheckoutIntent } = useCheckoutIntentSelection();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [heroPreviewOpen, setHeroPreviewOpen] = useState(false);
   const productIconSrc = resolveBuildCoreIconSrc();
 
   const defaultTrialPlanSlug = useMemo(() => {
@@ -73,6 +75,16 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
   const toggleFaq = useCallback((index: number) => {
     setOpenFaqIndex((current) => (current === index ? null : index));
   }, []);
+
+  const openHeroPreview = useCallback(() => {
+    setHeroPreviewOpen(true);
+  }, []);
+
+  const closeHeroPreview = useCallback(() => {
+    setHeroPreviewOpen(false);
+  }, []);
+
+  const heroPreviewSlide = screenshotSlides[0];
 
   return (
     <div className={styles.salesPage}>
@@ -119,13 +131,20 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
 
           <div className={styles.salesHeroScreenshotRgbWrap}>
             <figure className={styles.salesHeroScreenshotFrame}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={BUILDCORE_SALES_HERO.screenshotSrc}
-                alt={BUILDCORE_SALES_HERO.screenshotAlt}
-                className={styles.salesHeroScreenshot}
-                loading="eager"
-              />
+              <button
+                type="button"
+                className={styles.salesHeroScreenshotButton}
+                aria-label={`Preview ${heroPreviewSlide?.title ?? 'product'} screenshot`}
+                onClick={openHeroPreview}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={BUILDCORE_SALES_HERO.screenshotSrc}
+                  alt={BUILDCORE_SALES_HERO.screenshotAlt}
+                  className={styles.salesHeroScreenshot}
+                  loading="eager"
+                />
+              </button>
             </figure>
           </div>
         </div>
@@ -262,6 +281,17 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
           </div>
         </div>
       </section>
+
+      {heroPreviewOpen && heroPreviewSlide?.imageSrc != null ? (
+        <SalesScreenshotLightbox
+          slide={{
+            title: heroPreviewSlide.title,
+            imageSrc: heroPreviewSlide.imageSrc,
+            imageAlt: heroPreviewSlide.imageAlt,
+          }}
+          onClose={closeHeroPreview}
+        />
+      ) : null}
     </div>
   );
 }

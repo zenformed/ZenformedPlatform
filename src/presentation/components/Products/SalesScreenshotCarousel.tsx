@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react';
+import { SalesScreenshotLightbox } from '@/presentation/components/Products/SalesScreenshotLightbox';
 import styles from '../../../../app/products/products.module.css';
 
 export type SalesScreenshotSlide = {
@@ -33,7 +34,6 @@ export function SalesScreenshotCarousel({
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<Array<HTMLElement | null>>([]);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const goTo = useCallback(
     (index: number) => {
@@ -82,27 +82,6 @@ export function SalesScreenshotCarousel({
     viewport.addEventListener('scroll', handleScroll, { passive: true });
     return () => viewport.removeEventListener('scroll', handleScroll);
   }, [slides.length]);
-
-  useEffect(() => {
-    if (previewIndex == null) return;
-
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        closePreview();
-      }
-    };
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [closePreview, previewIndex]);
 
   if (slides.length === 0) {
     return <></>;
@@ -171,35 +150,14 @@ export function SalesScreenshotCarousel({
       </div>
 
       {previewSlide != null && hasImage(previewSlide) ? (
-        <div
-          className={styles.salesCarouselLightbox}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${previewSlide.title} screenshot preview`}
-          onClick={closePreview}
-        >
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className={styles.salesCarouselLightboxClose}
-            aria-label="Close preview"
-            onClick={closePreview}
-          >
-            ×
-          </button>
-          <div
-            className={styles.salesCarouselLightboxContent}
-            onClick={(event) => event.stopPropagation()}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={previewSlide.imageSrc}
-              alt={previewSlide.imageAlt ?? previewSlide.title}
-              className={styles.salesCarouselLightboxImage}
-            />
-            <p className={styles.salesCarouselLightboxCaption}>{previewSlide.title}</p>
-          </div>
-        </div>
+        <SalesScreenshotLightbox
+          slide={{
+            title: previewSlide.title,
+            imageSrc: previewSlide.imageSrc!,
+            imageAlt: previewSlide.imageAlt,
+          }}
+          onClose={closePreview}
+        />
       ) : null}
     </div>
   );
