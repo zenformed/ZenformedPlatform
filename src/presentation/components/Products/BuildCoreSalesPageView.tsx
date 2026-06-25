@@ -114,12 +114,14 @@ export function BuildCoreSalesPageView({ config }: BuildCoreSalesPageViewProps):
             <p className={styles.salesHeroSubheadline}>{BUILDCORE_SALES_HERO.subheadline}</p>
 
             <div className={styles.salesHeroCtaRow}>
-              <a href={liveDemoUrl} className={styles.salesCtaDemo}>
-                {BUILDCORE_SALES_HERO.liveDemoCta}
-              </a>
-              <button type="button" className={styles.salesCtaPrimary} onClick={startFreeTrial}>
-                Start Free Trial
-              </button>
+              <div className={styles.salesHeroCtaPrimaryRow}>
+                <a href={liveDemoUrl} className={styles.salesCtaDemo}>
+                  {BUILDCORE_SALES_HERO.liveDemoCta}
+                </a>
+                <button type="button" className={styles.salesCtaPrimary} onClick={startFreeTrial}>
+                  Start Free Trial
+                </button>
+              </div>
               <button type="button" className={styles.salesCtaSecondary} onClick={scrollToPricing}>
                 View Pricing
               </button>
