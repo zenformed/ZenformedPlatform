@@ -1,8 +1,8 @@
 import { normalizeAppPublicOrigin } from '@/infrastructure/auth/appLaunchUrlDev';
 
 const BUILDCORE_DEMO_DASHBOARD_PATH = '/demo/dashboard';
-const BUILDCORE_DEMO_ORIGIN_PRODUCTION = 'https://demo.buildcore.zenformed.com';
-const BUILDCORE_DEMO_ORIGIN_LOCAL = 'http://localhost:3020';
+const BUILDCORE_APP_ORIGIN_PRODUCTION = 'https://buildcore.zenformed.com';
+const BUILDCORE_APP_ORIGIN_LOCAL = 'http://localhost:3020';
 
 function isLocalDevHostname(hostname: string): boolean {
   return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]' || hostname === '::1';
@@ -16,12 +16,12 @@ export function resolveBuildCoreDemoUrl(): string {
   }
 
   if (typeof window !== 'undefined' && isLocalDevHostname(window.location.hostname)) {
-    return `${BUILDCORE_DEMO_ORIGIN_LOCAL}${BUILDCORE_DEMO_DASHBOARD_PATH}`;
+    return `${BUILDCORE_APP_ORIGIN_LOCAL}${BUILDCORE_DEMO_DASHBOARD_PATH}`;
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    return `${BUILDCORE_DEMO_ORIGIN_LOCAL}${BUILDCORE_DEMO_DASHBOARD_PATH}`;
+    return `${BUILDCORE_APP_ORIGIN_LOCAL}${BUILDCORE_DEMO_DASHBOARD_PATH}`;
   }
 
-  return `${BUILDCORE_DEMO_ORIGIN_PRODUCTION}${BUILDCORE_DEMO_DASHBOARD_PATH}`;
+  return `${BUILDCORE_APP_ORIGIN_PRODUCTION}${BUILDCORE_DEMO_DASHBOARD_PATH}`;
 }
