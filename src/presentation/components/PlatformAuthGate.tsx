@@ -17,6 +17,7 @@ const PUBLIC_PATHS = [
   nav.routes.forgotPassword,
   nav.routes.resetPassword,
   '/products',
+  nav.routes.docs,
   nav.routes.checkoutSuccess,
   '/legal',
 ] as const;

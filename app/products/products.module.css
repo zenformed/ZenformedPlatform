@@ -104,6 +104,95 @@
   color: var(--products-text-soft);
 }
 
+.headerLinkActive {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--products-text);
+  text-decoration: none;
+}
+
+.headerLinkActive:hover {
+  opacity: 0.85;
+}
+
+.headerInnerWithPlatformNav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.headerInnerWithPlatformNav .brandLink {
+  justify-self: start;
+}
+
+.headerInnerWithPlatformNav .headerNav {
+  justify-self: end;
+}
+
+.headerPlatformNav {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .headerPlatformNav {
+    display: flex;
+  }
+}
+
+.platformNavMenuWrap {
+  position: relative;
+}
+
+.platformNavMenuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--products-text-soft);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.platformNavMenuButton:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--products-text);
+}
+
+.platformNavMenuIcon {
+  flex-shrink: 0;
+}
+
+.platformNavMenu {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  right: 0;
+  z-index: 50;
+  min-width: 10.5rem;
+  padding: 0.375rem;
+  border: 1px solid var(--products-border);
+  border-radius: 0.5rem;
+  background: #161922;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.platformNavMenuItemActive {
+  color: var(--products-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .accountNavPlaceholder {
   display: inline-block;
   width: 5.5rem;
@@ -229,6 +318,15 @@
   padding: 2rem 1.5rem 4rem;
 }
 
+.mainWide {
+  max-width: 92rem;
+  padding-top: 1.25rem;
+}
+
+.headerInnerWide {
+  max-width: 92rem;
+}
+
 .indexHeader {
   margin-bottom: 2rem;
   width: 100%;
@@ -307,6 +405,10 @@
 
 .indexCardAnalyticscore::before {
   background: #eab308;
+}
+
+.indexCardAccount::before {
+  background: #119247;
 }
 
 .indexCardBadgeLive,
