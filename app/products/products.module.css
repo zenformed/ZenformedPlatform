@@ -104,45 +104,6 @@
   color: var(--products-text-soft);
 }
 
-.headerLinkActive {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--products-text);
-  text-decoration: none;
-}
-
-.headerLinkActive:hover {
-  opacity: 0.85;
-}
-
-.headerInnerWithPlatformNav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-}
-
-.headerInnerWithPlatformNav .brandLink {
-  justify-self: start;
-}
-
-.headerInnerWithPlatformNav .headerNav {
-  justify-self: end;
-}
-
-.headerPlatformNav {
-  display: none;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem 1.25rem;
-}
-
-@media (min-width: 900px) {
-  .headerPlatformNav {
-    display: flex;
-  }
-}
-
 .platformNavMenuWrap {
   position: relative;
 }

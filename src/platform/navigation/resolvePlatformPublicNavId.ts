@@ -5,11 +5,7 @@ export function shouldShowPlatformPublicNavMenu(pathname: string | null): boolea
     return false;
   }
 
-  if (pathname.startsWith('/docs')) {
-    return false;
-  }
-
-  return pathname.startsWith('/products');
+  return pathname.startsWith('/products') || pathname.startsWith('/docs');
 }
 
 export function resolvePlatformPublicNavId(pathname: string | null): PlatformPublicNavId | null {

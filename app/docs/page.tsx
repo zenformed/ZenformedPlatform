@@ -9,7 +9,6 @@ import styles from './docs.module.css';
 export default function DocsPage(): ReactElement {
   return (
     <ProductsPublicShell
-      activeNavItem="docs"
       mainClassName={shellStyles.mainWide}
       headerInnerClassName={shellStyles.headerInnerWide}
     >
