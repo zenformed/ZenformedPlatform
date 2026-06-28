@@ -14,6 +14,13 @@ export type SupportRequestFieldErrors = {
   readonly source?: string;
 };
 
+type MutableSupportRequestFieldErrors = {
+  subject?: string;
+  message?: string;
+  product?: string;
+  source?: string;
+};
+
 export type ValidatedSupportRequestSubmission = {
   readonly subject: string;
   readonly message: string;
@@ -46,7 +53,7 @@ export function validateSupportRequestSubmission(
   const message = input.message.trim();
   const source = input.source?.trim() ?? 'docs';
   const product = parseSupportRequestProduct(input.product);
-  const errors: SupportRequestFieldErrors = {};
+  const errors: MutableSupportRequestFieldErrors = {};
 
   if (subject.length === 0) {
     errors.subject = 'Subject is required.';
