@@ -1,4 +1,5 @@
 import type { PlatformAppId } from '@/platform/appDefinitions/platformApps';
+import { docsProductPath } from '@/platform/docs/docsTypes';
 
 export type DocsCardId = 'my-account' | PlatformAppId;
 
@@ -40,7 +41,7 @@ export const DOCS_LANDING_CARDS: readonly DocsLandingCard[] = [
     name: 'BuildCore',
     description: 'Construction CRM for managing projects, teams, and finances.',
     actionLabel: 'View Documentation',
-    actionHref: '#',
+    actionHref: docsProductPath('buildcore'),
     status: 'live',
     iconAppId: 'buildcore',
   },

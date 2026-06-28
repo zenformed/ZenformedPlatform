@@ -1,0 +1,279 @@
+{
+  "buildcore": {
+    "generatedAt": "2026-06-28T01:18:11.651Z",
+    "sourceRoot": "C:\\Users\\Daniel\\workspace\\Work\\Zenformed\\ZenformedCore\\BuildCore",
+    "features": [
+      {
+        "feature": "projects",
+        "purpose": "Create and manage parent projects and subprojects from the Projects list. Projects are the container for workflow tasks, documents, budget entries, and payments.",
+        "primaryWorkflow": [
+          "Open BuildCore from your Zenformed account and go to the **Projects** view.",
+          "Select the plus (+) button in the Projects header.",
+          "Complete the **New project** modal (name, customer/contact fields as needed).",
+          "Select **Create project** to save the parent project.",
+          "Open the project to add subprojects, workflow tasks, and related records from the project detail tabs/sections."
+        ],
+        "alternateWorkflows": [
+          "Create a subproject from a parent project detail view when the project supports subprojects.",
+          "Edit project information from the project detail **Project information** section."
+        ],
+        "prerequisites": [
+          "User must have BuildCore access through their Zenformed account.",
+          "User needs permission to create projects in the organization."
+        ],
+        "userTips": [
+          "Use the plus (+) button — there is no **Create New Project** text button.",
+          "Subprojects inherit context from the parent project; create the parent first."
+        ],
+        "commonMistakes": [
+          "Describing a **Create New Project** button instead of the plus (+) button.",
+          "Referring to a **Project Overview** tab instead of **Project information**.",
+          "Documenting a project type dropdown on create when it is not in the current form."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "workflow-tasks",
+        "purpose": "Workflow tasks track stage-based work on a project. Tasks move through workflow stages and may require documents, budget entries, or customer actions.",
+        "primaryWorkflow": [
+          "Open the project from the **Projects** view.",
+          "Go to **Workflow Tasks** on the project.",
+          "Select **Add task** (or open an existing task).",
+          "Complete task fields (stage, assignee, due date, requirements) in the task form.",
+          "Select **Save task** to persist the task.",
+          "Move the task through stages using the workflow controls when work progresses."
+        ],
+        "alternateWorkflows": [
+          "Open **View all Workflow Tasks** from project context when reviewing every task on a project.",
+          "Complete customer-facing tasks from assigned customer workflow links when applicable."
+        ],
+        "prerequisites": [
+          "A project must exist before workflow tasks can be added.",
+          "Workflow stages must be configured for the organization (see Workflow Settings)."
+        ],
+        "userTips": [
+          "Use exact labels **Add task** and **Save task** (sentence case).",
+          "Task requirements may gate document uploads and budget entries."
+        ],
+        "commonMistakes": [
+          "Inventing a **Tasks tab** label not present in the UI.",
+          "Using **Add Task** / **Save Task** (incorrect capitalization).",
+          "Describing tasks as standalone records outside a project context."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "payments",
+        "purpose": "Manage payment milestones and payment status on projects.",
+        "primaryWorkflow": [
+          "Open the project from the **Projects** view.",
+          "Go to the project **Payments** section.",
+          "Review payment milestones and statuses (for example invoiced, paid).",
+          "Add or update payment records using the payments table actions when permitted.",
+          "Save changes and verify amounts align with project payment milestones."
+        ],
+        "alternateWorkflows": [
+          "Cross-reference payment milestones with workflow task completion when payments gate stage progression."
+        ],
+        "prerequisites": [
+          "A project must exist.",
+          "Payment milestones may depend on workflow configuration."
+        ],
+        "userTips": [
+          "Use **payment milestones** terminology rather than generic invoices unless describing a specific payment state column.",
+          "Amount fields use USD labeling from the product context."
+        ],
+        "commonMistakes": [
+          "Describing a standalone invoicing module unrelated to project payments.",
+          "Inventing payment buttons or tabs not present in implementation context."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "budget",
+        "purpose": "Track budget line items and costs on a project. Budget entries may be created from project budget views and linked to workflow requirements.",
+        "primaryWorkflow": [
+          "Open the project from the **Projects** view.",
+          "Go to the project **Budget** section.",
+          "Select the control to add a budget entry (add line / new entry action in the budget table).",
+          "Enter item name, category, cost date, amount, and other required fields.",
+          "Save the budget entry.",
+          "Review totals and linked workflow requirements from the budget view."
+        ],
+        "alternateWorkflows": [
+          "Attach or satisfy budget-required documents through linked workflow tasks when required."
+        ],
+        "prerequisites": [
+          "A project must exist.",
+          "Budget categories and permissions must be available for the user role."
+        ],
+        "userTips": [
+          "Required fields include item name and cost date — do not invent alternate field labels.",
+          "Do not document \"budget shell\" creation as part of MVP project create."
+        ],
+        "commonMistakes": [
+          "Inventing a **Save Budget Entry** button label not present in implementation context.",
+          "Describing budget setup as a separate wizard during project create.",
+          "Documenting budget reports as if they replace the project budget table workflow."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "documents",
+        "purpose": "Upload and review project documents. The intended upload path is through workflow tasks that require attachments — not a standalone Documents page upload button.",
+        "primaryWorkflow": [
+          "Open the project from the **Projects** view.",
+          "Go to **Workflow Tasks** on the project.",
+          "Select the task that requires a document upload.",
+          "Use the paperclip attachment control on the task.",
+          "Choose **Upload** and select the file.",
+          "Select **Save task** to attach the document to the task."
+        ],
+        "alternateWorkflows": [
+          "Review uploaded files from the project **Documents** section after they are attached through tasks.",
+          "Download or delete documents from task or project document lists when permitted."
+        ],
+        "prerequisites": [
+          "A project and a workflow task that allows document uploads must exist.",
+          "The user must have permission to upload documents on the task."
+        ],
+        "userTips": [
+          "Upload from the task when documentation is required — do not describe a separate Documents upload page as the primary path.",
+          "Missing vs uploaded document status is visible from project document views after attachment."
+        ],
+        "commonMistakes": [
+          "Assuming there is a standalone **Documents** page with a primary **Upload** button.",
+          "Uploading from the Documents section as the main workflow instead of through a workflow task.",
+          "Skipping task selection before describing an upload."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "customers",
+        "purpose": "Store customer and contact details on projects. Contacts are captured during project create/edit and through lead capture when configured.",
+        "primaryWorkflow": [
+          "Open the **Projects** view or an existing project.",
+          "Create a new project with the plus (+) button **or** edit an existing project.",
+          "Enter customer/contact fields on the create or edit form (name, email, phone, address as available).",
+          "Save the project to persist contact details on the project record.",
+          "Use contact details when assigning customer workflow tasks or communications."
+        ],
+        "alternateWorkflows": [
+          "Submit lead capture forms (when configured) to create or update contact/project records."
+        ],
+        "prerequisites": [
+          "User permission to create or edit projects."
+        ],
+        "userTips": [
+          "Customer/contact data lives on the project — there is not a separate standalone CRM app view in MVP docs.",
+          "Lead capture is optional and organization-specific."
+        ],
+        "commonMistakes": [
+          "Documenting customer portal invite during project create as a default step.",
+          "Inventing a global **Customers** list page as the primary entry point when contacts are project-scoped."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "workflow-settings",
+        "purpose": "Configure workflow stages, task templates, and workflow rules for the organization.",
+        "primaryWorkflow": [
+          "Open BuildCore from your Zenformed account.",
+          "Navigate to **Workflow Settings** (admin/configuration area).",
+          "Review existing workflow stages and templates.",
+          "Add or edit stages/templates using the settings controls.",
+          "Save workflow settings and verify projects use the updated stages for new tasks."
+        ],
+        "alternateWorkflows": [
+          "Adjust task permission defaults that affect workflow task visibility (see Permissions)."
+        ],
+        "prerequisites": [
+          "Administrative permission to manage workflow settings."
+        ],
+        "userTips": [
+          "Changes affect new task behavior — existing tasks may retain prior stage history."
+        ],
+        "commonMistakes": [
+          "Documenting per-project workflow settings when configuration is organization-level.",
+          "Inventing stage names not present in generated workflow settings context."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "reports",
+        "purpose": "Review operational and financial summaries exported or viewed from BuildCore reporting entry points.",
+        "primaryWorkflow": [
+          "Open BuildCore from your Zenformed account.",
+          "Navigate to **Reports** from the application navigation.",
+          "Choose the report type relevant to the article topic (projects, workflow, budget, or payments summaries as available).",
+          "Apply filters (date range, project, status) when the report supports filtering.",
+          "Review results and export or share using the report actions provided."
+        ],
+        "alternateWorkflows": [
+          "Use project-level summaries when the article focuses on a single project rather than org-wide reports."
+        ],
+        "prerequisites": [
+          "User must have reporting permissions for the organization."
+        ],
+        "userTips": [
+          "Describe only report views and filters confirmed in product context — do not invent report names."
+        ],
+        "commonMistakes": [
+          "Inventing report URLs or export formats not in the product.",
+          "Describing reports as if they replace project detail sections."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "permissions",
+        "purpose": "Control who can view or edit workflow tasks, documents, budget entries, and related project data.",
+        "primaryWorkflow": [
+          "Open BuildCore from your Zenformed account.",
+          "Navigate to permissions settings for workflow tasks / team access (organization configuration).",
+          "Review visibility rules such as \"Only assigned user can view\" for workflow tasks when applicable.",
+          "Update permission toggles or role defaults for the feature described in the article.",
+          "Save permission changes and verify behavior with a non-admin test user when possible."
+        ],
+        "alternateWorkflows": [
+          "Combine with **Team Members** role assignment when the article spans access control end-to-end."
+        ],
+        "prerequisites": [
+          "Administrative permission to change organization or workflow permissions."
+        ],
+        "userTips": [
+          "Permission copy is exact — use labels from implementation context (for example member visibility toggles)."
+        ],
+        "commonMistakes": [
+          "Inventing permission names or admin menus not in product context.",
+          "Describing customer portal permissions as identical to internal staff permissions."
+        ],
+        "source": "editorial+generated"
+      },
+      {
+        "feature": "team-members",
+        "purpose": "Manage organization members who can access BuildCore and their roles.",
+        "primaryWorkflow": [
+          "Open BuildCore from your Zenformed account.",
+          "Navigate to **Team Members** (or organization team settings entry point).",
+          "Review the member list (name, email, organization role, BuildCore role).",
+          "Invite or update members using the team management actions when permitted.",
+          "Save role changes and confirm the member can access BuildCore through Zenformed."
+        ],
+        "alternateWorkflows": [
+          "Adjust BuildCore role assignments that affect feature permissions."
+        ],
+        "prerequisites": [
+          "Organization admin or member-management permission."
+        ],
+        "userTips": [
+          "Access still flows through Zenformed account launch — members do not sign in at buildcore.com."
+        ],
+        "commonMistakes": [
+          "Inventing a separate BuildCore login flow for invited users.",
+          "Documenting role names not present in the team members table labels."
+        ],
+        "source": "editorial+generated"
+      }
+    ]
+  }
+}

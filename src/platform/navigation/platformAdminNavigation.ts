@@ -7,6 +7,8 @@ export const platformAdminNavigation = {
     organizations: '/admin/organizations',
     organizationDetail: (organizationId: string) => `/admin/organizations/${organizationId}`,
     subscriptions: '/admin/subscriptions',
+    docs: '/admin/docs',
+    docsArticleEditor: (editorId: string) => `/admin/docs/articles/${editorId}`,
   },
   api: {
     me: '/api/admin/me',
@@ -20,6 +22,7 @@ export const platformAdminNavigation = {
     { id: 'accountOwners', href: '/admin/users', label: 'Account Owners' },
     { id: 'organizations', href: '/admin/organizations', label: 'Organizations' },
     { id: 'subscriptions', href: '/admin/subscriptions', label: 'Subscriptions' },
+    { id: 'docs', href: '/admin/docs', label: 'Documentation' },
   ],
 } as const;
 

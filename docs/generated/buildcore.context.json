@@ -1,0 +1,464 @@
+{
+  "buildcore": {
+    "generatedAt": "2026-06-28T01:18:11.404Z",
+    "sourceRoot": "C:\\Users\\Daniel\\workspace\\Work\\Zenformed\\ZenformedCore\\BuildCore",
+    "product": {
+      "slug": "buildcore",
+      "name": "BuildCore",
+      "description": "Construction/trades CRM for lead, project, workflow, document, and milestone tracking.",
+      "descriptionShort": "Construction and trades CRM",
+      "dashboardRoute": "/dashboard"
+    },
+    "navigation": {
+      "sidebar": [
+        {
+          "id": "projects",
+          "label": "Projects",
+          "title": "All projects",
+          "route": "/dashboard"
+        },
+        {
+          "id": "reports",
+          "label": "Reports",
+          "title": "CRM reports",
+          "route": "/reports"
+        },
+        {
+          "id": "teams",
+          "label": "Teams",
+          "title": "Teams",
+          "route": "/teams"
+        },
+        {
+          "id": "workflowStages",
+          "label": "Workflow Settings",
+          "title": "Workflow settings",
+          "route": "/workflow-settings"
+        }
+      ],
+      "header": [
+        {
+          "id": "appsLauncher",
+          "label": "Open apps",
+          "context": "header"
+        },
+        {
+          "id": "searchProjects",
+          "label": "Search projects…",
+          "context": "header search"
+        },
+        {
+          "id": "newProjectButton",
+          "label": "New project",
+          "context": "projects list plus button"
+        },
+        {
+          "id": "accountMenu",
+          "label": "Account menu",
+          "context": "header"
+        },
+        {
+          "id": "signOut",
+          "label": "Sign out",
+          "context": "account menu"
+        }
+      ]
+    },
+    "routes": {
+      "static": [
+        {
+          "id": "dashboard",
+          "pattern": "/dashboard",
+          "description": "Projects list (default landing)"
+        },
+        {
+          "id": "reports",
+          "pattern": "/reports"
+        },
+        {
+          "id": "teams",
+          "pattern": "/teams"
+        },
+        {
+          "id": "workflowStages",
+          "pattern": "/workflow-settings"
+        }
+      ],
+      "projectDetail": [
+        {
+          "id": "detail",
+          "pattern": "/projects/{slug}",
+          "description": "Project detail"
+        },
+        {
+          "id": "tasks",
+          "pattern": "/projects/{slug}/tasks",
+          "description": "Workflow tasks"
+        },
+        {
+          "id": "documents",
+          "pattern": "/projects/{slug}/documents",
+          "description": "Documents"
+        },
+        {
+          "id": "financials",
+          "pattern": "/projects/{slug}/financials",
+          "description": "Payments / financials"
+        },
+        {
+          "id": "accountability",
+          "pattern": "/projects/{slug}/accountability",
+          "description": "Accountability"
+        },
+        {
+          "id": "budget",
+          "pattern": "/projects/{slug}/budget",
+          "description": "Budget"
+        },
+        {
+          "id": "subproject",
+          "pattern": "/projects/{parentSlug}/{subSlug}",
+          "description": "Subproject detail"
+        }
+      ],
+      "auth": [
+        {
+          "id": "login",
+          "pattern": "/login"
+        },
+        {
+          "id": "forgotPassword",
+          "pattern": "/forgot-password"
+        },
+        {
+          "id": "resetPassword",
+          "pattern": "/reset-password"
+        },
+        {
+          "id": "home",
+          "pattern": "/"
+        }
+      ]
+    },
+    "pages": [
+      {
+        "path": "/dashboard",
+        "source": "app/(dashboard)/dashboard/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}",
+        "source": "app/(dashboard)/projects/[slug]/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/{subSlug}",
+        "source": "app/(dashboard)/projects/[slug]/[subSlug]/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/{subSlug}/accountability",
+        "source": "app/(dashboard)/projects/[slug]/[subSlug]/accountability/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/{subSlug}/budget",
+        "source": "app/(dashboard)/projects/[slug]/[subSlug]/budget/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/{subSlug}/documents",
+        "source": "app/(dashboard)/projects/[slug]/[subSlug]/documents/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/{subSlug}/financials",
+        "source": "app/(dashboard)/projects/[slug]/[subSlug]/financials/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/{subSlug}/tasks",
+        "source": "app/(dashboard)/projects/[slug]/[subSlug]/tasks/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/accountability",
+        "source": "app/(dashboard)/projects/[slug]/accountability/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/budget",
+        "source": "app/(dashboard)/projects/[slug]/budget/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/documents",
+        "source": "app/(dashboard)/projects/[slug]/documents/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/financials",
+        "source": "app/(dashboard)/projects/[slug]/financials/page.tsx"
+      },
+      {
+        "path": "/projects/{slug}/tasks",
+        "source": "app/(dashboard)/projects/[slug]/tasks/page.tsx"
+      },
+      {
+        "path": "/reports",
+        "source": "app/(dashboard)/reports/page.tsx"
+      },
+      {
+        "path": "/teams",
+        "source": "app/(dashboard)/teams/page.tsx"
+      },
+      {
+        "path": "/workflow-settings",
+        "source": "app/(dashboard)/workflow-settings/page.tsx"
+      },
+      {
+        "path": "/workflow-stages",
+        "source": "app/(dashboard)/workflow-stages/page.tsx"
+      }
+    ],
+    "projectsList": {
+      "panelTitle": "Projects",
+      "searchPlaceholder": "Search projects…",
+      "filterLabels": [
+        {
+          "id": "stage",
+          "label": "Stage"
+        },
+        {
+          "id": "priority",
+          "label": "Priority"
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        },
+        {
+          "id": "filterMenu",
+          "label": "Filter projects"
+        }
+      ],
+      "createProject": {
+        "modalTitle": "New project",
+        "submitButton": "Create project",
+        "cancelButton": "Cancel",
+        "plusButtonAria": "New project",
+        "formFields": [
+          {
+            "id": "name",
+            "label": "Project / customer name"
+          },
+          {
+            "id": "industry",
+            "label": "Industry"
+          },
+          {
+            "id": "customIndustry",
+            "label": "Custom industry"
+          },
+          {
+            "id": "contactName",
+            "label": "Contact name"
+          },
+          {
+            "id": "email",
+            "label": "Email"
+          },
+          {
+            "id": "phone",
+            "label": "Phone"
+          },
+          {
+            "id": "emailAddresses",
+            "label": "Email addresses (up to 4)"
+          },
+          {
+            "id": "phoneNumbers",
+            "label": "Phone numbers (up to 4)"
+          },
+          {
+            "id": "addEmail",
+            "label": "+ Add email"
+          },
+          {
+            "id": "removeEmail",
+            "label": "Remove email address"
+          },
+          {
+            "id": "addPhone",
+            "label": "+ Add phone"
+          },
+          {
+            "id": "removePhone",
+            "label": "Remove phone number"
+          },
+          {
+            "id": "priority",
+            "label": "Priority"
+          },
+          {
+            "id": "stage",
+            "label": "Current stage"
+          },
+          {
+            "id": "notes",
+            "label": "Notes (Max 200)"
+          },
+          {
+            "id": "assigned",
+            "label": "Assigned to"
+          },
+          {
+            "id": "assignedShort",
+            "label": "Assigned"
+          },
+          {
+            "id": "addressLine1",
+            "label": "Address line 1"
+          },
+          {
+            "id": "addressLine2",
+            "label": "Address line 2 (optional)"
+          },
+          {
+            "id": "city",
+            "label": "City"
+          },
+          {
+            "id": "state",
+            "label": "State"
+          },
+          {
+            "id": "postalCode",
+            "label": "Zip code"
+          }
+        ]
+      }
+    },
+    "projectDetail": {
+      "backLabel": "All projects",
+      "sections": [
+        {
+          "id": "projectInformation",
+          "label": "Project information"
+        },
+        {
+          "id": "financials",
+          "label": "Payments"
+        },
+        {
+          "id": "workflow",
+          "label": "Workflow tasks"
+        },
+        {
+          "id": "documents",
+          "label": "Documents"
+        },
+        {
+          "id": "accountability",
+          "label": "Accountability"
+        }
+      ],
+      "editModalTitle": "Edit project"
+    },
+    "subprojects": {
+      "sectionTitle": "Subprojects",
+      "modalTitle": "New subproject",
+      "plusButtonAria": "New subproject",
+      "submitButton": "Create project"
+    },
+    "settingsPages": [
+      {
+        "id": "workflowSettings",
+        "title": "Workflow Settings",
+        "breadcrumb": "Organization / Workflow Settings"
+      },
+      {
+        "id": "workflowStages",
+        "title": "Workflow Stages",
+        "breadcrumb": "Organization / Workflow Stages"
+      }
+    ],
+    "workflow": {
+      "defaultPipelineStages": [
+        {
+          "slug": "new-lead",
+          "label": "New Lead",
+          "sortOrder": 1
+        },
+        {
+          "slug": "contacted",
+          "label": "Contacted",
+          "sortOrder": 2
+        },
+        {
+          "slug": "inspection-scheduled",
+          "label": "Inspection Scheduled",
+          "sortOrder": 3
+        },
+        {
+          "slug": "inspection-complete",
+          "label": "Inspection Complete",
+          "sortOrder": 4
+        },
+        {
+          "slug": "estimate-sent",
+          "label": "Estimate Sent",
+          "sortOrder": 5
+        },
+        {
+          "slug": "waiting-on-approval",
+          "label": "Waiting on Approval",
+          "sortOrder": 6
+        },
+        {
+          "slug": "approved",
+          "label": "Approved",
+          "sortOrder": 7
+        },
+        {
+          "slug": "scheduled",
+          "label": "Scheduled",
+          "sortOrder": 8
+        },
+        {
+          "slug": "in-progress",
+          "label": "In Progress",
+          "sortOrder": 9
+        },
+        {
+          "slug": "completed",
+          "label": "Completed",
+          "sortOrder": 10
+        },
+        {
+          "slug": "invoiced",
+          "label": "Invoiced",
+          "sortOrder": 11
+        },
+        {
+          "slug": "complete",
+          "label": "Complete",
+          "sortOrder": 12
+        }
+      ],
+      "workflowSettingsTabs": [
+        {
+          "id": "workflowStages",
+          "label": "Workflow Stages"
+        },
+        {
+          "id": "alerts",
+          "label": "Customer Task Alerts"
+        }
+      ]
+    },
+    "reports": {
+      "title": "Reports",
+      "breadcrumb": "CRM / Reports"
+    },
+    "featureFlags": [
+      {
+        "id": "interactiveDemo",
+        "description": "Interactive Demo"
+      },
+      {
+        "id": "demoProjectCreationDisabled",
+        "description": "Project creation is not available in this environment."
+      }
+    ]
+  }
+}

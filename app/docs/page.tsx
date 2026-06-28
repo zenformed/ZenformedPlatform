@@ -2,16 +2,12 @@ import type { ReactElement } from 'react';
 import { DocsBottomSections } from '@/presentation/components/Docs/DocsBottomSections';
 import { DocsHero } from '@/presentation/components/Docs/DocsHero';
 import { DocsIndexGrid } from '@/presentation/components/Docs/DocsIndexGrid';
-import { ProductsPublicShell } from '@/presentation/components/Products/ProductsPublicShell';
-import shellStyles from '../products/products.module.css';
+import { DocsShell } from '@/presentation/components/Docs/DocsShell';
 import styles from './docs.module.css';
 
 export default function DocsPage(): ReactElement {
   return (
-    <ProductsPublicShell
-      mainClassName={shellStyles.mainWide}
-      headerInnerClassName={shellStyles.headerInnerWide}
-    >
+    <DocsShell>
       <DocsHero />
       <div className={styles.docsSectionHeader}>
         <h2 className={styles.docsSectionTitle}>Browse documentation</h2>
@@ -19,6 +15,6 @@ export default function DocsPage(): ReactElement {
       </div>
       <DocsIndexGrid />
       <DocsBottomSections />
-    </ProductsPublicShell>
+    </DocsShell>
   );
 }

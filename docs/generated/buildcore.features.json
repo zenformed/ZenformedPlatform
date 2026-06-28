@@ -1,0 +1,1667 @@
+{
+  "buildcore": {
+    "generatedAt": "2026-06-28T01:18:11.478Z",
+    "sourceRoot": "C:\\Users\\Daniel\\workspace\\Work\\Zenformed\\ZenformedCore\\BuildCore",
+    "features": [
+      {
+        "id": "projects",
+        "name": "Projects",
+        "purpose": "Manage construction CRM projects and subprojects from the Projects list and project detail pages.",
+        "whereItExists": [
+          "Projects sidebar (/dashboard)",
+          "Project detail (/projects/{slug})",
+          "Subproject detail (/projects/{parentSlug}/{subSlug})"
+        ],
+        "navigationPath": [
+          "Sidebar → Projects",
+          "Header → plus (+) button → New project modal"
+        ],
+        "creationFlow": {
+          "summary": "Create a parent project from the Projects list using the header plus (+) button.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open the Projects view.",
+              "uiLabels": [
+                "Projects"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Select the plus (+) button in the header.",
+              "uiLabels": [
+                "New project"
+              ]
+            },
+            {
+              "order": 3,
+              "description": "Complete the New project modal and submit.",
+              "uiLabels": [
+                "New project",
+                "Create project"
+              ]
+            }
+          ]
+        },
+        "editFlow": {
+          "summary": "Edit an existing project from project detail.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open a project from the Projects list."
+            },
+            {
+              "order": 2,
+              "description": "Open the Edit project drawer/modal and save changes.",
+              "uiLabels": [
+                "Edit project",
+                "Save changes"
+              ]
+            }
+          ]
+        },
+        "deleteFlow": {
+          "summary": "Delete a project from the Projects list actions menu with confirmation.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open the project row actions menu on the Projects list."
+            },
+            {
+              "order": 2,
+              "description": "Choose Delete project and confirm in the destructive confirmation workflow.",
+              "uiLabels": [
+                "Delete project",
+                "Delete Project"
+              ]
+            }
+          ]
+        },
+        "modals": [
+          {
+            "id": "createProject",
+            "title": "New project"
+          },
+          {
+            "id": "editProject",
+            "title": "Edit project"
+          },
+          {
+            "id": "newSubproject",
+            "title": "New subproject"
+          },
+          {
+            "id": "deleteProject",
+            "title": "Delete Project"
+          }
+        ],
+        "buttons": [
+          {
+            "id": "newProject",
+            "label": "New project"
+          },
+          {
+            "id": "createProject",
+            "label": "Create project"
+          },
+          {
+            "id": "saveProject",
+            "label": "Save project"
+          },
+          {
+            "id": "editProject",
+            "label": "Save changes"
+          },
+          {
+            "id": "deleteProject",
+            "label": "Delete project"
+          },
+          {
+            "id": "newSubproject",
+            "label": "New subproject"
+          }
+        ],
+        "formFields": [
+          {
+            "id": "name",
+            "label": "Project / customer name"
+          },
+          {
+            "id": "industry",
+            "label": "Industry"
+          },
+          {
+            "id": "customIndustry",
+            "label": "Custom industry"
+          },
+          {
+            "id": "contactName",
+            "label": "Contact name"
+          },
+          {
+            "id": "email",
+            "label": "Email"
+          },
+          {
+            "id": "phone",
+            "label": "Phone"
+          },
+          {
+            "id": "emailAddresses",
+            "label": "Email addresses (up to 4)"
+          },
+          {
+            "id": "phoneNumbers",
+            "label": "Phone numbers (up to 4)"
+          },
+          {
+            "id": "addEmail",
+            "label": "+ Add email"
+          },
+          {
+            "id": "removeEmail",
+            "label": "Remove email address"
+          },
+          {
+            "id": "addPhone",
+            "label": "+ Add phone"
+          },
+          {
+            "id": "removePhone",
+            "label": "Remove phone number"
+          },
+          {
+            "id": "priority",
+            "label": "Priority"
+          },
+          {
+            "id": "stage",
+            "label": "Current stage"
+          },
+          {
+            "id": "notes",
+            "label": "Notes",
+            "validation": "Notes (Max 200) — max 200 characters (MAX_PROJECT_NOTES_LENGTH)"
+          },
+          {
+            "id": "assigned",
+            "label": "Assigned to"
+          },
+          {
+            "id": "assignedShort",
+            "label": "Assigned"
+          },
+          {
+            "id": "addressLine1",
+            "label": "Address line 1"
+          },
+          {
+            "id": "addressLine2",
+            "label": "Address line 2 (optional)"
+          },
+          {
+            "id": "city",
+            "label": "City",
+            "validation": "City can only contain letters, spaces, hyphens, apostrophes, and periods."
+          },
+          {
+            "id": "state",
+            "label": "State"
+          },
+          {
+            "id": "postalCode",
+            "label": "Zip code"
+          },
+          {
+            "id": "balanceDerivedHint",
+            "label": "Balance is calculated from unpaid payment milestones."
+          }
+        ],
+        "validation": [
+          "Notes (Max 200) — max 200 characters (MAX_PROJECT_NOTES_LENGTH)",
+          "City can only contain letters, spaces, hyphens, apostrophes, and periods.",
+          "Zip code must be exactly 5 digits.",
+          "City is required.",
+          "ZIP is required."
+        ],
+        "statusValues": [
+          "active",
+          "inactive",
+          "complete",
+          "priority"
+        ],
+        "relationships": [
+          "Subprojects belong to parent projects",
+          "Projects link to contacts/clients",
+          "Projects contain workflow tasks, payments, budget entries, and documents"
+        ],
+        "limitations": [
+          "Project creation is not available in this environment.",
+          "Project deletion is not available in this environment."
+        ],
+        "relatedFeatures": [
+          "workflow-tasks",
+          "payments",
+          "budget",
+          "documents",
+          "customers"
+        ],
+        "routes": [
+          {
+            "id": "detail",
+            "pattern": "/projects/{slug}",
+            "description": "Project detail"
+          },
+          {
+            "id": "tasks",
+            "pattern": "/projects/{slug}/tasks",
+            "description": "Workflow tasks"
+          },
+          {
+            "id": "documents",
+            "pattern": "/projects/{slug}/documents",
+            "description": "Documents"
+          },
+          {
+            "id": "financials",
+            "pattern": "/projects/{slug}/financials",
+            "description": "Payments / financials"
+          },
+          {
+            "id": "accountability",
+            "pattern": "/projects/{slug}/accountability",
+            "description": "Accountability"
+          },
+          {
+            "id": "budget",
+            "pattern": "/projects/{slug}/budget",
+            "description": "Budget"
+          },
+          {
+            "id": "subproject",
+            "pattern": "/projects/{parentSlug}/{subSlug}",
+            "description": "Subproject detail"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmProjectDetail/AccountabilityLogTable.tsx",
+          "src/presentation/components/CrmProjectDetail/AccountabilityPanel.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetCategoryFilterMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetCategoryPieChart.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetDraftRow.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetInlineRow.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetRowActionsMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetTable.tsx",
+          "src/presentation/components/CrmProjectDetail/DetailPanelHeader.tsx",
+          "src/presentation/components/CrmProjectDetail/DetailPanelHeaderActions.tsx",
+          "src/presentation/components/CrmProjectDetail/DetailPanelHeaderButton.tsx",
+          "src/presentation/components/CrmProjectDetail/DetailPanelSectionRefresh.tsx",
+          "src/presentation/components/CrmProjectDetail/DetailPanelSectionSearch.tsx",
+          "src/presentation/components/CrmProjectDetail/DetailToast.tsx",
+          "src/presentation/components/CrmProjectDetail/DocumentPanelFilterMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/DocumentPanelUploadButton.tsx",
+          "src/presentation/components/CrmProjectDetail/DocumentTypeIcon.tsx",
+          "src/presentation/components/CrmProjectDetail/MilestoneSummaryPanel.tsx",
+          "src/presentation/components/CrmProjectDetail/PaymentMilestoneDraftRow.tsx",
+          "src/presentation/components/CrmProjectDetail/PaymentsRail.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectAccountabilityPage.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectCompletionBlockedDialog.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectContactCard.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectCostSummary.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailActionsMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailBreadcrumbNav.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailCompletionButton.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailContextBlock.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailFolderTabs.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailFolderTabSelector.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailHeader.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailHeaderActions.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailHeaderProgress.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailInactiveStatus.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailMobileStageSummary.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailNotFound.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailPage.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailPageBody.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailRouteLayout.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailShell.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDetailShellModals.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDocumentsPage.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDocumentsPanelContent.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDocumentsTabPanel.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectFinancialReportContent.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectFinancialsPage.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectHeaderAssignee.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectHeaderIndustry.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectNotesInline.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectPrimaryPhoto.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectPrimaryPhotoModal.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectPriorityToggle.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectProgressPercent.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectQrDialog.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectQrIdentityHeader.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectSummaryAddress.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectSummaryMobileCard.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectSummaryStrip.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectWorkflowTasksPage.tsx",
+          "src/presentation/components/CrmProjectDetail/SaveProjectTemplateDialog.tsx",
+          "src/presentation/components/CrmProjectDetail/StageProgressBar.tsx",
+          "src/presentation/components/CrmProjectDetail/SubprojectMobileCard.tsx",
+          "src/presentation/components/CrmProjectDetail/SubprojectsListToolbar.tsx",
+          "src/presentation/components/CrmProjectDetail/SubprojectsMobileList.tsx",
+          "src/presentation/components/CrmProjectDetail/SubprojectsSection.tsx",
+          "src/presentation/components/CrmProjectDetail/SummaryContactValuesPopover.tsx",
+          "src/presentation/components/CrmProjectDetail/TeamMemberAvatar.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowAssigneeDragHeldIndicator.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowDocumentFileIcon.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowInlineMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowOpsTaskDraftRow.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowStageTaskGroup.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowStatusPillPicker.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskCustomerNotifyDialog.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskDrawer.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskInlineRow.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskRowActionsMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskRowView.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksBatchCompleteButton.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksTable.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksTableColumnHeader.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskStageAddButton.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksViewToggleButton.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowUsersColumn.tsx",
+          "src/presentation/components/CrmProjects/CreateCrmProjectDrawer.tsx",
+          "src/presentation/components/CrmProjects/CreateCrmProjectFormFields.tsx",
+          "src/presentation/components/CrmProjects/CreateCrmProjectModal.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectDeleteWorkflowDialog.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectDraftRow.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectInactiveBadge.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectMobileCard.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsExpandAllButton.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsFilterMenu.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsMobileList.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsPipeline.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsTable.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectTableRow.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectTableRowActionsMenu.tsx",
+          "src/presentation/components/CrmProjects/MarkInactiveDialog.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/crm/projects/[slug]",
+          "/api/crm/projects/[slug]/subprojects",
+          "/api/crm/projects/bulk-archive",
+          "/api/crm/projects/mark-active",
+          "/api/crm/projects/mark-inactive",
+          "/api/crm/projects"
+        ],
+        "domainServices": [
+          "src/infrastructure/crm/server/crmArchiveProjectService.ts",
+          "src/infrastructure/crm/server/crmCreateService.ts",
+          "src/infrastructure/crm/server/crmMarkProjectsInactiveService.ts",
+          "src/infrastructure/crm/server/crmReadService.ts",
+          "src/infrastructure/crm/server/crmUpdateProjectService.ts"
+        ],
+        "databaseTables": [
+          "crm_accountability_events",
+          "crm_clients",
+          "crm_contacts",
+          "crm_documents",
+          "crm_milestones",
+          "crm_project_budget_entries",
+          "crm_project_stage_completions",
+          "crm_projects",
+          "crm_workflow_tasks"
+        ],
+        "docCategories": [
+          "getting-started",
+          "projects"
+        ],
+        "keywords": [
+          "project",
+          "subproject",
+          "parent",
+          "create project",
+          "edit project",
+          "delete project",
+          "pipeline",
+          "search",
+          "filter"
+        ]
+      },
+      {
+        "id": "workflow-tasks",
+        "name": "Workflow Tasks",
+        "purpose": "Track and complete workflow tasks grouped by pipeline stage on a project.",
+        "whereItExists": [
+          "Project detail → Workflow tasks section",
+          "Dedicated route /projects/{slug}/tasks"
+        ],
+        "navigationPath": [
+          "Open project → Workflow tasks section or /projects/{slug}/tasks"
+        ],
+        "creationFlow": {
+          "summary": "Add a workflow task to a project stage from the Workflow tasks section.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Workflow tasks on a project.",
+              "uiLabels": [
+                "View all Workflow Tasks"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Choose Add task, pick a pipeline stage, and save.",
+              "uiLabels": [
+                "Add task",
+                "Save task"
+              ]
+            }
+          ]
+        },
+        "editFlow": {
+          "summary": "Edit an existing workflow task from the task row actions or drawer.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open task actions and choose Edit task.",
+              "uiLabels": [
+                "Edit task"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Update fields and save.",
+              "uiLabels": [
+                "Edit workflow task",
+                "Save task"
+              ]
+            }
+          ]
+        },
+        "deleteFlow": {
+          "summary": "Delete (archive) a workflow task with confirmation.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open task actions and choose Delete task.",
+              "uiLabels": [
+                "Delete task"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Confirm deletion.",
+              "uiLabels": [
+                "Delete task?"
+              ]
+            }
+          ]
+        },
+        "modals": [],
+        "buttons": [],
+        "formFields": [],
+        "validation": [],
+        "statusValues": [
+          "pending (Pending)",
+          "in_progress (In Progress)",
+          "blocked (Blocked)",
+          "skipped (Skipped)",
+          "request_review (Needs Approval)",
+          "rejected (Rejected)",
+          "done (Done)"
+        ],
+        "relationships": [
+          "Tasks belong to projects and pipeline stages",
+          "Tasks may require documents",
+          "Payment milestone tasks link to payments feature"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "projects",
+          "workflow-settings",
+          "documents",
+          "payments",
+          "permissions"
+        ],
+        "routes": [
+          {
+            "pattern": "/projects/{slug}/tasks",
+            "description": "Workflow tasks page"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmProjectDetail/ProjectWorkflowTasksPage.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowAssigneeDragHeldIndicator.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowDocumentFileIcon.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowInlineMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowOpsTaskDraftRow.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowStageTaskGroup.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowStatusPillPicker.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskCustomerNotifyDialog.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskDrawer.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskInlineRow.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskRowActionsMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskRowView.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksBatchCompleteButton.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksTable.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksTableColumnHeader.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTaskStageAddButton.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowTasksViewToggleButton.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowUsersColumn.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/crm/projects/[slug]/stages/[stageSlug]/complete",
+          "/api/crm/projects/[slug]/stages/complete-empty",
+          "/api/crm/projects/[slug]/tasks/[taskId]/documents/[documentId]/download",
+          "/api/crm/projects/[slug]/tasks/[taskId]/documents/[documentId]",
+          "/api/crm/projects/[slug]/tasks/[taskId]/documents",
+          "/api/crm/projects/[slug]/tasks",
+          "/api/crm/projects/workflow-progress-inputs",
+          "/api/crm/projects/workflow-task-statuses",
+          "/api/crm/tasks/[taskId]/notify-assigned",
+          "/api/crm/tasks/[taskId]/notify-customer",
+          "/api/crm/tasks/[taskId]"
+        ],
+        "domainServices": [
+          "src/infrastructure/crm/server/crmProjectStageCompletionService.ts",
+          "src/infrastructure/crm/server/crmWorkflowTaskService.ts"
+        ],
+        "databaseTables": [
+          "crm_project_stage_completions",
+          "crm_projects",
+          "crm_workflow_tasks"
+        ],
+        "docCategories": [
+          "workflow"
+        ],
+        "keywords": [
+          "workflow task",
+          "task",
+          "stage",
+          "pipeline",
+          "assign",
+          "complete",
+          "mark complete",
+          "customer task"
+        ]
+      },
+      {
+        "id": "payments",
+        "name": "Payments",
+        "purpose": "Track payment milestones and collected amounts on project financials.",
+        "whereItExists": [
+          "Project detail → Payments section",
+          "Route /projects/{slug}/financials"
+        ],
+        "navigationPath": [
+          "Open project → Payments section"
+        ],
+        "creationFlow": {
+          "summary": "Add a payment milestone from the Payments section.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Payments on a project.",
+              "uiLabels": [
+                "Payments"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Choose Add payment milestone and save.",
+              "uiLabels": [
+                "Add payment milestone",
+                "Save payment milestone"
+              ]
+            }
+          ]
+        },
+        "editFlow": {
+          "summary": "Edit an existing payment milestone.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open milestone drawer and save changes.",
+              "uiLabels": [
+                "Edit payment milestone"
+              ]
+            }
+          ]
+        },
+        "modals": [
+          {
+            "id": "createMilestone",
+            "title": "New payment milestone"
+          },
+          {
+            "id": "editMilestone",
+            "title": "Edit payment milestone"
+          }
+        ],
+        "buttons": [
+          {
+            "id": "addMilestone",
+            "label": "Add payment milestone"
+          },
+          {
+            "id": "saveMilestone",
+            "label": "Save payment milestone"
+          }
+        ],
+        "formFields": [
+          {
+            "id": "invoiced",
+            "label": "Invoiced"
+          },
+          {
+            "id": "paid",
+            "label": "Paid"
+          },
+          {
+            "id": "amountUsd",
+            "label": "Amount (USD)"
+          }
+        ],
+        "validation": [],
+        "statusValues": [
+          "invoiced",
+          "paid"
+        ],
+        "relationships": [
+          "Payment milestones appear in Payments section and may exist as payment-type workflow tasks",
+          "Project Value / Collected / Balance shown on project detail"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "projects",
+          "workflow-tasks",
+          "budget",
+          "reports"
+        ],
+        "routes": [
+          {
+            "pattern": "/projects/{slug}/financials",
+            "description": "Project financials / payments"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmProjectDetail/MilestoneSummaryPanel.tsx",
+          "src/presentation/components/CrmProjectDetail/PaymentMilestoneDraftRow.tsx",
+          "src/presentation/components/CrmProjectDetail/PaymentsRail.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectFinancialReportContent.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectFinancialsPage.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/crm/projects/payment-balance-tasks",
+          "/api/internal/organization/payment-member-visibility"
+        ],
+        "domainServices": [
+          "src/infrastructure/coreApi/buildCorePaymentMemberVisibilityBff.ts",
+          "src/infrastructure/crm/mock/buildMockProjectPaymentTasksIndex.ts",
+          "src/infrastructure/crm/server/buildCorePaymentVisibilityService.ts",
+          "src/infrastructure/crm/server/crmPaymentBalance.ts",
+          "src/infrastructure/crm/server/crmReadService.ts"
+        ],
+        "databaseTables": [
+          "buildcore_payment_visibility_settings",
+          "crm_accountability_events",
+          "crm_documents",
+          "crm_milestones",
+          "crm_project_budget_entries",
+          "crm_project_stage_completions",
+          "crm_projects",
+          "crm_workflow_tasks"
+        ],
+        "docCategories": [
+          "payments"
+        ],
+        "keywords": [
+          "payment",
+          "milestone",
+          "financial",
+          "revenue",
+          "collected",
+          "balance",
+          "invoiced"
+        ]
+      },
+      {
+        "id": "budget",
+        "name": "Budget",
+        "purpose": "Add and track budget line items and costs on a project.",
+        "whereItExists": [
+          "Project detail → Budget section",
+          "Route /projects/{slug}/budget"
+        ],
+        "navigationPath": [
+          "Open project → Budget section"
+        ],
+        "creationFlow": {
+          "summary": "Add a budget item from the Budget table.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Budget on a project.",
+              "uiLabels": [
+                "Budget"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Choose Add budget item, enter details, and save.",
+              "uiLabels": [
+                "Add budget item",
+                "Save budget item"
+              ]
+            }
+          ]
+        },
+        "editFlow": {
+          "summary": "Edit budget items inline in the Budget table.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Update budget item fields and save.",
+              "uiLabels": [
+                "Save budget item"
+              ]
+            }
+          ]
+        },
+        "deleteFlow": {
+          "summary": "Delete a budget item with confirmation.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Choose Delete budget item and confirm.",
+              "uiLabels": [
+                "Delete budget item",
+                "Delete budget item?"
+              ]
+            }
+          ]
+        },
+        "modals": [
+          {
+            "id": "deleteItem",
+            "title": "Delete budget item?"
+          }
+        ],
+        "buttons": [
+          {
+            "id": "addItem",
+            "label": "Add budget item"
+          },
+          {
+            "id": "saveItem",
+            "label": "Save budget item"
+          },
+          {
+            "id": "deleteItem",
+            "label": "Delete budget item"
+          },
+          {
+            "id": "generatePl",
+            "label": "Generate P&L"
+          }
+        ],
+        "formFields": [
+          {
+            "id": "itemName",
+            "label": "Item name",
+            "validation": "Item name is required."
+          },
+          {
+            "id": "category",
+            "label": "Category"
+          },
+          {
+            "id": "costDate",
+            "label": "Cost Date",
+            "validation": "Cost Date is required."
+          }
+        ],
+        "validation": [
+          "Item name is required.",
+          "Cost Date is required."
+        ],
+        "statusValues": [],
+        "relationships": [
+          "Budget entries belong to projects",
+          "Budget entries may require documents"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "projects",
+          "documents",
+          "payments",
+          "reports"
+        ],
+        "routes": [
+          {
+            "pattern": "/projects/{slug}/budget",
+            "description": "Project budget"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmProjectDetail/BudgetCategoryFilterMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetCategoryPieChart.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetDraftRow.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetInlineRow.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetRowActionsMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/BudgetTable.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/crm/budget-entries/[entryId]",
+          "/api/crm/projects/[slug]/budget-entries/[entryId]/documents/[documentId]/download",
+          "/api/crm/projects/[slug]/budget-entries/[entryId]/documents/[documentId]",
+          "/api/crm/projects/[slug]/budget-entries/[entryId]/documents",
+          "/api/crm/projects/[slug]/budget-entries",
+          "/api/crm/projects/budget-entries"
+        ],
+        "domainServices": [
+          "src/infrastructure/crm/server/crmBudgetEntryDocumentService.ts",
+          "src/infrastructure/crm/server/crmBudgetService.ts"
+        ],
+        "databaseTables": [
+          "crm_documents",
+          "crm_project_budget_entries",
+          "crm_projects"
+        ],
+        "docCategories": [
+          "budget"
+        ],
+        "keywords": [
+          "budget",
+          "cost",
+          "estimate",
+          "category",
+          "p&l",
+          "profit"
+        ]
+      },
+      {
+        "id": "documents",
+        "name": "Documents",
+        "purpose": "Upload and review project documents, including task-required and budget-required files.",
+        "whereItExists": [
+          "Project detail → Documents section",
+          "Route /projects/{slug}/documents",
+          "Workflow task document uploads"
+        ],
+        "navigationPath": [
+          "Open project → Documents section"
+        ],
+        "creationFlow": {
+          "summary": "Upload documents to a project from the Documents section or attach files to workflow tasks when permitted.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Documents on a project.",
+              "uiLabels": [
+                "View all documents"
+              ]
+            },
+            {
+              "order": 2,
+              "description": "Upload files using the project documents upload control.",
+              "uiLabels": [
+                "Upload"
+              ]
+            }
+          ]
+        },
+        "deleteFlow": {
+          "summary": "Delete a document from a task or project when permitted.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Use document delete action.",
+              "uiLabels": [
+                "Delete"
+              ]
+            }
+          ]
+        },
+        "modals": [],
+        "buttons": [],
+        "formFields": [],
+        "validation": [],
+        "statusValues": [
+          "Reviewed",
+          "Pending review",
+          "Uploaded",
+          "Missing"
+        ],
+        "relationships": [
+          "Documents belong to projects",
+          "Documents may be required by workflow tasks or budget entries"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "projects",
+          "workflow-tasks",
+          "budget"
+        ],
+        "routes": [
+          {
+            "pattern": "/projects/{slug}/documents",
+            "description": "Project documents"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmProjectDetail/DocumentPanelFilterMenu.tsx",
+          "src/presentation/components/CrmProjectDetail/DocumentPanelUploadButton.tsx",
+          "src/presentation/components/CrmProjectDetail/DocumentTypeIcon.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDocumentsPage.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDocumentsPanelContent.tsx",
+          "src/presentation/components/CrmProjectDetail/ProjectDocumentsTabPanel.tsx",
+          "src/presentation/components/CrmProjectDetail/WorkflowDocumentFileIcon.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/crm/projects/[slug]/budget-entries/[entryId]/documents/[documentId]/download",
+          "/api/crm/projects/[slug]/budget-entries/[entryId]/documents/[documentId]",
+          "/api/crm/projects/[slug]/budget-entries/[entryId]/documents",
+          "/api/crm/projects/[slug]/direct-uploads/[documentId]/finalize",
+          "/api/crm/projects/[slug]/direct-uploads/prepare",
+          "/api/crm/projects/[slug]/media/[documentId]/download",
+          "/api/crm/projects/[slug]/media/[documentId]",
+          "/api/crm/projects/[slug]/tasks/[taskId]/documents/[documentId]/download",
+          "/api/crm/projects/[slug]/tasks/[taskId]/documents/[documentId]",
+          "/api/crm/projects/[slug]/tasks/[taskId]/documents",
+          "/api/customer-task/[token]/direct-uploads/[documentId]/finalize",
+          "/api/customer-task/[token]/direct-uploads/prepare",
+          "/api/customer-task/[token]/documents/[documentId]",
+          "/api/customer-task/[token]/documents"
+        ],
+        "domainServices": [
+          "src/infrastructure/coreApi/appDocumentStorageClient.ts",
+          "src/infrastructure/crm/api/downloadCrmDocumentAttachment.ts",
+          "src/infrastructure/crm/mock/mockCrmBudgetEntryDocumentMutations.ts",
+          "src/infrastructure/crm/mock/mockCrmDocumentMutations.ts",
+          "src/infrastructure/crm/server/crmBudgetEntryDocumentService.ts",
+          "src/infrastructure/crm/server/crmDocumentDownloadResponse.ts",
+          "src/infrastructure/crm/server/crmDocumentRouteErrors.ts",
+          "src/infrastructure/crm/server/crmDocumentService.ts",
+          "src/infrastructure/crm/server/documentStorageProviderForCrmAuth.ts",
+          "src/infrastructure/demo/demoSimulatedDocumentUpload.ts",
+          "src/infrastructure/storage/core/CoreDocumentStorageProvider.ts",
+          "src/infrastructure/storage/getDocumentStorageProvider.ts",
+          "src/infrastructure/storage/mock/MockDocumentStorageProvider.ts"
+        ],
+        "databaseTables": [
+          "crm_documents",
+          "crm_project_budget_entries",
+          "crm_projects",
+          "crm_workflow_tasks"
+        ],
+        "docCategories": [
+          "documents"
+        ],
+        "keywords": [
+          "document",
+          "upload",
+          "file",
+          "attachment",
+          "review",
+          "missing"
+        ]
+      },
+      {
+        "id": "customers",
+        "name": "Customers",
+        "purpose": "Store customer and contact details on projects; lead capture collects contact data into projects.",
+        "whereItExists": [
+          "Project create/edit forms (contact fields)",
+          "Lead capture public form (/api/lead/{token})"
+        ],
+        "navigationPath": [
+          "Project create/edit → contact fields",
+          "Lead capture link (when configured)"
+        ],
+        "creationFlow": {
+          "summary": "Customer/contact data is captured during project create or lead capture submission.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Enter contact fields on New project or lead capture form.",
+              "uiLabels": [
+                "Project / customer name",
+                "Industry",
+                "Custom industry",
+                "Contact name"
+              ]
+            }
+          ]
+        },
+        "editFlow": {
+          "summary": "Update contact details from Edit project.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Edit project contact fields and save.",
+              "uiLabels": [
+                "Save changes"
+              ]
+            }
+          ]
+        },
+        "modals": [],
+        "buttons": [],
+        "formFields": [
+          {
+            "id": "name",
+            "label": "Project / customer name"
+          },
+          {
+            "id": "industry",
+            "label": "Industry"
+          },
+          {
+            "id": "customIndustry",
+            "label": "Custom industry"
+          },
+          {
+            "id": "contactName",
+            "label": "Contact name"
+          },
+          {
+            "id": "email",
+            "label": "Email"
+          },
+          {
+            "id": "phone",
+            "label": "Phone"
+          },
+          {
+            "id": "emailAddresses",
+            "label": "Email addresses (up to 4)"
+          },
+          {
+            "id": "phoneNumbers",
+            "label": "Phone numbers (up to 4)"
+          },
+          {
+            "id": "addEmail",
+            "label": "+ Add email"
+          },
+          {
+            "id": "removeEmail",
+            "label": "Remove email address"
+          },
+          {
+            "id": "addPhone",
+            "label": "+ Add phone"
+          },
+          {
+            "id": "removePhone",
+            "label": "Remove phone number"
+          },
+          {
+            "id": "priority",
+            "label": "Priority"
+          },
+          {
+            "id": "stage",
+            "label": "Current stage"
+          },
+          {
+            "id": "notes",
+            "label": "Notes"
+          },
+          {
+            "id": "assigned",
+            "label": "Assigned to"
+          },
+          {
+            "id": "assignedShort",
+            "label": "Assigned"
+          },
+          {
+            "id": "addressLine1",
+            "label": "Address line 1"
+          },
+          {
+            "id": "addressLine2",
+            "label": "Address line 2 (optional)"
+          },
+          {
+            "id": "city",
+            "label": "City"
+          },
+          {
+            "id": "state",
+            "label": "State"
+          },
+          {
+            "id": "postalCode",
+            "label": "Zip code"
+          },
+          {
+            "id": "balanceDerivedHint",
+            "label": "Balance is calculated from unpaid payment milestones."
+          }
+        ],
+        "validation": [],
+        "statusValues": [],
+        "relationships": [
+          "Contacts/clients link to projects",
+          "Lead capture creates or updates CRM contacts/projects"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "projects",
+          "workflow-tasks"
+        ],
+        "routes": [
+          {
+            "pattern": "/api/lead/{token}",
+            "description": "Lead capture API"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmProjects/CreateCrmProjectDrawer.tsx",
+          "src/presentation/components/CrmProjects/CreateCrmProjectFormFields.tsx",
+          "src/presentation/components/CrmProjects/CreateCrmProjectModal.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectDeleteWorkflowDialog.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectDraftRow.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectInactiveBadge.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectMobileCard.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsExpandAllButton.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsFilterMenu.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsMobileList.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsPipeline.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectsTable.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectTableRow.tsx",
+          "src/presentation/components/CrmProjects/CrmProjectTableRowActionsMenu.tsx",
+          "src/presentation/components/CrmProjects/MarkInactiveDialog.tsx",
+          "src/presentation/components/leadCapture/LeadCaptureForm.tsx",
+          "src/presentation/components/leadCapture/LeadCapturePage.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/lead/[token]",
+          "/api/lead/[token]/submit"
+        ],
+        "domainServices": [
+          "src/infrastructure/crm/server/crmCreateService.ts",
+          "src/infrastructure/crm/server/crmUpdateProjectService.ts",
+          "src/infrastructure/crm/server/validateLeadCaptureBody.ts",
+          "src/infrastructure/lead/leadCaptureContactMerge.ts",
+          "src/infrastructure/lead/leadCaptureErrors.ts",
+          "src/infrastructure/lead/leadCaptureRateLimit.ts",
+          "src/infrastructure/lead/leadCaptureRelay.ts",
+          "src/infrastructure/lead/leadCaptureService.ts",
+          "src/infrastructure/lead/pickLeadCaptureContactFromRows.ts"
+        ],
+        "databaseTables": [
+          "crm_accountability_events",
+          "crm_clients",
+          "crm_contacts",
+          "crm_projects"
+        ],
+        "docCategories": [
+          "customers",
+          "projects",
+          "getting-started"
+        ],
+        "keywords": [
+          "customer",
+          "contact",
+          "lead",
+          "email",
+          "phone",
+          "client"
+        ]
+      },
+      {
+        "id": "workflow-settings",
+        "name": "Workflow Settings",
+        "purpose": "Configure organization pipeline stages and customer task alerts.",
+        "whereItExists": [
+          "Sidebar → Workflow Settings (/workflow-settings)",
+          "Workflow Stages organization page"
+        ],
+        "navigationPath": [
+          "Sidebar → Workflow Settings",
+          "Tabs → Workflow Stages | Customer Task Alerts"
+        ],
+        "editFlow": {
+          "summary": "Customize workflow stages and customer task reminder settings at the organization level.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Workflow Settings from the sidebar."
+            },
+            {
+              "order": 2,
+              "description": "Use Workflow Stages or Customer Task Alerts tabs.",
+              "uiLabels": [
+                "Workflow Stages",
+                "Customer Task Alerts"
+              ]
+            }
+          ]
+        },
+        "modals": [],
+        "buttons": [
+          {
+            "id": "workflowStagesTab",
+            "label": "Workflow Stages"
+          },
+          {
+            "id": "alertsTab",
+            "label": "Customer Task Alerts"
+          }
+        ],
+        "formFields": [],
+        "validation": [],
+        "statusValues": [
+          "new-lead (New Lead)",
+          "contacted (Contacted)",
+          "inspection-scheduled (Inspection Scheduled)",
+          "inspection-complete (Inspection Complete)",
+          "estimate-sent (Estimate Sent)",
+          "waiting-on-approval (Waiting on Approval)",
+          "approved (Approved)",
+          "scheduled (Scheduled)",
+          "in-progress (In Progress)",
+          "completed (Completed)",
+          "invoiced (Invoiced)",
+          "complete (Complete)"
+        ],
+        "relationships": [
+          "Pipeline stages drive project stage and workflow task grouping",
+          "Customer task alerts relate to workflow tasks"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "workflow-tasks",
+          "permissions"
+        ],
+        "routes": [
+          {
+            "pattern": "/workflow-settings",
+            "description": "Workflow settings"
+          },
+          {
+            "pattern": "/workflow-stages",
+            "description": "Workflow stages page"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/BuildCoreWorkflowStages/BuildCoreWorkflowStagesAccessGate.tsx",
+          "src/presentation/components/BuildCoreWorkflowStages/BuildCoreWorkflowStagesDashboard.tsx",
+          "src/presentation/components/BuildCoreWorkflowStages/BuildCoreWorkflowStagesList.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/internal/organization/customer-task-reminders",
+          "/api/internal/organization/pipeline-stages/[stageId]",
+          "/api/internal/organization/pipeline-stages/reorder",
+          "/api/internal/organization/pipeline-stages"
+        ],
+        "domainServices": [
+          "src/infrastructure/coreApi/buildCorePipelineStagesBff.ts",
+          "src/infrastructure/coreApi/parseBuildCorePipelineStagesJson.ts",
+          "src/infrastructure/crm/server/buildCoreOrganizationSettingsService.ts",
+          "src/infrastructure/crm/server/pipelineStageService.ts",
+          "src/infrastructure/demo/demoPipelineStagesStore.ts"
+        ],
+        "databaseTables": [
+          "buildcore_organization_settings",
+          "crm_pipeline_stages",
+          "crm_projects",
+          "crm_workflow_tasks"
+        ],
+        "docCategories": [
+          "workflow",
+          "settings"
+        ],
+        "keywords": [
+          "workflow settings",
+          "pipeline stage",
+          "customer task alert",
+          "stage",
+          "organization"
+        ]
+      },
+      {
+        "id": "reports",
+        "name": "Reports",
+        "purpose": "View CRM reports and export organization data.",
+        "whereItExists": [
+          "Sidebar → Reports (/reports)"
+        ],
+        "navigationPath": [
+          "Sidebar → Reports"
+        ],
+        "modals": [],
+        "buttons": [
+          {
+            "id": "exportOrganization",
+            "label": "Export"
+          },
+          {
+            "id": "downloadPdf",
+            "label": "Download PDF"
+          }
+        ],
+        "formFields": [],
+        "validation": [],
+        "statusValues": [],
+        "relationships": [
+          "Reports aggregate project, payment, and activity data"
+        ],
+        "limitations": [],
+        "relatedFeatures": [
+          "projects",
+          "payments",
+          "budget"
+        ],
+        "routes": [
+          {
+            "pattern": "/reports",
+            "description": "Reports"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/CrmReports/BuildCoreReportsAccessGate.tsx",
+          "src/presentation/components/CrmReports/CrmReportsDashboard.tsx",
+          "src/presentation/components/CrmReports/OrganizationExportButton.tsx",
+          "src/presentation/components/CrmReports/ReportsBarChart.tsx",
+          "src/presentation/components/CrmReports/ReportsBudgetHalfDonutChart.tsx",
+          "src/presentation/components/CrmReports/ReportsCostBreakdownPanel.tsx",
+          "src/presentation/components/CrmReports/ReportsExecutiveDashboard.tsx",
+          "src/presentation/components/CrmReports/ReportsKpiCard.tsx",
+          "src/presentation/components/CrmReports/ReportsLineChart.tsx",
+          "src/presentation/components/CrmReports/ReportsMobileExportActions.tsx",
+          "src/presentation/components/CrmReports/ReportsPdfExportControls.tsx",
+          "src/presentation/components/CrmReports/ReportsPeriodMobileControls.tsx",
+          "src/presentation/components/CrmReports/ReportsProjectPerformanceFilterMenu.tsx",
+          "src/presentation/components/CrmReports/ReportsProjectPerformanceMobileCard.tsx",
+          "src/presentation/components/CrmReports/ReportsProjectPerformanceSection.tsx",
+          "src/presentation/components/CrmReports/ReportsRecentActivityPanel.tsx",
+          "src/presentation/components/CrmReports/ReportsSectionMobileSelector.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/crm/organization/export",
+          "/api/crm/reports"
+        ],
+        "domainServices": [
+          "src/infrastructure/crm/api/downloadOrganizationExportFromApi.ts",
+          "src/infrastructure/crm/server/buildCoreOrganizationExportAccess.ts",
+          "src/infrastructure/crm/server/crmOrganizationExportService.ts",
+          "src/infrastructure/crm/server/crmReadService.ts"
+        ],
+        "databaseTables": [
+          "crm_accountability_events",
+          "crm_documents",
+          "crm_milestones",
+          "crm_project_budget_entries",
+          "crm_project_stage_completions",
+          "crm_projects",
+          "crm_workflow_tasks"
+        ],
+        "docCategories": [
+          "reports"
+        ],
+        "keywords": [
+          "report",
+          "export",
+          "crm",
+          "analytics",
+          "pdf"
+        ]
+      },
+      {
+        "id": "permissions",
+        "name": "Permissions",
+        "purpose": "Control BuildCore role capabilities and member visibility for workflow tasks, payments, and budget.",
+        "whereItExists": [
+          "Teams → Permissions tabs (Task, Payment, Budget permissions)"
+        ],
+        "navigationPath": [
+          "Sidebar → Teams → Permissions tabs"
+        ],
+        "editFlow": {
+          "summary": "Adjust role-based permissions and member visibility toggles on Teams permission tabs.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Teams and choose a permissions tab.",
+              "uiLabels": [
+                "Task Permissions"
+              ]
+            }
+          ]
+        },
+        "modals": [],
+        "buttons": [],
+        "formFields": [
+          {
+            "id": "memberVisibility",
+            "label": "Only assigned user can view"
+          }
+        ],
+        "validation": [],
+        "statusValues": [],
+        "relationships": [
+          "Permissions apply to organization members with BuildCore roles",
+          "Visibility rules affect workflow tasks, payments, and budget views"
+        ],
+        "limitations": [
+          "Coming soon",
+          "Permission changes are view-only in the interactive demo.",
+          "Permission editing will be available in a future release.",
+          "Team management is view-only in the interactive demo.",
+          "Workflow assignment and approval rules (coming soon)."
+        ],
+        "relatedFeatures": [
+          "team-members",
+          "workflow-tasks",
+          "payments",
+          "budget"
+        ],
+        "routes": [
+          {
+            "pattern": "/teams",
+            "description": "Teams and permissions"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/BuildCoreTeams/BuildCoreBudgetPermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePaymentMemberVisibilitySetting.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePaymentPermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePermissionMatrix.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePermissionMatrixMobile.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreRolePermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamMemberMobileCard.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsAccessGate.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsDashboard.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsMembersSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsNoAccess.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreWorkflowTaskMemberVisibilitySetting.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreWorkflowTaskPermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/DemoTeamsViewOnlyBanner.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsFolderTabs.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsPermissionsPanel.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsSectionMobileSelector.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsSidebarNav.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/internal/organization/app-access",
+          "/api/internal/organization/payment-member-visibility",
+          "/api/internal/organization/role-permissions/[roleKey]",
+          "/api/internal/organization/role-permissions",
+          "/api/internal/organization/workflow-task-member-visibility"
+        ],
+        "domainServices": [
+          "src/infrastructure/coreApi/buildCorePaymentMemberVisibilityBff.ts",
+          "src/infrastructure/coreApi/buildCoreRoleAccessBff.ts",
+          "src/infrastructure/coreApi/buildCoreRolePermissionsBff.ts",
+          "src/infrastructure/coreApi/buildCoreRolePermissionsClient.ts",
+          "src/infrastructure/coreApi/buildCoreWorkflowTaskMemberVisibilityBff.ts",
+          "src/infrastructure/coreApi/parseBuildCoreRolePermissionsJson.ts",
+          "src/infrastructure/crm/server/buildCoreDownloadPermissionService.ts",
+          "src/infrastructure/crm/server/buildCorePaymentVisibilityService.ts",
+          "src/infrastructure/crm/server/buildCoreProjectTemplatePermissionService.ts",
+          "src/infrastructure/crm/server/buildCoreRoleAccessService.ts",
+          "src/infrastructure/crm/server/buildCoreRolePermissionEnforcement.ts",
+          "src/infrastructure/crm/server/buildCoreRolePermissionService.ts",
+          "src/infrastructure/crm/server/buildCoreSendFilesPermissionService.ts",
+          "src/infrastructure/crm/server/buildCoreWorkflowTaskPermissionService.ts",
+          "src/infrastructure/crm/server/buildCoreWorkflowTaskVisibilityService.ts",
+          "src/infrastructure/crm/server/crmMemberProjectVisibilityService.ts",
+          "src/infrastructure/organization/organizationPermissionEnforcement.ts"
+        ],
+        "databaseTables": [
+          "buildcore_payment_visibility_settings",
+          "buildcore_role_permissions",
+          "buildcore_workflow_task_visibility_settings",
+          "crm_projects",
+          "crm_workflow_tasks",
+          "platform_organization_members"
+        ],
+        "docCategories": [
+          "permissions",
+          "settings"
+        ],
+        "keywords": [
+          "permission",
+          "role",
+          "access",
+          "visibility",
+          "assigned user"
+        ]
+      },
+      {
+        "id": "team-members",
+        "name": "Team Members",
+        "purpose": "View organization members, BuildCore access, and roles on the Teams page.",
+        "whereItExists": [
+          "Sidebar → Teams (/teams)"
+        ],
+        "navigationPath": [
+          "Sidebar → Teams → Members tab"
+        ],
+        "creationFlow": {
+          "summary": "Invite organization members through organization membership flows (Zenformed organization APIs).",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Open Teams and review organization membership table."
+            }
+          ]
+        },
+        "editFlow": {
+          "summary": "Toggle BuildCore access and assign BuildCore roles for members when permitted.",
+          "steps": [
+            {
+              "order": 1,
+              "description": "Use BuildCore access toggle and role controls on the Members table.",
+              "uiLabels": [
+                "BuildCore access"
+              ]
+            }
+          ]
+        },
+        "modals": [],
+        "buttons": [
+          {
+            "id": "membersTab",
+            "label": "Members"
+          }
+        ],
+        "formFields": [
+          {
+            "id": "name",
+            "label": "Name"
+          },
+          {
+            "id": "email",
+            "label": "Email"
+          },
+          {
+            "id": "organizationRole",
+            "label": "Organization role"
+          },
+          {
+            "id": "buildCoreRole",
+            "label": "BuildCore role"
+          }
+        ],
+        "validation": [],
+        "statusValues": [
+          "Enabled",
+          "Not configured"
+        ],
+        "relationships": [
+          "Organization membership is separate from BuildCore access",
+          "Members can be assigned to projects and workflow tasks"
+        ],
+        "limitations": [
+          "Coming soon",
+          "Permission changes are view-only in the interactive demo.",
+          "Permission editing will be available in a future release.",
+          "Team management is view-only in the interactive demo.",
+          "Workflow assignment and approval rules (coming soon)."
+        ],
+        "relatedFeatures": [
+          "permissions",
+          "projects",
+          "workflow-tasks"
+        ],
+        "routes": [
+          {
+            "pattern": "/teams",
+            "description": "Teams page"
+          }
+        ],
+        "reactComponents": [
+          "src/presentation/components/BuildCoreTeams/BuildCoreBudgetPermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePaymentMemberVisibilitySetting.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePaymentPermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePermissionMatrix.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCorePermissionMatrixMobile.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreRolePermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamMemberMobileCard.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsAccessGate.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsDashboard.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsMembersSection.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreTeamsNoAccess.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreWorkflowTaskMemberVisibilitySetting.tsx",
+          "src/presentation/components/BuildCoreTeams/BuildCoreWorkflowTaskPermissionsSection.tsx",
+          "src/presentation/components/BuildCoreTeams/DemoTeamsViewOnlyBanner.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsFolderTabs.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsPermissionsPanel.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsSectionMobileSelector.tsx",
+          "src/presentation/components/BuildCoreTeams/TeamsSidebarNav.tsx"
+        ],
+        "apiEndpoints": [
+          "/api/internal/organization/app-access",
+          "/api/internal/organization/assignment-identities",
+          "/api/internal/organization/invites/[inviteId]/cancel",
+          "/api/internal/organization/invites/accept",
+          "/api/internal/organization/invites/lookup",
+          "/api/internal/organization/invites",
+          "/api/internal/organization/members/[memberId]/role",
+          "/api/internal/organization/members/[memberId]",
+          "/api/internal/organization/members",
+          "/api/internal/organization/membership-context"
+        ],
+        "domainServices": [],
+        "databaseTables": [],
+        "docCategories": [
+          "permissions",
+          "settings"
+        ],
+        "keywords": [
+          "team",
+          "member",
+          "invite",
+          "organization",
+          "buildcore access",
+          "role"
+        ]
+      }
+    ]
+  }
+}
