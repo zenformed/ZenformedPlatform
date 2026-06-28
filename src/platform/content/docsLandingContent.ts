@@ -13,20 +13,6 @@ export type DocsLandingCard = {
   readonly iconAppId?: PlatformAppId;
 };
 
-export type DocsRecentUpdate = {
-  readonly id: string;
-  readonly productLabel: string;
-  readonly title: string;
-  readonly accentColor: string;
-  readonly date: string;
-};
-
-export type DocsPopularArticle = {
-  readonly id: string;
-  readonly title: string;
-  readonly href: string;
-};
-
 export const DOCS_LANDING_CARDS: readonly DocsLandingCard[] = [
   {
     id: 'my-account',
@@ -71,52 +57,5 @@ export const DOCS_LANDING_CARDS: readonly DocsLandingCard[] = [
     actionHref: '#',
     status: 'coming_soon',
     iconAppId: 'analyticscore',
-  },
-];
-
-export const DOCS_RECENT_UPDATES: readonly DocsRecentUpdate[] = [
-  {
-    id: 'buildcore-1-5',
-    productLabel: 'BuildCore',
-    title: 'BuildCore 1.5 — Bulk Actions, Zip Radius Filter & More',
-    accentColor: '#2563eb',
-    date: 'Mar 12, 2026',
-  },
-  {
-    id: 'account-billing',
-    productLabel: 'Account',
-    title: 'Billing Improvements & Subscription Management',
-    accentColor: '#119247',
-    date: 'Feb 28, 2026',
-  },
-  {
-    id: 'forgecore-inventory',
-    productLabel: 'ForgeCore',
-    title: 'Inventory Workflow Enhancements',
-    accentColor: '#ea580c',
-    date: 'Feb 14, 2026',
-  },
-];
-
-export const DOCS_POPULAR_ARTICLES: readonly DocsPopularArticle[] = [
-  {
-    id: 'first-project',
-    title: 'Creating Your First Project in BuildCore',
-    href: '#',
-  },
-  {
-    id: 'invite-team',
-    title: 'Inviting Team Members to Your Organization',
-    href: '#',
-  },
-  {
-    id: 'permissions',
-    title: 'Managing Permissions and Roles',
-    href: '#',
-  },
-  {
-    id: 'billing',
-    title: 'Understanding Your Billing and Subscriptions',
-    href: '#',
   },
 ];

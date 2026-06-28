@@ -1,10 +1,18 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 import {
-  DOCS_POPULAR_ARTICLES,
-  DOCS_RECENT_UPDATES,
-} from '@/platform/content/docsLandingContent';
+  formatDocsLandingUpdateDate,
+} from '@/platform/docs/docsLandingCatalog';
+import type {
+  DocsPopularLandingArticle,
+  DocsRecentLandingUpdate,
+} from '@/platform/docs/docsLandingTypes';
 import styles from '../../../../app/docs/docs.module.css';
+
+export type DocsBottomSectionsProps = {
+  readonly popularArticles: readonly DocsPopularLandingArticle[];
+  readonly recentUpdates: readonly DocsRecentLandingUpdate[];
+};
 
 function ArticleArrowIcon(): ReactElement {
   return (
@@ -28,7 +36,10 @@ function ArticleArrowIcon(): ReactElement {
   );
 }
 
-export function DocsBottomSections(): ReactElement {
+export function DocsBottomSections({
+  popularArticles,
+  recentUpdates,
+}: DocsBottomSectionsProps): ReactElement {
   return (
     <div className={styles.docsBottomLayout}>
       <div className={styles.docsPanels}>
@@ -36,40 +47,52 @@ export function DocsBottomSections(): ReactElement {
           <h2 id="docs-recent-updates-title" className={styles.docsPanelTitle}>
             Recent Updates
           </h2>
-          <ul className={styles.docsUpdateList}>
-            {DOCS_RECENT_UPDATES.map((update) => (
-              <li key={update.id} className={styles.docsUpdateItem}>
-                <span
-                  className={styles.docsUpdateDot}
-                  style={{ backgroundColor: update.accentColor }}
-                  aria-hidden
-                />
-                <div className={styles.docsUpdateContent}>
-                  <span className={styles.docsUpdateProduct}>{update.productLabel}</span>
-                  <p className={styles.docsUpdateTitle}>{update.title}</p>
-                </div>
-                <time className={styles.docsUpdateDate} dateTime={update.date}>
-                  {update.date}
-                </time>
-              </li>
-            ))}
-          </ul>
+          {recentUpdates.length === 0 ? (
+            <p className={styles.docsPanelEmpty}>No published documentation updates yet.</p>
+          ) : (
+            <ul className={styles.docsUpdateList}>
+              {recentUpdates.map((update) => (
+                <li key={update.id} className={styles.docsUpdateItem}>
+                  <span
+                    className={styles.docsUpdateDot}
+                    style={{ backgroundColor: update.accentColor }}
+                    aria-hidden
+                  />
+                  <div className={styles.docsUpdateContent}>
+                    <span className={styles.docsUpdateProduct}>{update.productLabel}</span>
+                    <p className={styles.docsUpdateTitle}>
+                      <Link href={update.href} className={styles.docsUpdateLink}>
+                        {update.title}
+                      </Link>
+                    </p>
+                  </div>
+                  <time className={styles.docsUpdateDate} dateTime={update.updatedAt}>
+                    {formatDocsLandingUpdateDate(update.updatedAt)}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <section className={styles.docsPanel} aria-labelledby="docs-popular-articles-title">
           <h2 id="docs-popular-articles-title" className={styles.docsPanelTitle}>
             Popular Articles
           </h2>
-          <ul className={styles.docsArticleList}>
-            {DOCS_POPULAR_ARTICLES.map((article) => (
-              <li key={article.id} className={styles.docsArticleItem}>
-                <Link href={article.href} className={styles.docsArticleLink}>
-                  <span>{article.title}</span>
-                  <ArticleArrowIcon />
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {popularArticles.length === 0 ? (
+            <p className={styles.docsPanelEmpty}>No published articles yet.</p>
+          ) : (
+            <ul className={styles.docsArticleList}>
+              {popularArticles.map((article) => (
+                <li key={article.id} className={styles.docsArticleItem}>
+                  <Link href={article.href} className={styles.docsArticleLink}>
+                    <span>{article.title}</span>
+                    <ArticleArrowIcon />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
 

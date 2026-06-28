@@ -42,3 +42,17 @@ export type PlatformDocsArticleRow = {
 };
 
 export const PLATFORM_DOCS_ARTICLES_TABLE = 'platform_docs_articles';
+export const PLATFORM_DOCS_ARTICLE_METRICS_TABLE = 'platform_docs_article_metrics';
+
+export type PlatformDocsArticleMetricsRow = {
+  readonly article_id: string;
+  readonly views: number;
+  readonly unique_views: number;
+  readonly helpful_yes: number;
+  readonly helpful_no: number;
+  readonly created_at: string;
+  readonly updated_at: string;
+  readonly last_viewed_at: string | null;
+};
+
+export type DocsArticleHelpfulVote = 'yes' | 'no';

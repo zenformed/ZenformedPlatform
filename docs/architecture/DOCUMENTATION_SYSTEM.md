@@ -277,8 +277,9 @@ The following are out of scope for initial delivery but aligned with the platfor
 - Organization-specific documentation overlays
 - Embedded runnable examples and code snippets
 - AI-generated summaries per article or category
-- Documentation analytics (views, search queries, deflection)
-- Reader feedback on articles (helpful / not helpful, comments)
+- [ ] Documentation analytics dashboard (views, search queries, deflection)
+- [x] Reader feedback on articles (helpful / not helpful) — `POST /api/docs/articles/helpful`, `platform_docs_article_metrics`
+- [ ] Reader comments on articles
 
 ---
 
@@ -308,7 +309,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - Route: `/docs`
 - Product cards: My Account, BuildCore, ForgeCore, FormCore, AnalyticsCore
 - BuildCore card links to `/docs/buildcore`
-- Recent Updates and Popular Articles panels (placeholder links)
+- Recent Updates and Popular Articles panels load published articles from the documentation provider (database or markdown fallback), sorted by `updated_at` / `lastUpdated` descending
 - Functional search input with keyboard hint (`/` and ⌘/Ctrl+K focus search; Enter or search icon submits)
 - Platform shell: shared header, three-dot navigation menu, account pill
 - Public route (no auth required to view hub)
@@ -330,8 +331,8 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - Catalog index: `src/platform/docs/docsArticleCatalog.ts` (generated from loaded markdown; no embedded article bodies)
 - Public category listings: `src/platform/docs/docsPublicArticleCatalog.ts` — filters provider articles to `visibility: public` for category pages and product landing counts
 - Public search: `src/platform/docs/docsPublicArticleSearch.ts` — title/summary/category/tags/body search over published public articles; route `/docs/search`
-- Components: `DocsArticleView`, `DocsMarkdownContent`, `DocsArticleMetadata`, `DocsArticlePagination`, `DocsRelatedArticles`, `DocsArticleFeedback`
-- Placeholder prev/next, related articles, and feedback (no functionality yet)
+- Components: `DocsArticleView`, `DocsMarkdownContent`, `DocsArticleMetadata`, `DocsArticlePagination`, `DocsRelatedArticles`, `DocsArticleFeedback` (helpful yes/no votes via `POST /api/docs/articles/helpful`)
+- Placeholder prev/next and related articles (no functionality yet)
 
 **Markdown content architecture**
 
@@ -443,6 +444,21 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 - **Validation:** PNG, JPG/JPEG, WEBP, GIF only; max 10 MB; API returns structured errors (`missing_env`, `missing_bucket`, `invalid_file_type`, `file_too_large`, `upload_failed`) instead of empty 500s
 - **Required env (production uploads):** `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; optional override `DOCS_IMAGES_STORAGE=supabase|filesystem` (defaults to Supabase on Vercel)
 - **Migration:** `supabase/migrations/20260628130000_create_platform_docs_images_bucket.sql`
+
+**Documentation landing sections (implemented)**
+
+- `/docs` Popular Articles and Recent Updates load published public articles through `docsLandingCatalog.server.ts` → `getAllDocsArticles()` (database or markdown provider)
+- Sort: `updated_at` / `lastUpdated` descending; no hardcoded article titles
+- Recent Updates show product name, title, updated date, and article link
+- Popular Articles show title and link
+
+**Documentation article metrics (implemented)**
+
+- Table: `platform_docs_article_metrics` (migration `supabase/migrations/20260628140000_create_platform_docs_article_metrics.sql`)
+- Columns: `article_id` (FK to `platform_docs_articles`), `views`, `unique_views`, `helpful_yes`, `helpful_no`, timestamps
+- Helpful vote API: `POST /api/docs/articles/helpful` — accepts `articleId` or `product` + `category` + `slug` with `vote: yes|no`; server-side service role upsert/increment; no login required
+- Article page `DocsArticleFeedback` calls the BFF endpoint; sessionStorage prevents duplicate votes per article in the same browser session
+- Metrics writes require `SUPABASE_SERVICE_ROLE_KEY` and `DOCS_CONTENT_SOURCE=database`
 
 **Staff editor (filesystem legacy path)**
 

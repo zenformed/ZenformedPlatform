@@ -57,7 +57,7 @@ export function DocsArticleView({
 
       <DocsRelatedArticles articles={article.relatedArticles} />
 
-      <DocsArticleFeedback />
+      <DocsArticleFeedback article={article} />
     </article>
   );
 }

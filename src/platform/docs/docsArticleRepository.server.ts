@@ -5,8 +5,16 @@ import {
   mapPlatformDocsArticleRowToDocsAdminArticle,
   mapPlatformDocsArticleRowToDocsArticle,
 } from '@/platform/docs/docsDatabaseArticleMapper';
-import { PLATFORM_DOCS_ARTICLES_TABLE, type UpsertPlatformDocsArticleInput } from '@/platform/docs/docsDatabaseTypes';
-import type { PlatformDocsArticleRow } from '@/platform/docs/docsDatabaseTypes';
+import {
+  PLATFORM_DOCS_ARTICLE_METRICS_TABLE,
+  PLATFORM_DOCS_ARTICLES_TABLE,
+  type UpsertPlatformDocsArticleInput,
+} from '@/platform/docs/docsDatabaseTypes';
+import type {
+  DocsArticleHelpfulVote,
+  PlatformDocsArticleMetricsRow,
+  PlatformDocsArticleRow,
+} from '@/platform/docs/docsDatabaseTypes';
 import { requireSupabaseServiceRoleClient } from '@/infrastructure/supabase/supabaseServiceRole.server';
 import type { DocsArticle } from '@/platform/docs/docsArticleTypes';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
@@ -193,4 +201,81 @@ export async function listDatabaseArticleSlugs(
 
 export function isDatabasePublishedPublicRow(row: PlatformDocsArticleRow): boolean {
   return isPublishedPublicPlatformDocsArticleRow(row);
+}
+
+export async function getPublishedPublicArticleDatabaseId(
+  product: DocsProductSlug,
+  category: DocsCategorySlug,
+  slug: string,
+): Promise<string | undefined> {
+  const row = await getPlatformDocsArticleRow(product, category, slug);
+  if (row == null || !isPublishedPublicPlatformDocsArticleRow(row)) {
+    return undefined;
+  }
+
+  return row.id;
+}
+
+export type DocsArticleHelpfulMetrics = {
+  readonly helpfulYes: number;
+  readonly helpfulNo: number;
+};
+
+export async function recordDocsArticleHelpfulVote(
+  articleId: string,
+  vote: DocsArticleHelpfulVote,
+): Promise<DocsArticleHelpfulMetrics> {
+  const supabase = requireSupabaseServiceRoleClient();
+  const { data: existing, error: readError } = await supabase
+    .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+    .select('*')
+    .eq('article_id', articleId)
+    .maybeSingle();
+
+  if (readError) {
+    throw new Error(`Failed to read docs article metrics: ${readError.message}`);
+  }
+
+  const now = new Date().toISOString();
+
+  if (existing == null) {
+    const payload = {
+      article_id: articleId,
+      helpful_yes: vote === 'yes' ? 1 : 0,
+      helpful_no: vote === 'no' ? 1 : 0,
+      updated_at: now,
+    };
+
+    const { data, error } = await supabase
+      .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+      .insert(payload)
+      .select('*')
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to create docs article metrics: ${error.message}`);
+    }
+
+    const row = data as PlatformDocsArticleMetricsRow;
+    return { helpfulYes: row.helpful_yes, helpfulNo: row.helpful_no };
+  }
+
+  const current = existing as PlatformDocsArticleMetricsRow;
+  const { data, error } = await supabase
+    .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+    .update({
+      helpful_yes: current.helpful_yes + (vote === 'yes' ? 1 : 0),
+      helpful_no: current.helpful_no + (vote === 'no' ? 1 : 0),
+      updated_at: now,
+    })
+    .eq('article_id', articleId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update docs article metrics: ${error.message}`);
+  }
+
+  const row = data as PlatformDocsArticleMetricsRow;
+  return { helpfulYes: row.helpful_yes, helpfulNo: row.helpful_no };
 }

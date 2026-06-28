@@ -15,6 +15,7 @@ export function mapPlatformDocsArticleRowToDocsArticle(row: PlatformDocsArticleR
 
   return {
     id: docsArticleId(product, category, row.slug),
+    databaseId: row.id,
     slug: row.slug,
     title: row.title,
     summary: row.summary,

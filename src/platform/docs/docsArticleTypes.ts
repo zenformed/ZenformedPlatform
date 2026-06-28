@@ -11,6 +11,8 @@ export type DocsArticleRef = {
 
 export type DocsArticle = {
   readonly id: string;
+  /** Database UUID when loaded from platform_docs_articles; absent for markdown-only articles. */
+  readonly databaseId?: string;
   readonly slug: string;
   readonly title: string;
   readonly summary?: string;

@@ -34,6 +34,7 @@ describe('docsDatabaseArticleMapper', () => {
     const article = mapPlatformDocsArticleRowToDocsArticle(publishedRow);
 
     assert.equal(article.slug, 'upload-documents');
+    assert.equal(article.databaseId, publishedRow.id);
     assert.equal(article.estimatedReadTime, '4 min read');
     assert.equal(article.lastUpdated, '2026-06-28');
     assert.match(article.content, /workflow task documents/i);

@@ -605,6 +605,22 @@ span.docsHeroProductIcon {
   line-height: 1.45;
 }
 
+.docsUpdateLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.docsUpdateLink:hover {
+  color: var(--products-accent-light);
+}
+
+.docsPanelEmpty {
+  margin: 0;
+  color: var(--products-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 .docsUpdateDate {
   color: var(--products-text-muted);
   font-size: 0.75rem;
@@ -1117,6 +1133,24 @@ span.docsHeroProductIcon {
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
+}
+
+.docsArticleFeedbackButton:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--products-text);
+}
+
+.docsArticleFeedbackSubmitted {
+  margin: 0;
+  color: var(--products-text-muted);
+  font-size: 0.875rem;
+}
+
+.docsArticleFeedbackError {
+  margin: 0.75rem 0 0;
+  color: #f87171;
+  font-size: 0.8125rem;
 }
 
 .docsArticleFeedbackButton:disabled {
