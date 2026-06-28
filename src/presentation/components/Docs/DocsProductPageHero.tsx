@@ -19,6 +19,7 @@ export function DocsProductPageHero({
       subtitle={product.subtitle}
       searchPlaceholder={searchPlaceholder ?? `Search ${product.name} documentation…`}
       titleLeading={<DocsProductIcon icon={product.icon} name={product.name} />}
+      productSlug={product.slug}
     />
   );
 }

@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from 'react';
+import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 import { DocsSearch } from '@/presentation/components/Docs/DocsSearch';
 import styles from '../../../../app/docs/docs.module.css';
 
@@ -8,6 +9,8 @@ export type DocsPageHeroProps = {
   readonly subtitle: string;
   readonly searchPlaceholder?: string;
   readonly titleLeading?: ReactNode;
+  readonly productSlug?: DocsProductSlug;
+  readonly categorySlug?: DocsCategorySlug;
 };
 
 export function DocsPageHero({
@@ -16,6 +19,8 @@ export function DocsPageHero({
   subtitle,
   searchPlaceholder,
   titleLeading,
+  productSlug,
+  categorySlug,
 }: DocsPageHeroProps): ReactElement {
   const hasLeading = titleLeading != null;
 
@@ -37,7 +42,11 @@ export function DocsPageHero({
         </span>
       </h1>
       <p className={styles.docsHeroIntro}>{subtitle}</p>
-      <DocsSearch placeholder={searchPlaceholder} />
+      <DocsSearch
+        placeholder={searchPlaceholder}
+        productSlug={productSlug}
+        categorySlug={categorySlug}
+      />
     </section>
   );
 }

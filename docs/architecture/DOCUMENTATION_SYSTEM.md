@@ -292,7 +292,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - [x] Article template (`/docs/{product}/{category}/{slug}`) — markdown-backed articles
 - [x] Markdown content loader (`docs/content/` + frontmatter)
 - [x] Markdown renderer (`react-markdown` + `remark-gfm`)
-- [ ] Search (Phase 1)
+- [x] Search (Phase 1) — `/docs/search?q=...` across published public articles; product/category filters; keyboard shortcuts `/` and ⌘/Ctrl+K
 - [ ] Related articles (dynamic logic)
 - [ ] Release notes (in-doc system)
 - [x] Staff editor (UI shell) — `/admin/docs` console and article editor placeholders
@@ -308,7 +308,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - Product cards: My Account, BuildCore, ForgeCore, FormCore, AnalyticsCore
 - BuildCore card links to `/docs/buildcore`
 - Recent Updates and Popular Articles panels (placeholder links)
-- Non-functional search input with keyboard hint
+- Functional search input with keyboard hint (`/` and ⌘/Ctrl+K focus search; Enter or search icon submits)
 - Platform shell: shared header, three-dot navigation menu, account pill
 - Public route (no auth required to view hub)
 
@@ -316,7 +316,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 
 - Route: `/docs/buildcore` — category grid with search hero; category cards show published public article counts when available
 - Category pages: `/docs/buildcore/{category}` — list published public articles for that category (title, summary, read time, last updated); empty categories show "Articles coming soon."
-- Reusable components: `DocsShell`, `DocsPageHero`, `DocsProductPageHero`, `DocsProductIcon`, `DocsSearch`, `DocsCategoryGrid`, `DocsCategoryArticleList`, `DocsBreadcrumbs`, `DocsCategoryPageContent`
+- Reusable components: `DocsShell`, `DocsPageHero`, `DocsProductPageHero`, `DocsProductIcon`, `DocsSearch`, `DocsSearchResults`, `DocsSearchPageContent`, `DocsCategoryGrid`, `DocsCategoryArticleList`, `DocsBreadcrumbs`, `DocsCategoryPageContent`
 - Typed catalog: `src/platform/docs/docsCatalog.ts`
 
 **Article system (implemented)**
@@ -328,6 +328,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - Provider: `src/platform/docs/docsArticleProvider.ts` — presentation layer depends on this abstraction only
 - Catalog index: `src/platform/docs/docsArticleCatalog.ts` (generated from loaded markdown; no embedded article bodies)
 - Public category listings: `src/platform/docs/docsPublicArticleCatalog.ts` — filters provider articles to `visibility: public` for category pages and product landing counts
+- Public search: `src/platform/docs/docsPublicArticleSearch.ts` — title/summary/category/tags/body search over published public articles; route `/docs/search`
 - Components: `DocsArticleView`, `DocsMarkdownContent`, `DocsArticleMetadata`, `DocsArticlePagination`, `DocsRelatedArticles`, `DocsArticleFeedback`
 - Placeholder prev/next, related articles, and feedback (no functionality yet)
 

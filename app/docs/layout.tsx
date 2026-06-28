@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import { DocsSearchKeyboardShortcuts } from '@/presentation/components/Docs/DocsSearchKeyboardShortcuts';
 
 export const metadata: Metadata = {
   title: 'Docs — Zenformed',
@@ -11,5 +12,5 @@ export default function DocsLayout({
 }: {
   children: ReactNode;
 }): ReactNode {
-  return children;
+  return <DocsSearchKeyboardShortcuts>{children}</DocsSearchKeyboardShortcuts>;
 }

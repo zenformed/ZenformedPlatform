@@ -10,6 +10,11 @@ import {
   buildPublicDocsCategoryArticleCounts,
   filterPublicDocsCategoryArticles,
 } from '@/platform/docs/docsPublicArticleCatalog';
+import {
+  searchPublicDocsArticles as searchPublicDocsArticlesCore,
+  type DocsPublicSearchResult,
+} from '@/platform/docs/docsPublicArticleSearch';
+import type { DocsPublicSearchOptions } from '@/platform/docs/docsPublicArticleSearch';
 
 export function getDocsArticle(
   productSlug: DocsProductSlug,
@@ -38,6 +43,22 @@ export function getPublicDocsCategoryArticleCounts(
   productSlug: DocsProductSlug,
 ): Readonly<Partial<Record<DocsCategorySlug, number>>> {
   return buildPublicDocsCategoryArticleCounts(getAllDocsArticles(), productSlug);
+}
+
+export type SearchPublicDocsArticlesOptions = Pick<
+  DocsPublicSearchOptions,
+  'query' | 'product' | 'category'
+>;
+
+export function searchPublicDocsArticles(
+  options: SearchPublicDocsArticlesOptions,
+): readonly DocsPublicSearchResult[] {
+  return searchPublicDocsArticlesCore(getAllDocsArticles(), {
+    ...options,
+    resolveCategoryTitle: (productSlug, categorySlug) =>
+      getDocsCategory(productSlug, categorySlug)?.title,
+    resolveProductName: (productSlug) => getDocsProduct(productSlug).name,
+  });
 }
 
 export type ResolvedDocsArticlePage = {

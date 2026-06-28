@@ -5,8 +5,8 @@ import type { DocsCategory, DocsProduct } from '@/platform/docs/docsTypes';
 import { docsProductPath } from '@/platform/docs/docsTypes';
 import { DocsBreadcrumbs } from '@/presentation/components/Docs/DocsBreadcrumbs';
 import { DocsCategoryArticleList } from '@/presentation/components/Docs/DocsCategoryArticleList';
+import { DocsSearch } from '@/presentation/components/Docs/DocsSearch';
 import styles from '../../../../app/docs/docs.module.css';
-
 export type DocsCategoryPageContentProps = {
   readonly product: DocsProduct;
   readonly category: DocsCategory;
@@ -20,6 +20,12 @@ export function DocsCategoryPageContent({
 }: DocsCategoryPageContentProps): ReactElement {
   return (
     <article className={styles.docsCategoryPage}>
+      <DocsSearch
+        variant="inline"
+        productSlug={product.slug}
+        categorySlug={category.slug}
+        placeholder={`Search ${category.title} documentation…`}
+      />
       <DocsBreadcrumbs
         items={[
           { label: product.name, href: docsProductPath(product.slug) },

@@ -8,6 +8,7 @@ import { DocsArticlePagination } from '@/presentation/components/Docs/DocsArticl
 import { DocsBreadcrumbs } from '@/presentation/components/Docs/DocsBreadcrumbs';
 import { DocsMarkdownContent } from '@/presentation/components/Docs/DocsMarkdownContent';
 import { DocsRelatedArticles } from '@/presentation/components/Docs/DocsRelatedArticles';
+import { DocsSearch } from '@/presentation/components/Docs/DocsSearch';
 import styles from '../../../../app/docs/docs.module.css';
 
 export type DocsArticleViewProps = {
@@ -25,6 +26,12 @@ export function DocsArticleView({
 }: DocsArticleViewProps): ReactElement {
   return (
     <article className={`${styles.docsArticle} ${articleClassName ?? ''}`.trim()}>
+      <DocsSearch
+        variant="inline"
+        productSlug={product.slug}
+        categorySlug={category.slug}
+        placeholder={`Search ${product.name} documentation…`}
+      />
       <DocsBreadcrumbs
         items={[
           { label: product.name, href: docsProductPath(product.slug) },
