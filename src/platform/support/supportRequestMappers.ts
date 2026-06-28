@@ -90,22 +90,24 @@ export function buildSupportRequestPatchAfterMessage(input: {
   readonly currentStatus: SupportRequestStatus;
   readonly timestamp: string;
 }): SupportRequestTicketPatch {
-  const patch: SupportRequestTicketPatch = {
-    updated_at: input.timestamp,
-  };
-
   if (input.senderType === 'customer') {
-    patch.last_customer_message_at = input.timestamp;
-    if (input.currentStatus === 'waiting_on_customer') {
-      patch.status = 'open';
-    }
+    return {
+      updated_at: input.timestamp,
+      last_customer_message_at: input.timestamp,
+      ...(input.currentStatus === 'waiting_on_customer' ? { status: 'open' as const } : {}),
+    };
   }
 
   if (input.senderType === 'support') {
-    patch.last_support_message_at = input.timestamp;
+    return {
+      updated_at: input.timestamp,
+      last_support_message_at: input.timestamp,
+    };
   }
 
-  return patch;
+  return {
+    updated_at: input.timestamp,
+  };
 }
 
 export function buildInitialCustomerMessageTicketPatch(input: {
