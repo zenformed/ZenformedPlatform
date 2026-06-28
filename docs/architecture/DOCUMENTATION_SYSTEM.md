@@ -448,7 +448,8 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 **Documentation landing sections (implemented)**
 
 - `/docs` Popular Articles and Recent Updates load published public articles through `docsLandingCatalog.server.ts` → `getAllDocsArticles()` (database or markdown provider)
-- Sort: `updated_at` / `lastUpdated` descending; no hardcoded article titles
+- Popular Articles rank by `helpful_yes DESC`, then `views DESC`, then `updated_at DESC` using `platform_docs_article_metrics`
+- Recent Updates sort by `updated_at` / `lastUpdated` descending only
 - Recent Updates show product name, title, updated date, and article link
 - Popular Articles show title and link
 
@@ -457,7 +458,8 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 - Table: `platform_docs_article_metrics` (migration `supabase/migrations/20260628140000_create_platform_docs_article_metrics.sql`)
 - Columns: `article_id` (FK to `platform_docs_articles`), `views`, `unique_views`, `helpful_yes`, `helpful_no`, timestamps
 - Helpful vote API: `POST /api/docs/articles/helpful` — accepts `articleId` or `product` + `category` + `slug` with `vote: yes|no`; server-side service role upsert/increment; no login required
-- Article page `DocsArticleFeedback` calls the BFF endpoint; sessionStorage prevents duplicate votes per article in the same browser session
+- View tracking API: `POST /api/docs/articles/views` — increments `views` and sets `last_viewed_at`; one count per article per browser session via `sessionStorage`
+- Article page `DocsArticleViewTracker` + `DocsArticleFeedback` call BFF endpoints; sessionStorage prevents duplicate votes/views per session
 - Metrics writes require `SUPABASE_SERVICE_ROLE_KEY` and `DOCS_CONTENT_SOURCE=database`
 
 **Staff editor (filesystem legacy path)**

@@ -36,6 +36,42 @@ function ArticleArrowIcon(): ReactElement {
   );
 }
 
+function HelpfulUpIcon(): ReactElement {
+  return (
+    <svg
+      className={styles.docsPopularVoteIcon}
+      viewBox="0 0 16 16"
+      width={14}
+      height={14}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M8 2.5 12.5 8.5H9.75V13H6.25V8.5H3.5L8 2.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function HelpfulDownIcon(): ReactElement {
+  return (
+    <svg
+      className={styles.docsPopularVoteIcon}
+      viewBox="0 0 16 16"
+      width={14}
+      height={14}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M8 13.5 3.5 7.5H6.25V3h3.5v4.5H12.5L8 13.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export function DocsBottomSections({
   popularArticles,
   recentUpdates,
@@ -86,7 +122,22 @@ export function DocsBottomSections({
               {popularArticles.map((article) => (
                 <li key={article.id} className={styles.docsArticleItem}>
                   <Link href={article.href} className={styles.docsArticleLink}>
-                    <span>{article.title}</span>
+                    <span className={styles.docsPopularArticleMain}>
+                      <span
+                        className={styles.docsPopularArticleVotes}
+                        aria-label={`${article.helpfulYes} found helpful, ${article.helpfulNo} not helpful`}
+                      >
+                        <span className={styles.docsPopularVoteGroup}>
+                          <HelpfulUpIcon />
+                          <span className={styles.docsPopularVoteCount}>{article.helpfulYes}</span>
+                        </span>
+                        <span className={styles.docsPopularVoteGroup}>
+                          <HelpfulDownIcon />
+                          <span className={styles.docsPopularVoteCount}>{article.helpfulNo}</span>
+                        </span>
+                      </span>
+                      <span className={styles.docsPopularArticleTitle}>{article.title}</span>
+                    </span>
                     <ArticleArrowIcon />
                   </Link>
                 </li>

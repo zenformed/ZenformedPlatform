@@ -20,6 +20,10 @@ import type { DocsArticle } from '@/platform/docs/docsArticleTypes';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 import { mapFrontmatterToUpsertInput } from '@/platform/docs/docsDatabaseImportMapper';
+import {
+  EMPTY_DOCS_ARTICLE_METRICS,
+  type DocsArticleMetricsSnapshot,
+} from '@/platform/docs/docsArticleMetricsTypes';
 
 export { mapFrontmatterToUpsertInput };
 export type { UpsertPlatformDocsArticleInput } from '@/platform/docs/docsDatabaseTypes';
@@ -220,6 +224,100 @@ export type DocsArticleHelpfulMetrics = {
   readonly helpfulYes: number;
   readonly helpfulNo: number;
 };
+
+export type DocsArticleViewMetrics = {
+  readonly views: number;
+};
+
+export async function loadDocsArticleMetricsMap(
+  articleIds: readonly string[],
+): Promise<Map<string, DocsArticleMetricsSnapshot>> {
+  const metricsMap = new Map<string, DocsArticleMetricsSnapshot>();
+
+  if (articleIds.length === 0) {
+    return metricsMap;
+  }
+
+  const supabase = requireSupabaseServiceRoleClient();
+  const { data, error } = await supabase
+    .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+    .select('article_id, helpful_yes, helpful_no, views')
+    .in('article_id', [...articleIds]);
+
+  if (error) {
+    throw new Error(`Failed to load docs article metrics: ${error.message}`);
+  }
+
+  for (const row of data ?? []) {
+    metricsMap.set(row.article_id as string, {
+      helpfulYes: typeof row.helpful_yes === 'number' ? row.helpful_yes : 0,
+      helpfulNo: typeof row.helpful_no === 'number' ? row.helpful_no : 0,
+      views: typeof row.views === 'number' ? row.views : 0,
+    });
+  }
+
+  for (const articleId of articleIds) {
+    if (!metricsMap.has(articleId)) {
+      metricsMap.set(articleId, EMPTY_DOCS_ARTICLE_METRICS);
+    }
+  }
+
+  return metricsMap;
+}
+
+export async function recordDocsArticleView(articleId: string): Promise<DocsArticleViewMetrics> {
+  const supabase = requireSupabaseServiceRoleClient();
+  const { data: existing, error: readError } = await supabase
+    .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+    .select('*')
+    .eq('article_id', articleId)
+    .maybeSingle();
+
+  if (readError) {
+    throw new Error(`Failed to read docs article metrics: ${readError.message}`);
+  }
+
+  const now = new Date().toISOString();
+
+  if (existing == null) {
+    const { data, error } = await supabase
+      .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+      .insert({
+        article_id: articleId,
+        views: 1,
+        last_viewed_at: now,
+        updated_at: now,
+      })
+      .select('*')
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to create docs article view metrics: ${error.message}`);
+    }
+
+    const row = data as PlatformDocsArticleMetricsRow;
+    return { views: row.views };
+  }
+
+  const current = existing as PlatformDocsArticleMetricsRow;
+  const { data, error } = await supabase
+    .from(PLATFORM_DOCS_ARTICLE_METRICS_TABLE)
+    .update({
+      views: current.views + 1,
+      last_viewed_at: now,
+      updated_at: now,
+    })
+    .eq('article_id', articleId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update docs article view metrics: ${error.message}`);
+  }
+
+  const row = data as PlatformDocsArticleMetricsRow;
+  return { views: row.views };
+}
 
 export async function recordDocsArticleHelpfulVote(
   articleId: string,

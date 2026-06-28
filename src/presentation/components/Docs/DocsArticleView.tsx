@@ -3,6 +3,7 @@ import type { DocsArticle } from '@/platform/docs/docsArticleTypes';
 import type { DocsCategory, DocsProduct } from '@/platform/docs/docsTypes';
 import { docsCategoryPath, docsProductPath } from '@/platform/docs/docsTypes';
 import { DocsArticleFeedback } from '@/presentation/components/Docs/DocsArticleFeedback';
+import { DocsArticleViewTracker } from '@/presentation/components/Docs/DocsArticleViewTracker';
 import { DocsArticleMetadata } from '@/presentation/components/Docs/DocsArticleMetadata';
 import { DocsArticlePagination } from '@/presentation/components/Docs/DocsArticlePagination';
 import { DocsBreadcrumbs } from '@/presentation/components/Docs/DocsBreadcrumbs';
@@ -26,6 +27,7 @@ export function DocsArticleView({
 }: DocsArticleViewProps): ReactElement {
   return (
     <article className={`${styles.docsArticle} ${articleClassName ?? ''}`.trim()}>
+      <DocsArticleViewTracker article={article} />
       <DocsSearch
         variant="inline"
         productSlug={product.slug}

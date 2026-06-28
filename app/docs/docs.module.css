@@ -543,6 +543,9 @@ span.docsHeroProductIcon {
 }
 
 .docsPanel {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
   padding: 1.25rem 1.25rem 1rem;
   border: 1px solid var(--products-border);
   border-radius: 0.625rem;
@@ -558,6 +561,9 @@ span.docsHeroProductIcon {
 
 .docsUpdateList,
 .docsArticleList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -573,6 +579,7 @@ span.docsHeroProductIcon {
   grid-template-columns: auto 1fr auto;
   gap: 0.625rem 0.75rem;
   align-items: start;
+  flex: 1;
   padding: 0.75rem 0;
 }
 
@@ -627,8 +634,15 @@ span.docsHeroProductIcon {
   white-space: nowrap;
 }
 
+.docsArticleItem {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
 .docsArticleLink {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
@@ -642,6 +656,44 @@ span.docsHeroProductIcon {
 
 .docsArticleLink:hover {
   color: var(--products-text);
+}
+
+.docsPopularArticleMain {
+  display: flex;
+  align-items: center;
+  gap: 1.125rem;
+  min-width: 0;
+}
+
+.docsPopularArticleVotes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.docsPopularVoteGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.0625rem;
+}
+
+.docsPopularVoteIcon {
+  flex-shrink: 0;
+  color: var(--products-text-muted);
+}
+
+.docsPopularVoteCount {
+  min-width: 0.75rem;
+  color: var(--products-text-muted);
+  text-align: center;
+}
+
+.docsPopularArticleTitle {
+  min-width: 0;
 }
 
 .docsArticleArrow {

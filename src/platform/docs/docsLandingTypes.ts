@@ -4,6 +4,8 @@ export type DocsPopularLandingArticle = {
   readonly id: string;
   readonly title: string;
   readonly href: string;
+  readonly helpfulYes: number;
+  readonly helpfulNo: number;
 };
 
 export type DocsRecentLandingUpdate = {

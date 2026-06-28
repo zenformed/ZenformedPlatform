@@ -1,6 +1,8 @@
 import 'server-only';
 
 import { getAllDocsArticles } from '@/platform/docs/docsArticleCatalog';
+import { loadDocsArticleMetricsMap } from '@/platform/docs/docsArticleRepository.server';
+import { canUseDocsDatabaseSource } from '@/platform/docs/docsContentSource';
 import { getDocsProduct } from '@/platform/docs/docsCatalog';
 import {
   buildPopularDocsLandingArticles,
@@ -9,12 +11,20 @@ import {
 import type { DocsPopularLandingArticle, DocsRecentLandingUpdate } from '@/platform/docs/docsLandingTypes';
 
 export async function getPopularDocsLandingArticles(
-  limit = 5,
+  limit?: number,
 ): Promise<readonly DocsPopularLandingArticle[]> {
   const articles = await getAllDocsArticles();
+  const databaseArticleIds = articles
+    .map((article) => article.databaseId)
+    .filter((articleId): articleId is string => articleId != null);
+
+  const metricsByArticleId = canUseDocsDatabaseSource()
+    ? await loadDocsArticleMetricsMap(databaseArticleIds)
+    : new Map();
+
   return buildPopularDocsLandingArticles(articles, {
-    limit,
-    resolveProductName: (productSlug) => getDocsProduct(productSlug).name,
+    ...(limit != null ? { limit } : {}),
+    metricsByArticleId,
   });
 }
 
