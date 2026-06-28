@@ -38,6 +38,7 @@ export const platformDocsAdminContent = {
       lastUpdated: 'Last Updated',
       status: 'Status',
       empty: 'No articles in this category.',
+      searchResultsLabel: 'Search results',
     },
     preview: {
       title: 'Article Preview',

@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { requireAdminBearer } from '../docsAdminApiAuth';
+import {
+  DocsImageUploadError,
+  httpStatusForDocsImageUploadError,
+  resolveDocsImageFileName,
+  sanitizeDocsImageSegment,
+  validateDocsImageUpload,
+} from '@/platform/docs/docsImageStorage';
+import { uploadDocsImage } from '@/platform/docs/docsImageStorage.server';
 
 export const dynamic = 'force-dynamic';
-
-const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']);
-
-function sanitizeSegment(value: string): string {
-  return value.replace(/[^a-z0-9-]/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
-}
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authError = requireAdminBearer(request);
@@ -21,37 +21,69 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     formData = await request.formData();
   } catch {
-    return NextResponse.json({ error: 'invalid_form_data' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'invalid_form_data', message: 'Could not read multipart form data.' },
+      { status: 400 },
+    );
   }
 
   const file = formData.get('file');
-  const product = typeof formData.get('product') === 'string' ? formData.get('product') as string : 'buildcore';
+  const product =
+    typeof formData.get('product') === 'string' ? (formData.get('product') as string) : 'buildcore';
   const articleSlug =
-    typeof formData.get('articleSlug') === 'string' ? (formData.get('articleSlug') as string) : 'article';
+    typeof formData.get('articleSlug') === 'string'
+      ? (formData.get('articleSlug') as string)
+      : 'article';
 
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: 'file_required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'file_required', message: 'An image file is required.' },
+      { status: 400 },
+    );
   }
 
-  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-    return NextResponse.json({ error: 'invalid_file_type' }, { status: 400 });
+  const validation = validateDocsImageUpload({
+    contentType: file.type,
+    sizeBytes: file.size,
+    fileName: file.name,
+  });
+
+  if (!validation.ok) {
+    return NextResponse.json(
+      { error: validation.code, message: validation.message },
+      { status: httpStatusForDocsImageUploadError(validation.code) },
+    );
   }
 
-  const extension = path.extname(file.name) || '.png';
-  const safeProduct = sanitizeSegment(product) || 'buildcore';
-  const safeSlug = sanitizeSegment(articleSlug) || 'article';
-  const fileName = `${Date.now()}-${sanitizeSegment(path.basename(file.name, extension))}${extension.toLowerCase()}`;
+  const safeProduct = sanitizeDocsImageSegment(product) || 'buildcore';
+  const safeSlug = sanitizeDocsImageSegment(articleSlug) || 'article';
+  const fileName = resolveDocsImageFileName(file.name);
 
-  const relativeDirectory = path.join('docs', 'images', safeProduct, safeSlug);
-  const absoluteDirectory = path.join(process.cwd(), 'public', relativeDirectory);
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const result = await uploadDocsImage({
+      buffer,
+      contentType: file.type.trim().toLowerCase(),
+      product: safeProduct,
+      articleSlug: safeSlug,
+      fileName,
+    });
 
-  fs.mkdirSync(absoluteDirectory, { recursive: true });
+    return NextResponse.json({ url: result.url, storage: result.storage });
+  } catch (error: unknown) {
+    if (error instanceof DocsImageUploadError) {
+      console.error('Docs image upload failed:', error.code, error.message);
+      return NextResponse.json(
+        { error: error.code, message: error.message },
+        { status: httpStatusForDocsImageUploadError(error.code) },
+      );
+    }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const absolutePath = path.join(absoluteDirectory, fileName);
-  fs.writeFileSync(absolutePath, buffer);
-
-  const publicUrl = `/${relativeDirectory.replace(/\\/g, '/')}/${fileName}`;
-
-  return NextResponse.json({ url: publicUrl });
+    const message = error instanceof Error ? error.message : 'Docs image upload failed.';
+    console.error('Docs image upload failed:', message);
+    return NextResponse.json(
+      { error: 'upload_failed', message },
+      { status: 500 },
+    );
+  }
 }

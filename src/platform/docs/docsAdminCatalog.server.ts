@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { revalidatePath } from 'next/cache';
 import { formatEstimatedReadTime } from '@/platform/docs/docsArticleFrontmatter';
 import { clearDocsArticleProviderCache } from '@/platform/docs/docsArticleProvider';
 import {
@@ -7,8 +8,10 @@ import {
   docsMarkdownRelativePath,
   encodeDocsAdminArticleKey,
 } from '@/platform/docs/docsAdminArticleKey';
-import { loadDocsAdminArticlesCached } from '@/platform/docs/docsAdminArticleLoader.server';
+import { loadDocsAdminArticles } from '@/platform/docs/docsAdminArticleLoader.server';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
+import { getDocsAdminArticleFromDatabase } from '@/platform/docs/docsArticleRepository.server';
+import { canUseDocsDatabaseSource, isDocsDatabaseContentSource } from '@/platform/docs/docsContentSource';
 import { loadDocsMarkdownFiles } from '@/platform/docs/docsMarkdownLoader';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 import { docsArticleId } from '@/platform/docs/docsArticleFrontmatter';
@@ -55,10 +58,24 @@ export function getDocsAdminMarkdownArticles(): readonly DocsAdminArticle[] {
 }
 
 export async function getDocsAdminArticles(): Promise<readonly DocsAdminArticle[]> {
-  return loadDocsAdminArticlesCached();
+  return loadDocsAdminArticles();
 }
 
 export async function getDocsAdminArticle(editorId: string): Promise<DocsAdminArticle | undefined> {
+  if (isDocsDatabaseContentSource() && canUseDocsDatabaseSource()) {
+    const keyParts = decodeDocsAdminArticleKey(editorId);
+    if (keyParts != null) {
+      const fromDatabase = await getDocsAdminArticleFromDatabase(
+        keyParts.product,
+        keyParts.category,
+        keyParts.slug,
+      );
+      if (fromDatabase != null) {
+        return fromDatabase;
+      }
+    }
+  }
+
   const articles = await getDocsAdminArticles();
   return articles.find((article) => article.editorId === editorId);
 }
@@ -83,4 +100,7 @@ export function resolveDocsAdminArticleKey(editorId: string): ReturnType<typeof 
 
 export function invalidateDocsArticleCaches(): void {
   clearDocsArticleProviderCache();
+  revalidatePath('/admin/docs');
+  revalidatePath('/admin/docs/articles', 'layout');
+  revalidatePath('/docs', 'layout');
 }

@@ -2,18 +2,13 @@
 
 import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import { platformDocsAdminContent as content } from '@/platform/content/platformDocsAdminContent';
-
 import {
-
   getDocsAdminCategoryOptions,
-
   getDocsAdminCategoryTitle,
-
   getDocsAdminProductName,
-
 } from '@/platform/docs/docsAdminCatalogData';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
-
+import { readDocsAdminSelection } from '@/platform/docs/docsAdminSelectionStorage';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 
 import adminStyles from '../admin.module.css';
@@ -88,42 +83,42 @@ export function DocsAdminConsole({ articles }: DocsAdminConsoleProps): ReactElem
   const [wizardSeed, setWizardSeed] = useState<DocsAdminArticleWizardSeed | null>(null);
 
   useEffect(() => {
+    const lastSelection = readDocsAdminSelection();
+    if (lastSelection != null) {
+      setProductSlug(lastSelection.product);
+      setCategorySlug(lastSelection.category);
+      if (lastSelection.editorId != null) {
+        setSelectedEditorId(lastSelection.editorId);
+      }
+    }
+
     router.refresh();
   }, [router]);
 
-  const categoryArticles = useMemo(
-
-    () => articles.filter((article) => article.product === productSlug && article.category === categorySlug),
-
-    [articles, productSlug, categorySlug],
-
+  const productArticles = useMemo(
+    () => articles.filter((article) => article.product === productSlug),
+    [articles, productSlug],
   );
 
-
+  const categoryArticles = useMemo(
+    () => productArticles.filter((article) => article.category === categorySlug),
+    [productArticles, categorySlug],
+  );
 
   const filteredArticles = useMemo(() => {
-
     const query = searchQuery.trim().toLowerCase();
+    const scope = query === '' ? categoryArticles : productArticles;
 
     if (query === '') {
-
-      return categoryArticles;
-
+      return scope;
     }
 
-
-
-    return categoryArticles.filter((article) =>
-
-      [article.title, article.summary, article.slug, ...article.tags].some((value) =>
-
+    return scope.filter((article) =>
+      [article.title, article.summary, article.slug, article.category, ...article.tags].some((value) =>
         value.toLowerCase().includes(query),
-
       ),
-
     );
-
-  }, [categoryArticles, searchQuery]);
+  }, [categoryArticles, productArticles, searchQuery]);
 
 
 
@@ -322,9 +317,10 @@ export function DocsAdminConsole({ articles }: DocsAdminConsoleProps): ReactElem
               <section className={docsAdminStyles.docsAdminPanel} aria-label="Article list">
 
                 <div className={docsAdminStyles.docsAdminPanelHeader}>
-
-                  {getDocsAdminProductName(productSlug)} / {getDocsAdminCategoryTitle(productSlug, categorySlug)}
-
+                  {getDocsAdminProductName(productSlug)} /{' '}
+                  {searchQuery.trim() === ''
+                    ? getDocsAdminCategoryTitle(productSlug, categorySlug)
+                    : content.console.table.searchResultsLabel}
                 </div>
 
                 <div className={docsAdminStyles.docsAdminPanelBody}>

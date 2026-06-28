@@ -410,7 +410,7 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 - Publish API: `POST /api/admin/docs/articles/{articleKey}/publish` validates required fields and starter-template content, then sets `published: true`
 - Discard API: `DELETE /api/admin/docs/articles/{articleKey}` permanently deletes draft markdown files (published articles rejected)
 - Create API: `POST /api/admin/docs/articles` generates frontmatter, template body, and file (optional `slug` for content-plan articles)
-- Image upload API: `POST /api/admin/docs/images` stores files under `public/docs/images/{product}/{articleSlug}/`
+- Image upload API: `POST /api/admin/docs/images` — local dev writes to `public/docs/images/{product}/{articleSlug}/`; production (Vercel) uploads to Supabase Storage bucket `platform-docs-images` via server-side service role
 - Editor article key format: `{product}--{category}--{slug}` (legacy keys such as `welcome-to-buildcore` still resolve)
 - Rich text editor: TipTap (`DocsRichTextEditor`) with `tiptap-markdown` for transparent markdown load/save
 - Authoring extensions: `src/platform/docs/tiptap/` (markdown bridge, callout node) and `src/presentation/components/Admin/Docs/RichText/` (editor UI, toolbar, image node view)
@@ -432,7 +432,17 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 - Import script: `npm run docs:migrate-to-db` (idempotent upsert from markdown files)
 - Draft discard in database mode soft-deletes via `deleted_at` (published articles cannot be discarded)
 - Publishing updates `status`, `published_at`, and `updated_at` immediately — no deploy required
-- Image storage remains file-based under `public/docs/images/{product}/{articleSlug}/` (Supabase Storage migration is future work)
+
+**Documentation images (implemented)**
+
+- Browser uploads continue through `POST /api/admin/docs/images` (staff bearer auth); the Platform API uploads server-side — the service role key is never exposed to the browser
+- **Production (Vercel):** Supabase Storage bucket `platform-docs-images`, object path `{productSlug}/{articleSlug}/{filename}` (example: `buildcore/upload-documents-for-a-workflow-task/paperclip-documents-column.png`)
+- **Public URL:** Supabase public object URL inserted into markdown, e.g. `https://{project}.supabase.co/storage/v1/object/public/platform-docs-images/buildcore/...`
+- **Local dev:** files written under `public/docs/images/{product}/{articleSlug}/` with app-relative URLs (`/docs/images/...`)
+- **Legacy articles:** existing markdown that references `/docs/images/...` continues to render from committed static files
+- **Validation:** PNG, JPG/JPEG, WEBP, GIF only; max 10 MB; API returns structured errors (`missing_env`, `missing_bucket`, `invalid_file_type`, `file_too_large`, `upload_failed`) instead of empty 500s
+- **Required env (production uploads):** `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; optional override `DOCS_IMAGES_STORAGE=supabase|filesystem` (defaults to Supabase on Vercel)
+- **Migration:** `supabase/migrations/20260628130000_create_platform_docs_images_bucket.sql`
 
 **Staff editor (filesystem legacy path)**
 

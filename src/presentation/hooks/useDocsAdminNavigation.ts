@@ -2,7 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
+import { decodeDocsAdminArticleKey } from '@/platform/docs/docsAdminArticleKey';
 import { docsAdminNavigation } from '@/platform/docs/docsAdminNavigation';
+import { storeDocsAdminSelection } from '@/platform/docs/docsAdminSelectionStorage';
 
 export function useDocsAdminNavigation(): {
   readonly openConsole: () => void;
@@ -18,6 +20,15 @@ export function useDocsAdminNavigation(): {
 
   const openArticle = useCallback(
     (editorId: string): void => {
+      const keyParts = decodeDocsAdminArticleKey(editorId);
+      if (keyParts != null) {
+        storeDocsAdminSelection({
+          product: keyParts.product,
+          category: keyParts.category,
+          editorId,
+        });
+      }
+
       router.push(docsAdminNavigation.routes.articleEditor(editorId));
       router.refresh();
     },
