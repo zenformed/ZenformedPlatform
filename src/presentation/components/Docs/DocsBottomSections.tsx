@@ -41,14 +41,16 @@ function HelpfulUpIcon(): ReactElement {
     <svg
       className={styles.docsPopularVoteIcon}
       viewBox="0 0 16 16"
-      width={14}
-      height={14}
       aria-hidden="true"
       focusable="false"
     >
       <path
-        d="M8 2.5 12.5 8.5H9.75V13H6.25V8.5H3.5L8 2.5z"
-        fill="currentColor"
+        d="M8 12.5V4.5M8 4.5 5.25 7.25M8 4.5 10.75 7.25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -59,14 +61,16 @@ function HelpfulDownIcon(): ReactElement {
     <svg
       className={styles.docsPopularVoteIcon}
       viewBox="0 0 16 16"
-      width={14}
-      height={14}
       aria-hidden="true"
       focusable="false"
     >
       <path
-        d="M8 13.5 3.5 7.5H6.25V3h3.5v4.5H12.5L8 13.5z"
-        fill="currentColor"
+        d="M8 3.5v8M8 11.5 5.25 8.75M8 11.5 10.75 8.75"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -128,12 +132,24 @@ export function DocsBottomSections({
                         aria-label={`${article.helpfulYes} found helpful, ${article.helpfulNo} not helpful`}
                       >
                         <span className={styles.docsPopularVoteGroup}>
-                          <HelpfulUpIcon />
-                          <span className={styles.docsPopularVoteCount}>{article.helpfulYes}</span>
+                          <span className={styles.docsPopularVoteIconWrap} title="Helpful votes">
+                            <HelpfulUpIcon />
+                          </span>
+                          <span
+                            className={`${styles.docsPopularVoteCount} ${styles.docsPopularVoteCountUp}`}
+                          >
+                            {article.helpfulYes}
+                          </span>
                         </span>
                         <span className={styles.docsPopularVoteGroup}>
-                          <HelpfulDownIcon />
-                          <span className={styles.docsPopularVoteCount}>{article.helpfulNo}</span>
+                          <span className={styles.docsPopularVoteIconWrap} title="Not helpful votes">
+                            <HelpfulDownIcon />
+                          </span>
+                          <span
+                            className={`${styles.docsPopularVoteCount} ${styles.docsPopularVoteCountDown}`}
+                          >
+                            {article.helpfulNo}
+                          </span>
                         </span>
                       </span>
                       <span className={styles.docsPopularArticleTitle}>{article.title}</span>
