@@ -17,3 +17,18 @@ export function isDocsDatabaseContentSource(
 ): boolean {
   return resolveDocsContentSource(env) === 'database';
 }
+
+export function hasDocsDatabaseCredentials(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  const url = env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const key = env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  return url != null && url !== '' && key != null && key !== '';
+}
+
+/** Database reads/writes are available only when configured and credentialed. */
+export function canUseDocsDatabaseSource(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  return isDocsDatabaseContentSource(env) && hasDocsDatabaseCredentials(env);
+}

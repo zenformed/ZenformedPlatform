@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { loadDocsMarkdownFiles } from '../src/platform/docs/docsMarkdownLoader';
+import ws from 'ws';
+import { loadDocsMarkdownFiles } from '../src/platform/docs/docsMarkdownFiles';
 import { mapFrontmatterToUpsertInput } from '../src/platform/docs/docsDatabaseImportMapper';
 import { PLATFORM_DOCS_ARTICLES_TABLE } from '../src/platform/docs/docsDatabaseTypes';
 import type { PlatformDocsArticleRow } from '../src/platform/docs/docsDatabaseTypes';
@@ -67,6 +68,9 @@ async function migrateDocsToDatabase(): Promise<MigrationCounts> {
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false,
+      },
+      realtime: {
+        transport: ws,
       },
     },
   );

@@ -4,7 +4,7 @@ import { cache } from 'react';
 import { DOCS_ADMIN_PLACEHOLDER_ARTICLES } from '@/platform/docs/docsAdminCatalogData';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
 import { loadDocsAdminArticlesFromDatabase } from '@/platform/docs/docsArticleRepository.server';
-import { isDocsDatabaseContentSource } from '@/platform/docs/docsContentSource';
+import { canUseDocsDatabaseSource } from '@/platform/docs/docsContentSource';
 import { getDocsAdminMarkdownArticles } from '@/platform/docs/docsAdminCatalog.server';
 
 function mergeAdminArticles(
@@ -29,7 +29,7 @@ function mergeAdminArticles(
 }
 
 export const loadDocsAdminArticlesCached = cache(async (): Promise<readonly DocsAdminArticle[]> => {
-  if (isDocsDatabaseContentSource()) {
+  if (canUseDocsDatabaseSource()) {
     return mergeAdminArticles(await loadDocsAdminArticlesFromDatabase());
   }
 

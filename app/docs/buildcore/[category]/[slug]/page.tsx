@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { getAllDocsArticleRoutes, resolveDocsArticlePage } from '@/platform/docs/docsArticleCatalog';
-import { isDocsDatabaseContentSource } from '@/platform/docs/docsContentSource';
+import { canUseDocsDatabaseSource } from '@/platform/docs/docsContentSource';
 import type { DocsProductSlug } from '@/platform/docs/docsTypes';
 import { DocsArticleView } from '@/presentation/components/Docs/DocsArticleView';
 import { DocsShell } from '@/presentation/components/Docs/DocsShell';
@@ -19,7 +19,7 @@ type DocsArticlePageProps = {
 };
 
 export async function generateStaticParams(): Promise<{ category: string; slug: string }[]> {
-  if (isDocsDatabaseContentSource()) {
+  if (canUseDocsDatabaseSource()) {
     return [];
   }
 
