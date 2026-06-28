@@ -15,6 +15,7 @@ import {
   getDocsAdminProductName,
 } from '@/platform/docs/docsAdminCatalogData';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
+import { isDocsAdminArticleEditable } from '@/platform/docs/docsAdminTypes';
 import { consumePendingDocsAuthorContext } from '@/platform/docs/docsAuthorContextStorage';
 import type { DocsArticleVisibility } from '@/platform/docs/docsArticleTypes';
 import { shouldShowDocsDiscardDraftButton } from '@/platform/docs/docsDiscardDraft';
@@ -91,7 +92,7 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
   const docsAdminNav = useDocsAdminNavigation();
   const getAccessToken = useAdminAccessToken();
   const editorRef = useRef<DocsRichTextEditorHandle>(null);
-  const isEditable = article.source === 'markdown';
+  const isEditable = isDocsAdminArticleEditable(article);
   const showDiscardDraftButton = shouldShowDocsDiscardDraftButton(article);
   const [savedDraft, setSavedDraft] = useState<EditorDraft>(() => buildDraft(article));
   const [draft, setDraft] = useState<EditorDraft>(() => buildDraft(article));
@@ -419,7 +420,7 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
       <div className={authoringAiStyles.docsAuthoringAiWorkspace}>
         <div className={authoringAiStyles.docsAuthoringAiMainScroll}>
           <div className={authoringAiStyles.docsAuthoringAiMainContent}>
-          {!isEditable ? (
+          {article.source === 'placeholder' ? (
             <p className={docsAdminStyles.docsAdminNotice}>{content.editor.placeholderNotice}</p>
           ) : null}
 

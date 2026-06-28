@@ -1,9 +1,8 @@
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
+import { isDocsAdminArticleEditable } from '@/platform/docs/docsAdminTypes';
 
 export function shouldShowDocsDiscardDraftButton(
   article: Pick<DocsAdminArticle, 'status' | 'source'>,
 ): boolean {
-  return (
-    (article.source === 'markdown' || article.source === 'database') && article.status === 'draft'
-  );
+  return isDocsAdminArticleEditable(article) && article.status === 'draft';
 }

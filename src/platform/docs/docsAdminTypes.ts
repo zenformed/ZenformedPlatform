@@ -29,6 +29,12 @@ export type DocsAdminArticle = {
   readonly content: string;
 };
 
+export function isDocsAdminArticleEditable(
+  article: Pick<DocsAdminArticle, 'source'>,
+): boolean {
+  return article.source === 'markdown' || article.source === 'database';
+}
+
 export type DocsAdminSelection = {
   readonly productSlug: DocsProductSlug;
   readonly categorySlug: DocsCategorySlug;
