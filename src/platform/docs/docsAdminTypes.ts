@@ -3,7 +3,7 @@ import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsType
 
 export type DocsAdminArticleStatus = 'draft' | 'published';
 
-export type DocsAdminArticleSource = 'markdown' | 'placeholder';
+export type DocsAdminArticleSource = 'markdown' | 'placeholder' | 'database';
 
 export type DocsAdminArticle = {
   readonly id: string;

@@ -22,7 +22,7 @@ export async function POST(request: NextRequest, { params }: RouteContext): Prom
     return NextResponse.json({ error: 'invalid_article_key' }, { status: 400 });
   }
 
-  const result = publishDocsAdminArticle(params.articleKey);
+  const result = await publishDocsAdminArticle(params.articleKey);
 
   if (!result.ok) {
     if (result.error === 'not_found') {

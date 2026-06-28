@@ -13,23 +13,25 @@ type AdminDocsArticlePageProps = {
   };
 };
 
-export function generateMetadata({ params }: AdminDocsArticlePageProps): Metadata {
-  noStore();
-  const article = getDocsAdminArticle(params.editorId);
+export function generateMetadata({ params }: AdminDocsArticlePageProps): Promise<Metadata> {
+  return (async () => {
+    noStore();
+    const article = await getDocsAdminArticle(params.editorId);
 
-  if (article == null) {
-    return { title: 'Not Found — Zenformed Admin' };
-  }
+    if (article == null) {
+      return { title: 'Not Found — Zenformed Admin' };
+    }
 
-  return {
-    title: `${article.title} — Documentation Editor`,
-    description: article.summary,
-  };
+    return {
+      title: `${article.title} — Documentation Editor`,
+      description: article.summary,
+    };
+  })();
 }
 
-export default function AdminDocsArticlePage({ params }: AdminDocsArticlePageProps): ReactElement {
+export default async function AdminDocsArticlePage({ params }: AdminDocsArticlePageProps): Promise<ReactElement> {
   noStore();
-  const article = getDocsAdminArticle(params.editorId);
+  const article = await getDocsAdminArticle(params.editorId);
 
   if (article == null) {
     notFound();

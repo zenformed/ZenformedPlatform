@@ -39,7 +39,7 @@ export function generateMetadata({ params }: BuildCoreCategoryPageProps): Metada
   };
 }
 
-export default function BuildCoreCategoryPage({ params }: BuildCoreCategoryPageProps): ReactElement {
+export default async function BuildCoreCategoryPage({ params }: BuildCoreCategoryPageProps): Promise<ReactElement> {
   const product = getDocsProduct(PRODUCT_SLUG);
   const category = getDocsCategory(PRODUCT_SLUG, params.category);
 
@@ -47,7 +47,7 @@ export default function BuildCoreCategoryPage({ params }: BuildCoreCategoryPageP
     notFound();
   }
 
-  const articles = getPublicDocsCategoryArticles(PRODUCT_SLUG, category.slug);
+  const articles = await getPublicDocsCategoryArticles(PRODUCT_SLUG, category.slug);
 
   return (
     <DocsShell>

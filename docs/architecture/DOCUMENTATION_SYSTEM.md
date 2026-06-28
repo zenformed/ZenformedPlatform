@@ -289,8 +289,9 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - [x] Documentation landing page (`/docs`)
 - [x] Product landing pages (`/docs/{product}`) — BuildCore implemented
 - [x] Category pages (`/docs/{product}/{category}`) — BuildCore lists published public articles per category
-- [x] Article template (`/docs/{product}/{category}/{slug}`) — markdown-backed articles
-- [x] Markdown content loader (`docs/content/` + frontmatter)
+- [x] Article template (`/docs/{product}/{category}/{slug}`) — database-backed with markdown fallback
+- [x] Markdown content loader (`docs/content/` + frontmatter) — fallback/import source
+- [x] Database article storage (`platform_docs_articles` in Supabase/Postgres)
 - [x] Markdown renderer (`react-markdown` + `remark-gfm`)
 - [x] Search (Phase 1) — `/docs/search?q=...` across published public articles; product/category filters; keyboard shortcuts `/` and ⌘/Ctrl+K
 - [ ] Related articles (dynamic logic)
@@ -378,7 +379,7 @@ nextArticle:
 **Source-agnostic data flow**
 
 ```
-Markdown files (today)          Database (future)
+Markdown files (seed/fallback)     Database (production)
         ↓                                ↓
    Loader / Provider              Loader / Provider
         ↓                                ↓
@@ -387,7 +388,7 @@ Markdown files (today)          Database (future)
               UI (unchanged)
 ```
 
-Routes, models, and presentation components consume `DocsArticle` via `docsArticleProvider`. Replacing markdown with a database requires swapping the provider implementation only.
+Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applying the Supabase migration to import existing markdown articles.
 
 **Staff editor (UI shell implemented)**
 
@@ -418,7 +419,24 @@ Routes, models, and presentation components consume `DocsArticle` via `docsArtic
 - Markdown files remain the source of truth; authors never edit raw markdown
 - Unsaved changes tracking in editor UI
 - **Preview → Publish workflow** — editor actions are Discard Draft, Save, and Preview. Preview saves unsaved changes first, then opens `/admin/docs/articles/{editorId}/preview`. Publish is only available on the preview page (`POST /api/admin/docs/articles/{articleKey}/publish`). Preview renders the article with the public `DocsArticleView` component and shows admin metadata (title, product, category, visibility, status, last updated). Publishing is blocked for empty required fields or unchanged starter-template content.
-- No database storage yet; filesystem is the authoring source of truth
+**Database-backed documentation (implemented)**
+
+- Production source of truth: Supabase table `platform_docs_articles` (migration in `supabase/migrations/`)
+- Body format remains markdown (`body_markdown` column); UI and `DocsArticle` model unchanged
+- Content source switch: `DOCS_CONTENT_SOURCE=database | markdown` (default: `markdown` when unset)
+- Public docs, search, and category pages load through `docsPublicArticleLoader.server.ts` → database or markdown provider
+- Admin create/save/publish/discard routes write to database when `DOCS_CONTENT_SOURCE=database`
+- Admin CRUD uses service-role Supabase client (`SUPABASE_SERVICE_ROLE_KEY`); not direct browser Supabase access
+- RLS allows anon/authenticated read of `status = published`, `visibility = public`, `deleted_at is null` only
+- Markdown files under `docs/content/` remain for seed/import/fallback; not deleted by migration
+- Import script: `npm run docs:migrate-to-db` (idempotent upsert from markdown files)
+- Draft discard in database mode soft-deletes via `deleted_at` (published articles cannot be discarded)
+- Publishing updates `status`, `published_at`, and `updated_at` immediately — no deploy required
+- Image storage remains file-based under `public/docs/images/{product}/{articleSlug}/` (Supabase Storage migration is future work)
+
+**Staff editor (filesystem legacy path)**
+
+- When `DOCS_CONTENT_SOURCE=markdown`, authoring continues to write markdown files under `docs/content/` as before
 
 **Staff authoring AI**
 

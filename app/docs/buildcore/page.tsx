@@ -13,9 +13,9 @@ export const metadata: Metadata = {
   description: BUILDCORE_DOCS_PRODUCT.subtitle,
 };
 
-export default function BuildCoreDocsPage(): ReactElement {
+export default async function BuildCoreDocsPage(): Promise<ReactElement> {
   const product = BUILDCORE_DOCS_PRODUCT;
-  const articleCounts = getPublicDocsCategoryArticleCounts(product.slug);
+  const articleCounts = await getPublicDocsCategoryArticleCounts(product.slug);
 
   return (
     <DocsShell>

@@ -48,7 +48,7 @@ export function generateMetadata({ searchParams }: DocsSearchPageProps): Metadat
   };
 }
 
-export default function DocsSearchPage({ searchParams }: DocsSearchPageProps): ReactElement {
+export default async function DocsSearchPage({ searchParams }: DocsSearchPageProps): Promise<ReactElement> {
   const query = readSearchParam(searchParams.q);
   const productParam = readSearchParam(searchParams.product);
   const categoryParam = readSearchParam(searchParams.category);
@@ -62,7 +62,7 @@ export default function DocsSearchPage({ searchParams }: DocsSearchPageProps): R
   const results =
     query === ''
       ? []
-      : searchPublicDocsArticles({
+      : await searchPublicDocsArticles({
           query,
           product: product?.slug,
           category: category?.slug,

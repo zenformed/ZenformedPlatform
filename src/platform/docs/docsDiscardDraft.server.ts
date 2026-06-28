@@ -19,7 +19,9 @@ export type DiscardDocsDraftArticleResult =
   | { readonly ok: true }
   | { readonly ok: false; readonly error: 'not_found' | 'published' | 'delete_failed' };
 
-export function discardDocsDraftArticle(input: DiscardDocsDraftArticleInput): DiscardDocsDraftArticleResult {
+export function discardDocsDraftMarkdownArticle(
+  input: DiscardDocsDraftArticleInput,
+): DiscardDocsDraftArticleResult {
   if (input.published) {
     return { ok: false, error: 'published' };
   }
@@ -37,4 +39,9 @@ export function discardDocsDraftArticle(input: DiscardDocsDraftArticleInput): Di
   invalidateDocsArticleCaches();
 
   return { ok: true };
+}
+
+/** @deprecated Use discardDocsAdminArticle from docsArticleWriteService.server.ts */
+export function discardDocsDraftArticle(input: DiscardDocsDraftArticleInput): DiscardDocsDraftArticleResult {
+  return discardDocsDraftMarkdownArticle(input);
 }

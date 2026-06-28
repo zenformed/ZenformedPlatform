@@ -14,27 +14,29 @@ type AdminDocsArticlePreviewPageProps = {
   };
 };
 
-export function generateMetadata({ params }: AdminDocsArticlePreviewPageProps): Metadata {
-  noStore();
-  const article = getDocsAdminArticle(params.editorId);
+export function generateMetadata({ params }: AdminDocsArticlePreviewPageProps): Promise<Metadata> {
+  return (async () => {
+    noStore();
+    const article = await getDocsAdminArticle(params.editorId);
 
-  if (article == null) {
-    return { title: 'Not Found — Zenformed Admin' };
-  }
+    if (article == null) {
+      return { title: 'Not Found — Zenformed Admin' };
+    }
 
-  return {
-    title: `${article.title} — Preview`,
-    description: article.summary,
-  };
+    return {
+      title: `${article.title} — Preview`,
+      description: article.summary,
+    };
+  })();
 }
 
-export default function AdminDocsArticlePreviewRoute({
+export default async function AdminDocsArticlePreviewRoute({
   params,
-}: AdminDocsArticlePreviewPageProps): ReactElement {
+}: AdminDocsArticlePreviewPageProps): Promise<ReactElement> {
   noStore();
-  const article = getDocsAdminArticle(params.editorId);
+  const article = await getDocsAdminArticle(params.editorId);
 
-  if (article == null || article.source !== 'markdown') {
+  if (article == null || (article.source !== 'markdown' && article.source !== 'database')) {
     notFound();
   }
 

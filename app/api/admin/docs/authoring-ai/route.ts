@@ -132,10 +132,10 @@ function mapCoreErrorToResult(
   };
 }
 
-function attachAuthoringCatalog(body: DocsAuthoringAiRequest) {
+async function attachAuthoringCatalog(body: DocsAuthoringAiRequest) {
   return {
     ...body,
-    catalog: buildDocsAuthoringCatalogForAi({
+    catalog: await buildDocsAuthoringCatalogForAi({
       product: body.context.product,
       category: body.context.category,
       title: body.context.title,
@@ -169,7 +169,7 @@ function attachAuthoringGrounding(body: DocsAuthoringAiRequest) {
   };
 }
 
-function buildCoreAuthoringRequest(body: DocsAuthoringAiRequest) {
+async function buildCoreAuthoringRequest(body: DocsAuthoringAiRequest) {
   if (body.action === 'generate_related_articles' || body.action === 'assistant_chat') {
     return attachAuthoringCatalog(
       body.action === 'assistant_chat' ? attachAuthoringGrounding(body) : body,
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'invalid_request' }, { status: 400 });
   }
 
-  const coreRequest = buildCoreAuthoringRequest(body);
+  const coreRequest = await buildCoreAuthoringRequest(body);
   const result = await postDocsAuthoringAiToCore(accessToken, coreRequest);
 
   if (

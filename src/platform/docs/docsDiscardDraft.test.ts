@@ -50,7 +50,13 @@ describe('shouldShowDocsDiscardDraftButton', () => {
       status: 'draft',
     };
 
+    const databaseDraftArticle: Pick<DocsAdminArticle, 'status' | 'source'> = {
+      source: 'database',
+      status: 'draft',
+    };
+
     assert.equal(shouldShowDocsDiscardDraftButton(draftArticle), true);
+    assert.equal(shouldShowDocsDiscardDraftButton(databaseDraftArticle), true);
     assert.equal(shouldShowDocsDiscardDraftButton(publishedArticle), false);
     assert.equal(shouldShowDocsDiscardDraftButton(placeholderArticle), false);
   });

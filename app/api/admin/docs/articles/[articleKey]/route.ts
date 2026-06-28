@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminBearer } from '../../docsAdminApiAuth';
 import { decodeDocsAdminArticleKey } from '@/platform/docs/docsAdminArticleKey';
-import { getDocsAdminArticle, invalidateDocsArticleCaches } from '@/platform/docs/docsAdminCatalog.server';
-import { discardDocsDraftArticle } from '@/platform/docs/docsDiscardDraft.server';
+import { invalidateDocsArticleCaches } from '@/platform/docs/docsAdminCatalog.server';
 import {
-  buildSaveDocsArticleFrontmatter,
-  composeDocsMarkdownFile,
-} from '@/platform/docs/docsFrontmatterGenerator';
-import { writeDocsMarkdownFile } from '@/platform/docs/docsMarkdownWriter.server';
+  discardDocsAdminArticle,
+  saveDocsAdminArticle,
+} from '@/platform/docs/docsArticleWriteService.server';
 import type { DocsArticleVisibility } from '@/platform/docs/docsArticleTypes';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 
@@ -66,16 +64,9 @@ export async function PUT(request: NextRequest, { params }: RouteContext): Promi
     return NextResponse.json({ error: 'title_required' }, { status: 400 });
   }
 
-  const existingArticle = getDocsAdminArticle(params.articleKey);
-  if (existingArticle == null || existingArticle.source !== 'markdown') {
-    return NextResponse.json({ error: 'not_found' }, { status: 404 });
-  }
-
-  if (requestedPublished && existingArticle.status !== 'published') {
+  if (requestedPublished) {
     return NextResponse.json({ error: 'publish_from_preview_only' }, { status: 400 });
   }
-
-  const published = existingArticle.status === 'published' ? true : false;
 
   const product = (body.product ?? keyParts.product) as DocsProductSlug;
   const category = (body.category ?? keyParts.category) as DocsCategorySlug;
@@ -85,7 +76,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext): Promi
     return NextResponse.json({ error: 'immutable_article_identity' }, { status: 400 });
   }
 
-  const frontmatter = buildSaveDocsArticleFrontmatter({
+  const result = await saveDocsAdminArticle(params.articleKey, {
     title,
     slug,
     product,
@@ -95,19 +86,24 @@ export async function PUT(request: NextRequest, { params }: RouteContext): Promi
     tags,
     estimatedReadTime,
     author,
-    published,
     content,
     authorContext,
   });
 
-  const markdown = composeDocsMarkdownFile(frontmatter, content);
-  writeDocsMarkdownFile(product, category, slug, markdown);
+  if (!result.ok) {
+    if (result.error === 'not_found') {
+      return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ error: result.error }, { status: 400 });
+  }
+
   invalidateDocsArticleCaches();
 
   return NextResponse.json({
     articleKey: params.articleKey,
-    lastUpdated: frontmatter.lastUpdated,
-    published,
+    lastUpdated: result.lastUpdated,
+    published: result.published,
   });
 }
 
@@ -122,21 +118,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteContext): P
     return NextResponse.json({ error: 'invalid_article_key' }, { status: 400 });
   }
 
-  const article = getDocsAdminArticle(params.articleKey);
-  if (article == null || article.source !== 'markdown') {
-    return NextResponse.json({ error: 'not_found' }, { status: 404 });
-  }
-
-  if (article.status === 'published') {
-    return NextResponse.json({ error: 'published_article' }, { status: 409 });
-  }
-
-  const result = discardDocsDraftArticle({
-    product: keyParts.product,
-    category: keyParts.category,
-    slug: keyParts.slug,
-    published: false,
-  });
+  const result = await discardDocsAdminArticle(params.articleKey);
 
   if (!result.ok) {
     if (result.error === 'published') {

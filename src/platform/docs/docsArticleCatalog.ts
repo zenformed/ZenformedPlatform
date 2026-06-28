@@ -3,7 +3,11 @@ import 'server-only';
 import type { DocsArticle } from '@/platform/docs/docsArticleTypes';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 import type { DocsArticleRoute } from '@/platform/docs/docsArticleFrontmatter';
-import { docsArticleProvider } from '@/platform/docs/docsArticleProvider';
+import {
+  getAllDocsArticleRoutesFromProvider,
+  getAllDocsArticlesFromProvider,
+  getDocsArticleFromProvider,
+} from '@/platform/docs/docsArticleProvider';
 import { getDocsCategory, getDocsProduct } from '@/platform/docs/docsCatalog';
 import type { DocsCategory, DocsProduct } from '@/platform/docs/docsTypes';
 import {
@@ -16,33 +20,35 @@ import {
 } from '@/platform/docs/docsPublicArticleSearch';
 import type { DocsPublicSearchOptions } from '@/platform/docs/docsPublicArticleSearch';
 
-export function getDocsArticle(
+export async function getDocsArticle(
   productSlug: DocsProductSlug,
   categorySlug: DocsCategorySlug,
   articleSlug: string,
-): DocsArticle | undefined {
-  return docsArticleProvider.getArticle(productSlug, categorySlug, articleSlug);
+): Promise<DocsArticle | undefined> {
+  return getDocsArticleFromProvider(productSlug, categorySlug, articleSlug);
 }
 
-export function getAllDocsArticleRoutes(): readonly DocsArticleRoute[] {
-  return docsArticleProvider.getAllRoutes();
+export async function getAllDocsArticleRoutes(): Promise<readonly DocsArticleRoute[]> {
+  return getAllDocsArticleRoutesFromProvider();
 }
 
-export function getAllDocsArticles(): readonly DocsArticle[] {
-  return docsArticleProvider.getAllArticles();
+export async function getAllDocsArticles(): Promise<readonly DocsArticle[]> {
+  return getAllDocsArticlesFromProvider();
 }
 
-export function getPublicDocsCategoryArticles(
+export async function getPublicDocsCategoryArticles(
   productSlug: DocsProductSlug,
   categorySlug: DocsCategorySlug,
-): readonly DocsArticle[] {
-  return filterPublicDocsCategoryArticles(getAllDocsArticles(), productSlug, categorySlug);
+): Promise<readonly DocsArticle[]> {
+  const articles = await getAllDocsArticles();
+  return filterPublicDocsCategoryArticles(articles, productSlug, categorySlug);
 }
 
-export function getPublicDocsCategoryArticleCounts(
+export async function getPublicDocsCategoryArticleCounts(
   productSlug: DocsProductSlug,
-): Readonly<Partial<Record<DocsCategorySlug, number>>> {
-  return buildPublicDocsCategoryArticleCounts(getAllDocsArticles(), productSlug);
+): Promise<Readonly<Partial<Record<DocsCategorySlug, number>>>> {
+  const articles = await getAllDocsArticles();
+  return buildPublicDocsCategoryArticleCounts(articles, productSlug);
 }
 
 export type SearchPublicDocsArticlesOptions = Pick<
@@ -50,10 +56,11 @@ export type SearchPublicDocsArticlesOptions = Pick<
   'query' | 'product' | 'category'
 >;
 
-export function searchPublicDocsArticles(
+export async function searchPublicDocsArticles(
   options: SearchPublicDocsArticlesOptions,
-): readonly DocsPublicSearchResult[] {
-  return searchPublicDocsArticlesCore(getAllDocsArticles(), {
+): Promise<readonly DocsPublicSearchResult[]> {
+  const articles = await getAllDocsArticles();
+  return searchPublicDocsArticlesCore(articles, {
     ...options,
     resolveCategoryTitle: (productSlug, categorySlug) =>
       getDocsCategory(productSlug, categorySlug)?.title,
@@ -67,18 +74,18 @@ export type ResolvedDocsArticlePage = {
   readonly category: DocsCategory;
 };
 
-export function resolveDocsArticlePage(
+export async function resolveDocsArticlePage(
   productSlug: DocsProductSlug,
   categorySlug: string,
   articleSlug: string,
-): ResolvedDocsArticlePage | undefined {
+): Promise<ResolvedDocsArticlePage | undefined> {
   const product = getDocsProduct(productSlug);
   const category = getDocsCategory(productSlug, categorySlug);
   if (category == null) {
     return undefined;
   }
 
-  const article = getDocsArticle(productSlug, category.slug, articleSlug);
+  const article = await getDocsArticle(productSlug, category.slug, articleSlug);
   if (article == null) {
     return undefined;
   }

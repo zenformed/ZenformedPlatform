@@ -79,8 +79,11 @@ function toCatalogArticle(article: DocsAdminArticle): DocsAuthoringAiCatalogArti
   };
 }
 
-export function buildDocsAuthoringCatalogForAi(context: DocsAuthoringCatalogContext): readonly DocsAuthoringAiCatalogArticle[] {
-  return getDocsAdminArticles()
+export async function buildDocsAuthoringCatalogForAi(
+  context: DocsAuthoringCatalogContext,
+): Promise<readonly DocsAuthoringAiCatalogArticle[]> {
+  const articles = await getDocsAdminArticles();
+  return articles
     .filter((article) => article.product === context.product)
     .filter((article) => !isCurrentArticle(article, context))
     .map((article) => ({ article, score: scoreCatalogArticle(article, context) }))

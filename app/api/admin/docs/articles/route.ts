@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminBearer } from '../docsAdminApiAuth';
 import { encodeDocsAdminArticleKey, docsMarkdownRelativePath } from '@/platform/docs/docsAdminArticleKey';
 import { invalidateDocsArticleCaches } from '@/platform/docs/docsAdminCatalog.server';
+import { createDatabaseDocsAdminArticle } from '@/platform/docs/docsArticleWriteService.server';
+import { isDocsDatabaseContentSource } from '@/platform/docs/docsContentSource';
 import { resolveReusableDocsArticleSlug } from '@/platform/docs/docsArticleStarterTemplate';
 import { getDocsCategory, getDocsProduct } from '@/platform/docs/docsCatalog';
 import { buildNewDocsMarkdownFile } from '@/platform/docs/docsFrontmatterGenerator';
@@ -12,6 +14,7 @@ import {
   writeDocsMarkdownFile,
 } from '@/platform/docs/docsMarkdownWriter.server';
 import { writeDocsMarkdownAuthorContext } from '@/platform/docs/docsMarkdownAuthorContext.server';
+import { listDatabaseArticleSlugs } from '@/platform/docs/docsArticleRepository.server';
 import { generateDocsSlug, isValidDocsSlug } from '@/platform/docs/docsSlug';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
 
@@ -60,6 +63,43 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'invalid_slug' }, { status: 400 });
   }
 
+  const trimmedAuthorContext = body.authorContext?.trim() ?? '';
+
+  if (isDocsDatabaseContentSource()) {
+    const { slug, reusedExistingDraft } = resolveReusableDocsArticleSlug({
+      baseSlug,
+      title,
+      existingSlugs: await listDatabaseArticleSlugs(product, category),
+      readMarkdownForSlug: () => undefined,
+    });
+
+    if (!reusedExistingDraft) {
+      const createResult = await createDatabaseDocsAdminArticle({
+        title,
+        product,
+        category,
+        slug,
+        authorContext: trimmedAuthorContext,
+      });
+
+      if (!createResult.ok) {
+        return NextResponse.json({ error: createResult.error }, { status: 409 });
+      }
+    }
+
+    invalidateDocsArticleCaches();
+    const articleKey = encodeDocsAdminArticleKey(product, category, slug);
+
+    return NextResponse.json({
+      articleKey,
+      editorId: articleKey,
+      slug,
+      product,
+      category,
+      reusedExistingDraft,
+    });
+  }
+
   const existingSlugs = listDocsMarkdownSlugs(product, category);
   const { slug, reusedExistingDraft } = resolveReusableDocsArticleSlug({
     baseSlug,
@@ -67,8 +107,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     existingSlugs,
     readMarkdownForSlug: (candidate) => readDocsMarkdownFile(product, category, candidate),
   });
-
-  const trimmedAuthorContext = body.authorContext?.trim() ?? '';
 
   if (reusedExistingDraft) {
     if (trimmedAuthorContext !== '') {

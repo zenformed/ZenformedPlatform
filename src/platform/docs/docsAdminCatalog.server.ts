@@ -7,7 +7,7 @@ import {
   docsMarkdownRelativePath,
   encodeDocsAdminArticleKey,
 } from '@/platform/docs/docsAdminArticleKey';
-import { DOCS_ADMIN_PLACEHOLDER_ARTICLES } from '@/platform/docs/docsAdminCatalogData';
+import { loadDocsAdminArticlesCached } from '@/platform/docs/docsAdminArticleLoader.server';
 import type { DocsAdminArticle } from '@/platform/docs/docsAdminTypes';
 import { loadDocsMarkdownFiles } from '@/platform/docs/docsMarkdownLoader';
 import type { DocsCategorySlug, DocsProductSlug } from '@/platform/docs/docsTypes';
@@ -50,47 +50,31 @@ function mapMarkdownFileToAdminArticle(
   };
 }
 
-function markdownArticleIdentity(article: DocsAdminArticle): string {
-  return `${article.product}/${article.category}/${article.slug}`;
-}
-
 export function getDocsAdminMarkdownArticles(): readonly DocsAdminArticle[] {
   return loadDocsMarkdownFiles().map(mapMarkdownFileToAdminArticle);
 }
 
-export function getDocsAdminArticles(): readonly DocsAdminArticle[] {
-  const markdownArticles = getDocsAdminMarkdownArticles();
-  const markdownIdentities = new Set(markdownArticles.map(markdownArticleIdentity));
-
-  const placeholders = DOCS_ADMIN_PLACEHOLDER_ARTICLES.filter((article) => {
-    const identity = `${article.product}/${article.category}/${article.slug}`;
-    return !markdownIdentities.has(identity);
-  }).map((article) => ({
-    ...article,
-    articleKey: article.editorId,
-    source: 'placeholder' as const,
-  }));
-
-  return [...markdownArticles, ...placeholders].sort((left, right) =>
-    left.title.localeCompare(right.title),
-  );
+export async function getDocsAdminArticles(): Promise<readonly DocsAdminArticle[]> {
+  return loadDocsAdminArticlesCached();
 }
 
-export function getDocsAdminArticle(editorId: string): DocsAdminArticle | undefined {
-  return getDocsAdminArticles().find((article) => article.editorId === editorId);
+export async function getDocsAdminArticle(editorId: string): Promise<DocsAdminArticle | undefined> {
+  const articles = await getDocsAdminArticles();
+  return articles.find((article) => article.editorId === editorId);
 }
 
-export function getDocsAdminArticleByKey(
+export async function getDocsAdminArticleByKey(
   product: DocsProductSlug,
   category: DocsCategorySlug,
   slug: string,
-): DocsAdminArticle | undefined {
+): Promise<DocsAdminArticle | undefined> {
   const articleKey = encodeDocsAdminArticleKey(product, category, slug);
   return getDocsAdminArticle(articleKey);
 }
 
-export function getDocsAdminEditorIds(): readonly string[] {
-  return getDocsAdminArticles().map((article) => article.editorId);
+export async function getDocsAdminEditorIds(): Promise<readonly string[]> {
+  const articles = await getDocsAdminArticles();
+  return articles.map((article) => article.editorId);
 }
 
 export function resolveDocsAdminArticleKey(editorId: string): ReturnType<typeof decodeDocsAdminArticleKey> {
