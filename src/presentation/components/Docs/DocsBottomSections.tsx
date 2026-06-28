@@ -7,6 +7,7 @@ import type {
   DocsPopularLandingArticle,
   DocsRecentLandingUpdate,
 } from '@/platform/docs/docsLandingTypes';
+import { DocsSupportCta } from '@/presentation/components/Docs/DocsSupportCta';
 import styles from '../../../../app/docs/docs.module.css';
 
 export type DocsBottomSectionsProps = {
@@ -163,19 +164,7 @@ export function DocsBottomSections({
         </section>
       </div>
 
-      <section className={styles.docsCtaBar} aria-label="Documentation support">
-        <p className={styles.docsCtaText}>
-          Can&apos;t find what you&apos;re looking for? Ask our AI assistant or contact support.
-        </p>
-        <div className={styles.docsCtaActions}>
-          <button type="button" className={styles.docsCtaButton} disabled>
-            Ask AI Assistant
-          </button>
-          <button type="button" className={styles.docsCtaButtonSecondary} disabled>
-            Contact Support
-          </button>
-        </div>
-      </section>
+      <DocsSupportCta />
     </div>
   );
 }

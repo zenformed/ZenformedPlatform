@@ -476,6 +476,13 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 - Search UI remains non-blocking; logging failures are swallowed client-side
 - Writes require `SUPABASE_SERVICE_ROLE_KEY` and `DOCS_CONTENT_SOURCE=database`; RLS enabled with no public write policies
 
+**Documentation support CTA (implemented)**
+
+- `/docs` footer uses `DocsSupportCta` with copy: “Can't find what you're looking for? Contact support and we'll help.”
+- Logged-out users redirect to login with `returnTo` back to the current docs path
+- Logged-in users open the shared `SupportRequestModal` and submit to `POST /api/support/requests`
+- Platform support architecture: `docs/architecture/PLATFORM_SUPPORT.md`
+
 **Staff editor (filesystem legacy path)**
 
 - When `DOCS_CONTENT_SOURCE=markdown`, authoring continues to write markdown files under `docs/content/` as before
