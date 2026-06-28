@@ -43,6 +43,7 @@ export type PlatformDocsArticleRow = {
 
 export const PLATFORM_DOCS_ARTICLES_TABLE = 'platform_docs_articles';
 export const PLATFORM_DOCS_ARTICLE_METRICS_TABLE = 'platform_docs_article_metrics';
+export const PLATFORM_DOCS_SEARCH_EVENTS_TABLE = 'platform_docs_search_events';
 
 export type PlatformDocsArticleMetricsRow = {
   readonly article_id: string;

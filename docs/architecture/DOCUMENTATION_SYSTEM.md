@@ -462,6 +462,20 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 - Article page `DocsArticleViewTracker` + `DocsArticleFeedback` call BFF endpoints; sessionStorage prevents duplicate votes/views per session
 - Metrics writes require `SUPABASE_SERVICE_ROLE_KEY` and `DOCS_CONTENT_SOURCE=database`
 
+**Documentation search analytics (implemented)**
+
+- Table: `platform_docs_search_events` (migration `supabase/migrations/20260628150000_create_platform_docs_search_events.sql`)
+- Columns: `query`, `normalized_query`, optional `product`, `results_count`, optional `clicked_article_id` (FK to `platform_docs_articles`), optional `user_id`, `organization_id`, `session_id`, `created_at`
+- Logged when a user commits a search by landing on `/docs/search?q=...` (form submit from docs chrome). One event per browser session per normalized query + product scope via `sessionStorage` dedupe
+- Search event API: `POST /api/docs/search/events` — accepts `query`, `resultsCount`, optional `product`, optional `sessionId`; service-role insert; no login required
+- Search click API: `POST /api/docs/search/clicks` — accepts `searchEventId` + `articleId`; updates `clicked_article_id` on the originating search event when a user clicks a result on the search page
+- Normalization: trim, lowercase, collapse whitespace (`normalizeDocsSearchQuery` in `docsSearchAnalytics.ts`)
+- No-results analytics: filter rows where `results_count = 0` (partial index `platform_docs_search_events_no_results_idx`)
+- Most-searched terms: aggregate on `normalized_query` (optionally grouped by `product`)
+- Clicked articles after search: filter rows where `clicked_article_id is not null`; future dashboards can join to `platform_docs_articles`
+- Search UI remains non-blocking; logging failures are swallowed client-side
+- Writes require `SUPABASE_SERVICE_ROLE_KEY` and `DOCS_CONTENT_SOURCE=database`; RLS enabled with no public write policies
+
 **Staff editor (filesystem legacy path)**
 
 - When `DOCS_CONTENT_SOURCE=markdown`, authoring continues to write markdown files under `docs/content/` as before

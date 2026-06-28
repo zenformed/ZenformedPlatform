@@ -1,5 +1,7 @@
+'use client';
+
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
 import type { DocsPublicSearchResult } from '@/platform/docs/docsPublicArticleSearch';
 import { docsArticlePath } from '@/platform/docs/docsTypes';
 import { DocsSearchHighlight } from '@/presentation/components/Docs/DocsSearchHighlight';
@@ -8,9 +10,33 @@ import styles from '../../../../app/docs/docs.module.css';
 export type DocsSearchResultsProps = {
   readonly query: string;
   readonly results: readonly DocsPublicSearchResult[];
+  readonly onResultClick?: (articleId: string | undefined) => void;
 };
 
-export function DocsSearchResults({ query, results }: DocsSearchResultsProps): ReactElement {
+export function DocsSearchResults({
+  query,
+  results,
+  onResultClick,
+}: DocsSearchResultsProps): ReactElement {
+  const handleResultClick = (event: MouseEvent<HTMLAnchorElement>, articleId: string | undefined): void => {
+    if (onResultClick == null) {
+      return;
+    }
+
+    if (
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.defaultPrevented
+    ) {
+      return;
+    }
+
+    onResultClick(articleId);
+  };
+
   if (results.length === 0) {
     return (
       <p className={styles.docsSearchEmptyState} role="status">
@@ -30,6 +56,7 @@ export function DocsSearchResults({ query, results }: DocsSearchResultsProps): R
               result.article.slug,
             )}
             className={styles.docsSearchResultCard}
+            onClick={(event) => handleResultClick(event, result.article.databaseId)}
           >
             <h2 className={styles.docsSearchResultTitle}>
               <DocsSearchHighlight text={result.article.title} query={query} />

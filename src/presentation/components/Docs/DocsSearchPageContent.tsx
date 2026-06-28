@@ -5,7 +5,7 @@ import type { DocsCategory, DocsProduct } from '@/platform/docs/docsTypes';
 import { docsHubPath, docsProductPath } from '@/platform/docs/docsTypes';
 import { DocsBreadcrumbs } from '@/presentation/components/Docs/DocsBreadcrumbs';
 import { DocsSearch } from '@/presentation/components/Docs/DocsSearch';
-import { DocsSearchResults } from '@/presentation/components/Docs/DocsSearchResults';
+import { DocsSearchResultsWithAnalytics } from '@/presentation/components/Docs/DocsSearchResultsWithAnalytics';
 import styles from '../../../../app/docs/docs.module.css';
 
 export type DocsSearchPageContentProps = {
@@ -60,7 +60,11 @@ export function DocsSearchPageContent({
       ) : null}
 
       {query.trim() !== '' ? (
-        <DocsSearchResults query={query} results={results} />
+        <DocsSearchResultsWithAnalytics
+          query={query}
+          results={results}
+          productSlug={product?.slug}
+        />
       ) : (
         <p className={styles.docsSearchEmptyState}>Enter a search term to find documentation articles.</p>
       )}
