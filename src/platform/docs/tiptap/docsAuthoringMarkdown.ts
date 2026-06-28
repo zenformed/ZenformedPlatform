@@ -1,6 +1,6 @@
+import { parseDocsImageMarkdownBlock } from '@/platform/docs/docsImageCaptionMarkdown';
+
 const CALLOUT_LINE = /^>\s*\*\*(Note|Tip|Warning):\*\*\s*(.*)$/i;
-const IMAGE_LINE = /^!\[([^\]]*)\]\(([^)]+)\)\s*$/;
-const CAPTION_LINE = /^\*([^*]+)\*\s*$/;
 
 function escapeHtml(value: string): string {
   return value
@@ -30,21 +30,13 @@ export function preprocessDocsAuthoringMarkdown(markdown: string): string {
       continue;
     }
 
-    const imageMatch = line.match(IMAGE_LINE);
-    if (imageMatch != null) {
-      const alt = imageMatch[1];
-      const src = imageMatch[2];
-      let caption = '';
-      const nextLine = lines[index + 1]?.trim() ?? '';
-      if (CAPTION_LINE.test(nextLine)) {
-        caption = nextLine.slice(1, -1).trim();
-        index += 1;
-      }
-
+    const imageBlock = parseDocsImageMarkdownBlock(lines, index);
+    if (imageBlock != null) {
+      const { alt, src, caption } = imageBlock.block;
       output.push(
-        `<figure data-docs-image="true" data-src="${escapeAttribute(src)}" data-alt="${escapeAttribute(alt)}" data-caption="${escapeAttribute(caption)}" data-align="center"></figure>`,
+        `<figure data-docs-image="true" data-src="${escapeAttribute(src)}" data-alt="${escapeAttribute(alt)}" data-caption="${escapeAttribute(caption)}"></figure>`,
       );
-      index += 1;
+      index = imageBlock.nextIndex;
       continue;
     }
 

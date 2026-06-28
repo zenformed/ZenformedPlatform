@@ -97,6 +97,7 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
   const [draft, setDraft] = useState<EditorDraft>(() => buildDraft(article));
   const [tagsInput, setTagsInput] = useState(article.tags.join(', '));
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
   const [isDiscarding, setIsDiscarding] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
   const [discardError, setDiscardError] = useState<string | null>(null);
@@ -232,7 +233,7 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
   );
 
   const handleSave = async (): Promise<void> => {
-    if (!isEditable || isSaving) {
+    if (!isEditable || isSaving || isPreviewing) {
       return;
     }
 
@@ -241,14 +242,28 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
     await persistDraft(nextDraft);
   };
 
-  const handlePublish = async (): Promise<void> => {
-    if (!isEditable || isSaving) {
+  const handlePreview = async (): Promise<void> => {
+    if (!isEditable || isSaving || isPreviewing) {
       return;
     }
 
-    const nextDraft = { ...draft, tags: parseTagsInput(tagsInput), published: true };
+    const nextDraft = { ...draft, tags: parseTagsInput(tagsInput) };
+    const needsSave = !draftsEqual(nextDraft, { ...savedDraft, tags: savedDraft.tags });
     setDraft(nextDraft);
-    await persistDraft(nextDraft);
+
+    if (needsSave) {
+      setIsPreviewing(true);
+      setSaveError(null);
+
+      const saved = await persistDraft(nextDraft);
+      setIsPreviewing(false);
+
+      if (!saved) {
+        return;
+      }
+    }
+
+    docsAdminNav.openArticlePreview(article.editorId);
   };
 
   const handleDiscardDraft = async (): Promise<void> => {
@@ -337,7 +352,7 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
           <button
             type="button"
             className={adminStyles.adminButton}
-            disabled={!isEditable || isSaving || !isDirty}
+            disabled={!isEditable || isSaving || isPreviewing || !isDirty}
             onClick={() => void handleSave()}
           >
             {isSaving ? content.editor.saving : content.editor.save}
@@ -345,10 +360,10 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
           <button
             type="button"
             className={docsAdminStyles.docsAdminPrimaryButton}
-            disabled={!isEditable || isSaving}
-            onClick={() => void handlePublish()}
+            disabled={!isEditable || isSaving || isPreviewing}
+            onClick={() => void handlePreview()}
           >
-            {isSaving ? content.editor.publishing : content.editor.publish}
+            {isPreviewing ? content.editor.previewing : content.editor.preview}
           </button>
         </div>
       </div>
@@ -486,18 +501,19 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
                   </select>
                 </div>
                 <div className={docsAdminStyles.docsAdminField}>
-                  <span className={docsAdminStyles.docsAdminFieldLabel}>{content.editor.publishedLabel}</span>
-                  <label className={docsAdminStyles.docsAdminCheckboxLabel}>
-                    <input
-                      type="checkbox"
-                      checked={draft.published}
-                      disabled={!isEditable}
-                      onChange={(event) =>
-                        setDraft((current) => ({ ...current, published: event.target.checked }))
-                      }
-                    />
-                    {draft.published ? content.statusLabels.published : content.statusLabels.draft}
+                  <label className={docsAdminStyles.docsAdminFieldLabel} htmlFor="docs-admin-status">
+                    {content.editor.statusLabel}
                   </label>
+                  <input
+                    id="docs-admin-status"
+                    className={docsAdminStyles.docsAdminInput}
+                    value={
+                      article.status === 'published'
+                        ? content.statusLabels.published
+                        : content.statusLabels.draft
+                    }
+                    readOnly
+                  />
                 </div>
                 <div className={docsAdminStyles.docsAdminField}>
                   <label className={docsAdminStyles.docsAdminFieldLabel} htmlFor="docs-admin-slug">

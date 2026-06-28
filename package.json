@@ -10,7 +10,7 @@
     "start": "next start -p 3030",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test src/platform/docs/docsArticleStarterTemplate.test.ts src/platform/docs/docsAuthoringAiApply.test.ts src/platform/docs/buildcoreWorkflowKnowledge.test.ts src/platform/docs/formatDocsAuthoringGroundingForAi.test.ts src/platform/docs/resolveDocsFeatureForArticle.test.ts src/platform/docs/docsDiscardDraft.test.ts src/platform/products/productPlanOwnership.test.ts",
+    "test": "node --import tsx --test src/platform/docs/docsArticleStarterTemplate.test.ts src/platform/docs/docsAuthoringAiApply.test.ts src/platform/docs/buildcoreWorkflowKnowledge.test.ts src/platform/docs/formatDocsAuthoringGroundingForAi.test.ts src/platform/docs/resolveDocsFeatureForArticle.test.ts src/platform/docs/docsDiscardDraft.test.ts src/platform/docs/docsArticlePublishValidation.test.ts src/platform/docs/docsImageCaptionMarkdown.test.ts src/platform/docs/docsPublicArticleCatalog.test.ts src/platform/products/productPlanOwnership.test.ts",
     "generate:docs-context": "tsx scripts/generate-docs-context.ts"
   },
   "dependencies": {

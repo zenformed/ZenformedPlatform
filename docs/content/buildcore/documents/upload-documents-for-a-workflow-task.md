@@ -10,7 +10,7 @@ tags:
 estimatedReadTime: 5
 lastUpdated: 2026-06-28
 author: Zenformed Documentation
-published: false
+published: true
 authorContext: when on project or sub project page if you scroll down to workflow tasks tab and locate a task for any given stage under the documents column there is a paperclip. clicking it allows upload and download via the dropdown
 ---
 
@@ -29,5 +29,5 @@ This article explains how to upload documents for workflow tasks within BuildCor
 5. From the dropdown menu, select **Upload** and choose the file you wish to attach.
 6. The document will be linked to the task after uploading.
 
-![Upload Documents For a Workflow Task](/docs/images/buildcore/upload-documents-for-a-workflow-task/1782614469005-group-557.png)
 *Upload Documents For a Workflow Task*
+![Upload Documents For a Workflow Task](/docs/images/buildcore/upload-documents-for-a-workflow-task/1782614469005-group-557.png)

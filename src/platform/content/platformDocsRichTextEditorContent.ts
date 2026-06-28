@@ -26,9 +26,6 @@ export const platformDocsRichTextEditorContent = {
     uploading: 'Uploading…',
     altLabel: 'Alt text',
     captionLabel: 'Caption',
-    alignLeft: 'Align left',
-    alignCenter: 'Align center',
-    alignRight: 'Align right',
     resizeHint: 'Drag corner to resize',
   },
   calloutVariants: {

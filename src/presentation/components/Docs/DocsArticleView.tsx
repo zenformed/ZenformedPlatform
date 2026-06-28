@@ -14,15 +14,17 @@ export type DocsArticleViewProps = {
   readonly article: DocsArticle;
   readonly product: DocsProduct;
   readonly category: DocsCategory;
+  readonly articleClassName?: string;
 };
 
 export function DocsArticleView({
   article,
   product,
   category,
+  articleClassName,
 }: DocsArticleViewProps): ReactElement {
   return (
-    <article className={styles.docsArticle}>
+    <article className={`${styles.docsArticle} ${articleClassName ?? ''}`.trim()}>
       <DocsBreadcrumbs
         items={[
           { label: product.name, href: docsProductPath(product.slug) },

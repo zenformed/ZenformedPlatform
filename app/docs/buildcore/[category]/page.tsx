@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
+import { getPublicDocsCategoryArticles } from '@/platform/docs/docsArticleCatalog';
 import {
   getDocsCategory,
   getDocsProduct,
@@ -11,6 +12,8 @@ import { DocsCategoryPageContent } from '@/presentation/components/Docs/DocsCate
 import { DocsShell } from '@/presentation/components/Docs/DocsShell';
 
 const PRODUCT_SLUG: DocsProductSlug = 'buildcore';
+
+export const dynamic = 'force-dynamic';
 
 type BuildCoreCategoryPageProps = {
   readonly params: {
@@ -44,9 +47,11 @@ export default function BuildCoreCategoryPage({ params }: BuildCoreCategoryPageP
     notFound();
   }
 
+  const articles = getPublicDocsCategoryArticles(PRODUCT_SLUG, category.slug);
+
   return (
     <DocsShell>
-      <DocsCategoryPageContent product={product} category={category} />
+      <DocsCategoryPageContent product={product} category={category} articles={articles} />
     </DocsShell>
   );
 }

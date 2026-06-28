@@ -7,6 +7,7 @@ import { docsAdminNavigation } from '@/platform/docs/docsAdminNavigation';
 export function useDocsAdminNavigation(): {
   readonly openConsole: () => void;
   readonly openArticle: (editorId: string) => void;
+  readonly openArticlePreview: (editorId: string) => void;
 } {
   const router = useRouter();
 
@@ -23,11 +24,20 @@ export function useDocsAdminNavigation(): {
     [router],
   );
 
+  const openArticlePreview = useCallback(
+    (editorId: string): void => {
+      router.push(docsAdminNavigation.routes.articlePreview(editorId));
+      router.refresh();
+    },
+    [router],
+  );
+
   return useMemo(
     () => ({
       openConsole,
       openArticle,
+      openArticlePreview,
     }),
-    [openArticle, openConsole],
+    [openArticle, openArticlePreview, openConsole],
   );
 }

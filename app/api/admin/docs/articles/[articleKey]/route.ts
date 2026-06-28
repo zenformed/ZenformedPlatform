@@ -59,12 +59,23 @@ export async function PUT(request: NextRequest, { params }: RouteContext): Promi
   const estimatedReadTime = body.estimatedReadTime?.trim() ?? '';
   const visibility = body.visibility ?? 'public';
   const tags = Array.isArray(body.tags) ? body.tags.filter((tag) => typeof tag === 'string') : [];
-  const published = body.published === true;
+  const requestedPublished = body.published === true;
   const authorContext = body.authorContext?.trim() ?? '';
 
   if (title === '') {
     return NextResponse.json({ error: 'title_required' }, { status: 400 });
   }
+
+  const existingArticle = getDocsAdminArticle(params.articleKey);
+  if (existingArticle == null || existingArticle.source !== 'markdown') {
+    return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  }
+
+  if (requestedPublished && existingArticle.status !== 'published') {
+    return NextResponse.json({ error: 'publish_from_preview_only' }, { status: 400 });
+  }
+
+  const published = existingArticle.status === 'published' ? true : false;
 
   const product = (body.product ?? keyParts.product) as DocsProductSlug;
   const category = (body.category ?? keyParts.category) as DocsCategorySlug;

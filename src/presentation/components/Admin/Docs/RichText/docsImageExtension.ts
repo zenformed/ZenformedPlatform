@@ -1,9 +1,8 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import type { MarkdownNodeSpec } from 'tiptap-markdown';
+import { formatDocsImageMarkdownBlock } from '@/platform/docs/docsImageCaptionMarkdown';
 import { DocsRichTextImageView } from '@/presentation/components/Admin/Docs/RichText/DocsRichTextImageView';
-
-export type DocsImageAlignment = 'left' | 'center' | 'right';
 
 export const DocsImageExtension = Node.create({
   name: 'docsImage',
@@ -18,7 +17,6 @@ export const DocsImageExtension = Node.create({
       alt: { default: '' },
       caption: { default: '' },
       width: { default: null as number | null },
-      align: { default: 'center' as DocsImageAlignment },
     };
   },
 
@@ -35,7 +33,6 @@ export const DocsImageExtension = Node.create({
             src: element.getAttribute('data-src') ?? '',
             alt: element.getAttribute('data-alt') ?? '',
             caption: element.getAttribute('data-caption') ?? '',
-            align: (element.getAttribute('data-align') ?? 'center') as DocsImageAlignment,
             width: null,
           };
         },
@@ -61,12 +58,13 @@ export const DocsImageExtension = Node.create({
             return;
           }
 
-          state.write(`![${alt}](${src})`);
-          const caption = String(node.attrs.caption ?? '').trim();
-          if (caption !== '') {
-            state.write(`\n*${caption}*`);
-          }
-          state.write('\n\n');
+          state.write(
+            formatDocsImageMarkdownBlock({
+              alt,
+              src,
+              caption: String(node.attrs.caption ?? ''),
+            }),
+          );
         }) satisfies MarkdownNodeSpec['serialize'],
       },
     };
@@ -83,7 +81,6 @@ export const DocsImageExtension = Node.create({
               src: attrs.src,
               alt: attrs.alt ?? '',
               caption: attrs.caption ?? '',
-              align: 'center',
               width: null,
             },
           }),

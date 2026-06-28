@@ -6,6 +6,10 @@ import type { DocsArticleRoute } from '@/platform/docs/docsArticleFrontmatter';
 import { docsArticleProvider } from '@/platform/docs/docsArticleProvider';
 import { getDocsCategory, getDocsProduct } from '@/platform/docs/docsCatalog';
 import type { DocsCategory, DocsProduct } from '@/platform/docs/docsTypes';
+import {
+  buildPublicDocsCategoryArticleCounts,
+  filterPublicDocsCategoryArticles,
+} from '@/platform/docs/docsPublicArticleCatalog';
 
 export function getDocsArticle(
   productSlug: DocsProductSlug,
@@ -21,6 +25,19 @@ export function getAllDocsArticleRoutes(): readonly DocsArticleRoute[] {
 
 export function getAllDocsArticles(): readonly DocsArticle[] {
   return docsArticleProvider.getAllArticles();
+}
+
+export function getPublicDocsCategoryArticles(
+  productSlug: DocsProductSlug,
+  categorySlug: DocsCategorySlug,
+): readonly DocsArticle[] {
+  return filterPublicDocsCategoryArticles(getAllDocsArticles(), productSlug, categorySlug);
+}
+
+export function getPublicDocsCategoryArticleCounts(
+  productSlug: DocsProductSlug,
+): Readonly<Partial<Record<DocsCategorySlug, number>>> {
+  return buildPublicDocsCategoryArticleCounts(getAllDocsArticles(), productSlug);
 }
 
 export type ResolvedDocsArticlePage = {

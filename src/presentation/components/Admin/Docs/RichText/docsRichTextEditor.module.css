@@ -178,18 +178,15 @@
 
 .docsRichTextImageWrap {
   margin: 1rem 0;
-}
-
-.docsRichTextImageAlignLeft {
   text-align: left;
 }
 
-.docsRichTextImageAlignCenter {
-  text-align: center;
-}
-
-.docsRichTextImageAlignRight {
-  text-align: right;
+.docsRichTextImageCaption {
+  margin: 0 0 0.5rem;
+  color: var(--color-text-muted, #6b7280);
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.5;
 }
 
 .docsRichTextImageFrame {
@@ -237,39 +234,6 @@
 :global([data-theme='dark']) .docsRichTextImageControls {
   border-color: #3d3e4a;
   background: #1d2029;
-}
-
-.docsRichTextImageAlignButtons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-}
-
-.docsRichTextImageAlignButton {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background: var(--color-surface, #fff);
-  font: inherit;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.docsRichTextImageAlignButtonActive {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.1);
-}
-
-:global([data-theme='dark']) .docsRichTextImageAlignButton {
-  border-color: #3d3e4a;
-  background: #252830;
-  color: #fff;
-}
-
-:global([data-theme='dark']) .docsRichTextImageAlignButtonActive {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.25);
-  color: #fff;
 }
 
 .docsRichTextImageField {

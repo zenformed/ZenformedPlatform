@@ -288,7 +288,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 
 - [x] Documentation landing page (`/docs`)
 - [x] Product landing pages (`/docs/{product}`) — BuildCore implemented
-- [x] Category pages (`/docs/{product}/{category}`) — BuildCore placeholders
+- [x] Category pages (`/docs/{product}/{category}`) — BuildCore lists published public articles per category
 - [x] Article template (`/docs/{product}/{category}/{slug}`) — markdown-backed articles
 - [x] Markdown content loader (`docs/content/` + frontmatter)
 - [x] Markdown renderer (`react-markdown` + `remark-gfm`)
@@ -314,9 +314,9 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 
 **BuildCore product docs (implemented)**
 
-- Route: `/docs/buildcore` — category grid with search hero
-- Category placeholders: `/docs/buildcore/{category}` (12 categories)
-- Reusable components: `DocsShell`, `DocsPageHero`, `DocsProductPageHero`, `DocsProductIcon`, `DocsSearch`, `DocsCategoryGrid`, `DocsBreadcrumbs`, `DocsCategoryPageContent`
+- Route: `/docs/buildcore` — category grid with search hero; category cards show published public article counts when available
+- Category pages: `/docs/buildcore/{category}` — list published public articles for that category (title, summary, read time, last updated); empty categories show "Articles coming soon."
+- Reusable components: `DocsShell`, `DocsPageHero`, `DocsProductPageHero`, `DocsProductIcon`, `DocsSearch`, `DocsCategoryGrid`, `DocsCategoryArticleList`, `DocsBreadcrumbs`, `DocsCategoryPageContent`
 - Typed catalog: `src/platform/docs/docsCatalog.ts`
 
 **Article system (implemented)**
@@ -327,6 +327,7 @@ Maintain this checklist as work progresses. Checked items reflect what exists in
 - Loader: `src/platform/docs/docsMarkdownLoader.ts` (reads files, parses frontmatter, maps to `DocsArticle`)
 - Provider: `src/platform/docs/docsArticleProvider.ts` — presentation layer depends on this abstraction only
 - Catalog index: `src/platform/docs/docsArticleCatalog.ts` (generated from loaded markdown; no embedded article bodies)
+- Public category listings: `src/platform/docs/docsPublicArticleCatalog.ts` — filters provider articles to `visibility: public` for category pages and product landing counts
 - Components: `DocsArticleView`, `DocsMarkdownContent`, `DocsArticleMetadata`, `DocsArticlePagination`, `DocsRelatedArticles`, `DocsArticleFeedback`
 - Placeholder prev/next, related articles, and feedback (no functionality yet)
 
@@ -391,10 +392,11 @@ Routes, models, and presentation components consume `DocsArticle` via `docsArtic
 
 - Route: `/admin/docs` — three-panel documentation management console
 - Route: `/admin/docs/articles/{editorId}` — reusable article editor layout
+- Route: `/admin/docs/articles/{editorId}/preview` — public-style article preview with publish actions
 - Typed admin model: `src/platform/docs/docsAdminTypes.ts`
 - Markdown-backed catalog: `src/platform/docs/docsAdminCatalog.server.ts` (loads published and draft articles from `docs/content/`)
 - Placeholder catalog: `src/platform/docs/docsAdminCatalogData.ts` (legacy UI-only articles without markdown files)
-- Components: `DocsAdminConsole`, `DocsAdminContentPlan`, `DocsAdminNewArticleWizard`, `DocsAdminTreePanel`, `DocsAdminToolbar`, `DocsAdminArticleTable`, `DocsAdminArticlePreview`, `DocsAdminArticleEditor`, `DocsRichTextEditor`, `DocsAuthoringAiPanel`
+- Components: `DocsAdminConsole`, `DocsAdminContentPlan`, `DocsAdminNewArticleWizard`, `DocsAdminTreePanel`, `DocsAdminToolbar`, `DocsAdminArticleTable`, `DocsAdminArticlePreview`, `DocsAdminArticleEditor`, `DocsAdminArticlePreviewPage`, `DocsRichTextEditor`, `DocsAuthoringAiPanel`
 
 **Staff authoring workflow**
 
@@ -402,7 +404,8 @@ Routes, models, and presentation components consume `DocsArticle` via `docsArtic
 - Slug generation: `src/platform/docs/docsSlug.ts`
 - Frontmatter generation: `src/platform/docs/docsFrontmatterGenerator.ts`
 - Body template: `src/platform/docs/docsArticleBodyTemplate.ts` (single configurable location)
-- Save API: `PUT /api/admin/docs/articles/{articleKey}` writes markdown to disk
+- Save API: `PUT /api/admin/docs/articles/{articleKey}` writes markdown to disk (draft saves only; cannot set `published: true`)
+- Publish API: `POST /api/admin/docs/articles/{articleKey}/publish` validates required fields and starter-template content, then sets `published: true`
 - Discard API: `DELETE /api/admin/docs/articles/{articleKey}` permanently deletes draft markdown files (published articles rejected)
 - Create API: `POST /api/admin/docs/articles` generates frontmatter, template body, and file (optional `slug` for content-plan articles)
 - Image upload API: `POST /api/admin/docs/images` stores files under `public/docs/images/{product}/{articleSlug}/`
@@ -412,7 +415,8 @@ Routes, models, and presentation components consume `DocsArticle` via `docsArtic
 - Toolbar: headings, bold/italic/underline, lists, quote, divider, code block, inline code, link, image upload, callout, undo/redo
 - Images upload via existing `POST /api/admin/docs/images` API; inserted at cursor with resize, alignment, alt text, and optional caption
 - Markdown files remain the source of truth; authors never edit raw markdown
-- Unsaved changes tracking and draft/published toggle in editor UI
+- Unsaved changes tracking in editor UI
+- **Preview → Publish workflow** — editor actions are Discard Draft, Save, and Preview. Preview saves unsaved changes first, then opens `/admin/docs/articles/{editorId}/preview`. Publish is only available on the preview page (`POST /api/admin/docs/articles/{articleKey}/publish`). Preview renders the article with the public `DocsArticleView` component and shows admin metadata (title, product, category, visibility, status, last updated). Publishing is blocked for empty required fields or unchanged starter-template content.
 - No database storage yet; filesystem is the authoring source of truth
 
 **Staff authoring AI**
@@ -427,7 +431,7 @@ Routes, models, and presentation components consume `DocsArticle` via `docsArtic
 - **Documentation catalog grounding** applies only to the separate Generate Related Articles action — Platform BFF loads published and draft admin catalog entries for the current product and passes them to Core
 - **Generate Draft never includes Related Articles** — Core prompt forbids the section, then `finalizeGenerateDraftMarkdown()` strips any Related Articles heading, title-only bullets, and `/docs/` links before insertion
 - **Generate Draft produces minimal articles** — default structure is Overview, Main Content, and Step-by-step instructions (only for workflow articles). Optional sections (Tips, Notes, Warnings, Common Mistakes, Next Steps, Best Practices, FAQ, Troubleshooting) are omitted unless Author Context, Feature Workflow, or the AI conversation explicitly requests or grounds them; `finalizeGenerateDraftMarkdown()` strips any unrequested optional sections before editor insertion
-- **Discard Draft** — draft articles only (`status: draft`, markdown source) show a **Discard Draft** button beside Save/Publish; confirmation permanently deletes the markdown file, empty image folder (if any), and admin catalog entry; Content Plan rows return to **Not Started**; `DELETE /api/admin/docs/articles/{articleKey}` (staff bearer auth). Published articles never show the button
+- **Discard Draft** — draft articles only (`status: draft`, markdown source) show a **Discard Draft** button beside Save/Preview; confirmation permanently deletes the markdown file, empty image folder (if any), and admin catalog entry; Content Plan rows return to **Not Started**; `DELETE /api/admin/docs/articles/{articleKey}` (staff bearer auth). Published articles never show the button
 - **Documentation link validation** remains a hard rule for Generate Related Articles — only catalog-backed slugs survive server-side filtering
 - Platform client/apply layer unchanged: `createDocsAuthoringAiClient()` → BFF → Core; results apply through TipTap editor commands and metadata handlers
 - Related-article suggestions: Platform BFF attaches the ranked admin documentation catalog before calling Core (published and draft markdown plus placeholders; docs content stays in Platform)
