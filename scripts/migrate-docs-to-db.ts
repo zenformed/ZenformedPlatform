@@ -59,8 +59,13 @@ function rowsEquivalent(
   );
 }
 
-async function migrateDocsToDatabase(): Promise<MigrationCounts> {
-  const supabase = createClient(
+function createMigrationSupabaseClient(): SupabaseClient {
+  // Supabase Realtime expects WebSocket; Node < 22 does not provide one globally.
+  if (typeof globalThis.WebSocket === 'undefined') {
+    Object.assign(globalThis, { WebSocket: ws });
+  }
+
+  return createClient(
     requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
     requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
     {
@@ -69,11 +74,12 @@ async function migrateDocsToDatabase(): Promise<MigrationCounts> {
         autoRefreshToken: false,
         detectSessionInUrl: false,
       },
-      realtime: {
-        transport: ws,
-      },
     },
   );
+}
+
+async function migrateDocsToDatabase(): Promise<MigrationCounts> {
+  const supabase = createMigrationSupabaseClient();
 
   const files = loadDocsMarkdownFiles();
   const counts: MigrationCounts = { created: 0, updated: 0, skipped: 0 };

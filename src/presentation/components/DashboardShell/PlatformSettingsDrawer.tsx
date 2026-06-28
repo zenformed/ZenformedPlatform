@@ -101,7 +101,7 @@ export function PlatformSettingsDrawer({
         setCancelingAppSlug(null);
       }
     },
-    [getAccessToken, orgWorkspace.refetch]
+    [getAccessToken, orgWorkspace]
   );
 
   const handleReactivateAppSubscription = useCallback(
@@ -131,7 +131,7 @@ export function PlatformSettingsDrawer({
         setReactivatingAppSlug(null);
       }
     },
-    [getAccessToken, orgWorkspace.refetch]
+    [getAccessToken, orgWorkspace]
   );
 
   const handleRemoveScheduledPlanChange = useCallback(
@@ -161,7 +161,7 @@ export function PlatformSettingsDrawer({
         setRemovingScheduledChangeAppSlug(null);
       }
     },
-    [getAccessToken, orgWorkspace.refetch]
+    [getAccessToken, orgWorkspace]
   );
 
   const workspacePermissions = orgWorkspace.snapshot?.membershipContext?.permissions ?? null;

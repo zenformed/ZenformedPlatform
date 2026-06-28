@@ -112,7 +112,7 @@ export function DocsAdminArticleEditor({ article }: DocsAdminArticleEditorProps)
     setTagsInput(article.tags.join(', '));
     setSaveMessage(null);
     setSaveError(null);
-  }, [article.articleKey, article.lastUpdated]);
+  }, [article]);
 
   const isDirty = useMemo(() => {
     const draftWithTags = { ...draft, tags: parseTagsInput(tagsInput) };
