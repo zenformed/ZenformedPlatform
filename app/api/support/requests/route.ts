@@ -4,7 +4,7 @@ import { env } from '@/infrastructure/config/env';
 import { runtimeModes } from '@/infrastructure/config/runtimeModes';
 import { fetchAuthoritativeMembershipContext } from '@/infrastructure/organization/organizationPermissionEnforcement';
 import { getSupabaseUserFromToken } from '@/infrastructure/supabase/supabaseServer';
-import { recordSupportRequest } from '@/platform/support/supportRequestRepository.server';
+import { createSupportRequest } from '@/platform/support/supportRequestRepository.server';
 import {
   buildCreateSupportRequestInput,
   validateSupportRequestSubmission,
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const { supportRequestId } = await recordSupportRequest(
+    const { supportRequestId } = await createSupportRequest(
       buildCreateSupportRequestInput(validation.value, {
         userId: user.id,
         organizationId,

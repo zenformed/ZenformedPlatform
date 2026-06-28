@@ -78,6 +78,8 @@ describe('supportRequestValidation', () => {
     assert.equal(record.userId, 'user-123');
     assert.equal(record.organizationId, 'org-456');
     assert.equal(record.product, 'other');
+    assert.equal(record.subject, 'Help');
+    assert.equal(record.message, 'Need assistance');
     assert.equal(record.source, 'docs');
   });
 
