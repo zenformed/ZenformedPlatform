@@ -3,6 +3,10 @@ import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { getPublicDocsCategoryArticles } from '@/platform/docs/docsArticleCatalog';
 import {
+  paginateDocsCategoryArticles,
+  parseDocsCategoryPageParam,
+} from '@/platform/docs/docsCategoryPagination';
+import {
   getDocsCategory,
   getDocsProduct,
   getDocsProductCategorySlugs,
@@ -18,6 +22,9 @@ export const dynamic = 'force-dynamic';
 type BuildCoreCategoryPageProps = {
   readonly params: {
     readonly category: string;
+  };
+  readonly searchParams: {
+    readonly page?: string | string[];
   };
 };
 
@@ -39,7 +46,10 @@ export function generateMetadata({ params }: BuildCoreCategoryPageProps): Metada
   };
 }
 
-export default async function BuildCoreCategoryPage({ params }: BuildCoreCategoryPageProps): Promise<ReactElement> {
+export default async function BuildCoreCategoryPage({
+  params,
+  searchParams,
+}: BuildCoreCategoryPageProps): Promise<ReactElement> {
   const product = getDocsProduct(PRODUCT_SLUG);
   const category = getDocsCategory(PRODUCT_SLUG, params.category);
 
@@ -47,11 +57,20 @@ export default async function BuildCoreCategoryPage({ params }: BuildCoreCategor
     notFound();
   }
 
-  const articles = await getPublicDocsCategoryArticles(PRODUCT_SLUG, category.slug);
+  const allArticles = await getPublicDocsCategoryArticles(PRODUCT_SLUG, category.slug);
+  const pagination = paginateDocsCategoryArticles(
+    allArticles,
+    parseDocsCategoryPageParam(searchParams.page),
+  );
 
   return (
     <DocsShell>
-      <DocsCategoryPageContent product={product} category={category} articles={articles} />
+      <DocsCategoryPageContent
+        product={product}
+        category={category}
+        articles={pagination.items}
+        pagination={pagination}
+      />
     </DocsShell>
   );
 }

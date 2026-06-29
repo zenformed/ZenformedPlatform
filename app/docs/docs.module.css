@@ -421,6 +421,7 @@ span.docsHeroProductIcon {
 .docsCategoryPage {
   width: 100%;
   max-width: 48rem;
+  margin: 0 auto;
 }
 
 .docsCategoryArticleList {
@@ -474,6 +475,62 @@ span.docsHeroProductIcon {
   gap: 0.5rem 1rem;
   color: var(--products-text-muted);
   font-size: 0.8125rem;
+}
+
+.docsCategoryPagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 2rem;
+  padding-top: 0.25rem;
+}
+
+.docsCategoryPaginationLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.5rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--products-border);
+  border-radius: 0.5rem;
+  color: var(--products-text-soft);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  background: var(--products-bg-elevated);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.docsCategoryPaginationLink:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--products-text);
+}
+
+.docsCategoryPaginationLinkDisabled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.5rem;
+  padding: 0.625rem 0.875rem;
+  color: var(--products-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0.45;
+}
+
+.docsCategoryPaginationStatus {
+  color: var(--products-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 .docsCategoryPageHeader {
