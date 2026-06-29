@@ -5,7 +5,8 @@ import type { DocsPopularLandingArticle, DocsRecentLandingUpdate } from '@/platf
 import type { DocsProductSlug } from '@/platform/docs/docsTypes';
 import { docsArticlePath } from '@/platform/docs/docsTypes';
 
-const DEFAULT_LANDING_LIMIT = 5;
+const RECENT_LANDING_LIMIT = 5;
+export const POPULAR_LANDING_LIMIT = 6;
 
 const PRODUCT_ACCENT_COLORS: Record<DocsProductSlug, string> = {
   buildcore: '#2563eb',
@@ -63,12 +64,11 @@ export function buildPopularDocsLandingArticles(
     readonly metricsByArticleId?: ReadonlyMap<string, DocsArticleMetricsSnapshot>;
   },
 ): readonly DocsPopularLandingArticle[] {
+  const limit = options?.limit ?? POPULAR_LANDING_LIMIT;
   const metricsByArticleId = options?.metricsByArticleId ?? new Map<string, DocsArticleMetricsSnapshot>();
   const rankedArticles = sortDocsArticlesByPopularity(articles, metricsByArticleId);
-  const limitedArticles =
-    options?.limit != null ? rankedArticles.slice(0, options.limit) : rankedArticles;
 
-  return limitedArticles.map((article) => {
+  return rankedArticles.slice(0, limit).map((article) => {
     const metrics = resolveArticleMetrics(article, metricsByArticleId);
     return {
       id: article.databaseId ?? article.id,
@@ -87,7 +87,7 @@ export function buildRecentDocsLandingUpdates(
     readonly resolveProductName: (product: DocsProductSlug) => string | undefined;
   },
 ): readonly DocsRecentLandingUpdate[] {
-  const limit = options.limit ?? DEFAULT_LANDING_LIMIT;
+  const limit = options.limit ?? RECENT_LANDING_LIMIT;
   return sortDocsArticlesByLastUpdatedDesc(articles).slice(0, limit).map((article) => ({
     id: article.databaseId ?? article.id,
     productSlug: article.product,

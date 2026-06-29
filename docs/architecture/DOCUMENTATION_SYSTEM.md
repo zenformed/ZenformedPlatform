@@ -448,7 +448,7 @@ Switch with `DOCS_CONTENT_SOURCE`. Run `npm run docs:migrate-to-db` after applyi
 **Documentation landing sections (implemented)**
 
 - `/docs` Popular Articles and Recent Updates load published public articles through `docsLandingCatalog.server.ts` → `getAllDocsArticles()` (database or markdown provider)
-- Popular Articles rank by `helpful_yes DESC`, then `views DESC`, then `updated_at DESC` using `platform_docs_article_metrics`
+- Popular Articles rank by `helpful_yes DESC`, then `views DESC`, then `updated_at DESC` using `platform_docs_article_metrics`; landing page shows top 6
 - Recent Updates sort by `updated_at` / `lastUpdated` descending only
 - Recent Updates show product name, title, updated date, and article link
 - Popular Articles show title and link

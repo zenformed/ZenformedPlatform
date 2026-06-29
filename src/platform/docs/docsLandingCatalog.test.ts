@@ -126,14 +126,20 @@ describe('docsLandingCatalog', () => {
     assert.ok(popular.some((article) => article.title === 'Upload Documents'));
   });
 
-  it('returns all ranked articles when no limit is provided', () => {
-    const popular = buildPopularDocsLandingArticles(SAMPLE_ARTICLES, {
-      metricsByArticleId: metricsMap({
-        '22222222-2222-2222-2222-222222222222': { helpfulYes: 1, helpfulNo: 2, views: 0 },
-      }),
+  it('defaults to six popular articles on the landing page', () => {
+    const articles = Array.from({ length: 8 }, (_, index) => ({
+      ...SAMPLE_ARTICLES[0]!,
+      id: `article-${index}`,
+      databaseId: `00000000-0000-0000-0000-${String(index).padStart(12, '0')}`,
+      slug: `article-${index}`,
+      title: `Article ${index}`,
+    }));
+
+    const popular = buildPopularDocsLandingArticles(articles, {
+      metricsByArticleId: new Map(),
     });
 
-    assert.equal(popular.length, SAMPLE_ARTICLES.length);
+    assert.equal(popular.length, 6);
   });
 
   it('builds recent updates with product labels and dates', () => {

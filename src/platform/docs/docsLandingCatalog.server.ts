@@ -7,11 +7,12 @@ import { getDocsProduct } from '@/platform/docs/docsCatalog';
 import {
   buildPopularDocsLandingArticles,
   buildRecentDocsLandingUpdates,
+  POPULAR_LANDING_LIMIT,
 } from '@/platform/docs/docsLandingCatalog';
 import type { DocsPopularLandingArticle, DocsRecentLandingUpdate } from '@/platform/docs/docsLandingTypes';
 
 export async function getPopularDocsLandingArticles(
-  limit?: number,
+  limit = POPULAR_LANDING_LIMIT,
 ): Promise<readonly DocsPopularLandingArticle[]> {
   const articles = await getAllDocsArticles();
   const databaseArticleIds = articles
@@ -23,7 +24,7 @@ export async function getPopularDocsLandingArticles(
     : new Map();
 
   return buildPopularDocsLandingArticles(articles, {
-    ...(limit != null ? { limit } : {}),
+    limit,
     metricsByArticleId,
   });
 }
