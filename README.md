@@ -20,12 +20,14 @@ Enable **Confirm email** under Authentication → Providers → Email so direct 
 
 | Path | Purpose |
 |------|---------|
-| `/` | Redirects to `/login` or `/dashboard` |
+| `/` | Public marketing homepage |
 | `/login` | Sign in |
 | `/register` | Create account |
 | `/forgot-password` | Request password reset |
 | `/reset-password` | Set new password (email link target) |
-| `/dashboard` | Authenticated placeholder home |
+| `/products` | Public product catalog |
+| `/docs` | Public documentation |
+| `/dashboard` | Authenticated application home |
 
 ## Scripts
 

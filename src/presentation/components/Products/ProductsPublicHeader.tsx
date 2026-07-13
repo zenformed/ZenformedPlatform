@@ -29,7 +29,7 @@ export function ProductsPublicHeader({
   return (
     <header className={styles.header}>
       <div className={[styles.headerInner, headerInnerClassName].filter(Boolean).join(' ')}>
-        <Link href="/products" className={styles.brandLink}>
+        <Link href="/" className={styles.brandLink}>
           {iconSrc ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={iconSrc} alt="" className={styles.brandIcon} width={32} height={32} />

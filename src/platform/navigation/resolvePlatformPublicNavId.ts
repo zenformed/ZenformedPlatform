@@ -5,7 +5,11 @@ export function shouldShowPlatformPublicNavMenu(pathname: string | null): boolea
     return false;
   }
 
-  return pathname.startsWith('/products') || pathname.startsWith('/docs');
+  return (
+    pathname === '/' ||
+    pathname.startsWith('/products') ||
+    pathname.startsWith('/docs')
+  );
 }
 
 export function resolvePlatformPublicNavId(pathname: string | null): PlatformPublicNavId | null {
@@ -17,12 +21,8 @@ export function resolvePlatformPublicNavId(pathname: string | null): PlatformPub
     return 'docs';
   }
 
-  if (pathname === '/products') {
+  if (pathname === '/products' || pathname.startsWith('/products/')) {
     return 'products';
-  }
-
-  if (pathname.startsWith('/products/')) {
-    return 'pricing';
   }
 
   return null;

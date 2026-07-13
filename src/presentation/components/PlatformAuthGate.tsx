@@ -65,19 +65,12 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
     if (isAuthRecoveryPath || hasRecoveryCallback) return;
 
     if (!isAuthenticated) {
-      if (isHomePath) {
-        router.replace(nav.routes.login);
+      // `/` is a public marketing homepage — do not redirect to login.
+      if (isHomePath || isPublicPath) {
         return;
       }
-      if (!isPublicPath) {
-        const returnTo = pathname?.startsWith('/') ? pathname : nav.routes.dashboard;
-        router.replace(`${nav.routes.login}?returnTo=${encodeURIComponent(returnTo)}`);
-      }
-      return;
-    }
-
-    if (isHomePath) {
-      router.replace(nav.routes.dashboard);
+      const returnTo = pathname?.startsWith('/') ? pathname : nav.routes.dashboard;
+      router.replace(`${nav.routes.login}?returnTo=${encodeURIComponent(returnTo)}`);
       return;
     }
 
@@ -119,14 +112,6 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
   }
 
   if (isAuthenticated && isLoginPath && !isBuildCoreLoginHandoff) {
-    return <LoadingShell />;
-  }
-
-  if (isAuthenticated && isHomePath) {
-    return <LoadingShell />;
-  }
-
-  if (!isAuthenticated && isHomePath) {
     return <LoadingShell />;
   }
 

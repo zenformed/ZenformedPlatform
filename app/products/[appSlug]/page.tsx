@@ -45,11 +45,7 @@ export default async function ProductPricingPage({
   const isBuildCore = params.appSlug === 'buildcore';
 
   return (
-    <ProductsPublicShell
-      backHref="/products"
-      backLabel="All products"
-      salesLayout={isBuildCore}
-    >
+    <ProductsPublicShell salesLayout={isBuildCore}>
       {isBuildCore ? (
         <BuildCoreSalesPageView config={config} />
       ) : (
