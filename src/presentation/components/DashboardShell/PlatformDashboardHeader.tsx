@@ -23,6 +23,7 @@ import {
   SignOutIcon,
 } from '@/platform/icons/platformDashboardShellIcons';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
+import { usePlatformNotificationsConfig } from '@/presentation/features/notifications/usePlatformNotificationsConfig';
 import styles from '../../../../app/(dashboard)/dashboard/dashboard.module.css';
 import appsStyles from '../../../../app/(dashboard)/dashboard/platformDashboard.module.css';
 
@@ -76,6 +77,7 @@ export function PlatformDashboardHeader({
     launchApiUrl: '/api/internal/app-launch',
     getAccessToken: () => session?.access_token ?? null,
   });
+  const notifications = usePlatformNotificationsConfig(getAccessToken);
 
   return (
     <ZenformedDashboardHeader
@@ -108,6 +110,7 @@ export function PlatformDashboardHeader({
       onRequestSignOutConfirm={onRequestSignOutConfirm}
       onRequestProfilePhotoModal={onRequestProfilePhotoModal}
       profilePhotoChangeEnabled={false}
+      notifications={notifications}
       settingsIcon={<SettingsIcon className={headerShellClassNames.accountMenuBtnIcon} />}
       signOutIcon={<SignOutIcon className={headerShellClassNames.accountMenuBtnIcon} />}
       profilePhotoCameraIcon={<CameraIcon />}

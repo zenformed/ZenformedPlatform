@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import {
   pickAppsLauncherClassNames,
   pickDashboardLayoutClassNames,
@@ -43,9 +43,14 @@ const pageLoadingClassNames = pickDashboardPageLoadingClassNames(shellStyles);
 
 export type PlatformDashboardShellProps = {
   dash: UsePlatformDashboardResult;
+  /** When set, replaces the default dashboard home content inside the chrome. */
+  children?: ReactNode;
 };
 
-export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): ReactElement {
+export function PlatformDashboardShell({
+  dash,
+  children,
+}: PlatformDashboardShellProps): ReactElement {
   const { session } = useSaaSProfile();
   const { ownedAppIds, entitlementsByApp, isLoading: entitlementsLoading, error: entitlementsError } =
     usePlatformProductEntitlements(session?.access_token);
@@ -122,6 +127,9 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
               onRequestProfilePhotoModal={() => dash.setProfilePhotoModalOpen(true)}
             />
             <main className={shellStyles.mainContent}>
+              {children != null ? (
+                children
+              ) : (
               <div className={pageStyles.dashboardContent}>
                 <div className={pageStyles.dashboardLayout}>
                   <div className={pageStyles.dashboardLeftColumn}>
@@ -252,6 +260,7 @@ export function PlatformDashboardShell({ dash }: PlatformDashboardShellProps): R
                   </div>
                 </div>
               </div>
+              )}
             </main>
           </>
         }

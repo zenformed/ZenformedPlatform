@@ -42,6 +42,8 @@ export const platformDashboardNavigation = {
 
     dashboard: platformAppDefinition.dashboardRoute ?? '/dashboard',
 
+    notifications: '/notifications',
+
     home: '/',
 
   },
