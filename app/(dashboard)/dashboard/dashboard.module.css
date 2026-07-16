@@ -66,10 +66,6 @@
     flex: 0 0 auto;
     align-items: center;
   }
-
-  .mainContent {
-    padding: 0.75rem 0.5rem;
-  }
 }
 
 :global([data-theme="dark"]) .dashboardWithSidebar {
@@ -133,6 +129,12 @@
   flex-direction: column;
   overflow: hidden;
   padding: 1.5rem 2rem;
+}
+
+@media (max-width: 767px) {
+  .mainContent {
+    padding: 0.75rem 0.5rem;
+  }
 }
 
 /* List view: no card chrome (transparent, no border) */
