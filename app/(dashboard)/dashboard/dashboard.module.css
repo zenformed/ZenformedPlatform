@@ -700,6 +700,7 @@
 
 .accountMenuWrap {
   position: relative;
+  overflow: visible;
 }
 
 .accountMenuTrigger {
@@ -717,6 +718,14 @@
 
 .accountMenuTrigger:hover {
   opacity: 0.9;
+}
+
+.accountMenuTriggerDecorative {
+  cursor: default;
+}
+
+.accountMenuTriggerDecorative:hover {
+  opacity: 1;
 }
 
 .accountMenuTriggerImg {
@@ -755,6 +764,84 @@
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* Collapsible sidebar: account menu opens upward with horizontal identity header */
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuDropdown {
+  z-index: 330;
+  align-items: stretch;
+  gap: 0.35rem;
+  padding: 0.65rem 0.55rem;
+  min-width: 0;
+  border-radius: 0.75rem;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuSidebarHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.25rem 0.35rem 0.45rem;
+  box-sizing: border-box;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuSidebarIdentity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuSidebarDivider {
+  width: 100%;
+  height: 1px;
+  margin: 0.15rem 0 0.35rem;
+  background: var(--color-border, #e2e8f0);
+}
+
+:global([data-theme='dark']) :global([data-zenformed-collapsible-sidebar-shell]) .accountMenuSidebarDivider {
+  background: #3d3e4a;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuPhotoWrap {
+  flex-shrink: 0;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuAvatar,
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuPhotoImg {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuPhotoCircle {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuShopName {
+  width: 100%;
+  text-align: left;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuEmail {
+  width: 100%;
+  text-align: left;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .accountMenuBtn {
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .accountMenuDropdown .badgeRow {
@@ -847,6 +934,18 @@
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-text, #0f172a);
+}
+
+.accountMenuSidebarHeader {
+  display: contents;
+}
+
+.accountMenuSidebarIdentity {
+  display: contents;
+}
+
+.accountMenuSidebarDivider {
+  display: none;
 }
 
 .accountMenuActions {

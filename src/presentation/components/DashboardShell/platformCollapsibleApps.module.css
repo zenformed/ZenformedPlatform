@@ -1,0 +1,465 @@
+/* Shared Zenformed apps launcher styles (@zenformed/core/dashboard-shell pickAppsLauncherClassNames). */
+
+.appCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 1rem;
+}
+
+.appCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  min-height: 8rem;
+  padding: 1.25rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--theme-border-main, #e2e8f0);
+  background: var(--theme-surface-main, #fff);
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.appCard:disabled {
+  cursor: default;
+}
+
+.appCard:hover:not(.appCardDisabled) {
+  border-color: var(--color-border-strong, #cbd5e1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.appCardDisabled {
+  cursor: default;
+  opacity: 0.45;
+  filter: grayscale(0.35);
+}
+
+.appCardIcon {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+  display: block;
+}
+
+.appCardIconFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #64748b);
+}
+
+.appCardBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.appCardBadges {
+  /* Reserved for dashboard-shell CSS contract */
+}
+
+.appCardTitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.appCardDescription {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #64748b);
+}
+
+.appComingSoon {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted, #64748b);
+}
+
+.appsLaunchError {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-danger, #dc2626);
+}
+
+.appsLauncherWrap {
+  position: relative;
+  overflow: visible;
+}
+
+.appsLauncherTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.appsLauncherTrigger:hover {
+  color: var(--color-text);
+  opacity: 0.9;
+}
+
+.appsLauncherTrigger:focus,
+.appsLauncherTrigger:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.appsLauncherTriggerDisabled,
+.appsLauncherTrigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.appsLauncherTriggerDisabled:hover,
+.appsLauncherTrigger:disabled:hover {
+  color: var(--color-text-muted);
+  opacity: 0.55;
+}
+
+.appsLauncherIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.appsLauncherIcon svg {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.appsPopover {
+  position: absolute;
+  top: 100%;
+  right: -3.75rem;
+  margin-top: 1.375rem;
+  min-width: 17.5rem;
+  width: max-content;
+  max-width: calc(100vw - 1.5rem);
+  padding: 1rem 1.125rem 1.125rem;
+  background: var(--theme-apps-launcher-bg, #ffffff);
+  color: var(--color-text);
+  border: none;
+  border-radius: 1rem;
+  box-shadow: var(--theme-shadow-elevated);
+  z-index: 50;
+}
+
+/* Collapsible sidebar: absolute overlay — trigger stays in flow (no layout shift) */
+:global([data-zenformed-collapsible-sidebar-shell]) .appsLauncherWrap {
+  position: relative !important;
+  z-index: 320;
+  width: 100% !important;
+  max-width: 100%;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell])
+  .appsLauncherWrap[data-zenformed-apps-overlay='true'] {
+  z-index: 400;
+}
+
+/* Desktop sidebar apps overlay (unchanged) */
+:global([data-zenformed-collapsible-sidebar-shell])
+  .appsLauncherWrap:not([data-zenformed-apps-inline='true'])
+  .appsPopover {
+  position: absolute !important;
+  top: 0.35rem !important;
+  left: 0.35rem !important;
+  right: 0.35rem !important;
+  margin: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: min(70vh, 28rem) !important;
+  padding: 0.35rem 0 !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid var(--theme-nav-sidebar-menu-border, rgba(255, 255, 255, 0.14)) !important;
+  box-shadow: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  z-index: 400 !important;
+  background: var(--theme-nav-sidebar-menu-bg, var(--theme-nav-sidebar-bg, #102741)) !important;
+  color: var(--theme-nav-sidebar-menu-text, #f1f5f9) !important;
+  --color-text: var(--theme-nav-sidebar-menu-text, #f1f5f9);
+  --color-text-muted: var(--theme-nav-sidebar-menu-text-muted, #94a3b8);
+}
+
+/* Inline apps list inside the mobile drawer (not a floating overlay) */
+:global([data-zenformed-apps-inline='true']) .appsPopover {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  background: transparent !important;
+  padding: 0.15rem 0 0.25rem !important;
+}
+
+:global([data-zenformed-apps-inline='true']) .appsPopoverRow {
+  padding-left: calc(var(--zenformed-sidebar-pad-x, 0.75rem) + 0.5rem) !important;
+  padding-right: calc(var(--zenformed-sidebar-pad-x, 0.75rem) + 0.5rem) !important;
+}
+
+.appsPopoverList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .appsPopoverList {
+  gap: 0;
+}
+
+.appsPopoverAppsPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 0.875rem 0.75rem 1rem;
+  background: var(--theme-apps-launcher-panel-bg, #f2f4f7);
+  border-radius: 1rem;
+}
+
+.appsPopoverSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  align-items: stretch;
+  padding: 0 0.125rem;
+}
+
+.appsPopoverSectionTitle {
+  margin: 0;
+  padding: 0 0.125rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
+  text-align: left;
+  color: var(--color-text);
+}
+
+.appsPopoverSidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.appsTileGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(4.75rem, 1fr));
+  gap: 0.5rem;
+}
+
+.appsTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.375rem;
+  min-width: 0;
+  padding: 0.375rem 0.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: none;
+  text-decoration: none;
+  text-align: center;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.appsTile:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.appsTile:hover:not(.appsTileDisabled):not(:disabled) {
+  background: var(--theme-apps-launcher-tile-hover, var(--theme-surface-hover));
+}
+
+.appsTileDisabled {
+  cursor: default;
+  opacity: 0.4;
+  filter: grayscale(0.35);
+  pointer-events: none;
+}
+
+.appsTileIconWrap {
+  display: contents;
+}
+
+.appsTileIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  display: block;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .appsTileIcon,
+:global([data-zenformed-collapsible-sidebar-shell]) .appsTileIconFallback {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 0.45rem;
+}
+
+.appsTileIconFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #64748b);
+}
+
+.appsTileName {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25;
+  max-width: 100%;
+  text-align: center;
+}
+
+.appsTileMeta {
+  font-size: 0.625rem;
+  color: var(--color-text-muted, #64748b);
+  line-height: 1.2;
+}
+
+.appsPopoverRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: none;
+  border-radius: 0.375rem;
+  background: none;
+  text-decoration: none;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+/* Sidebar list: icon | name/tier stack | optional check */
+:global([data-zenformed-collapsible-sidebar-shell]) .appsPopoverRow {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem calc(var(--zenformed-sidebar-pad-x, 0.75rem) + 0.5rem);
+  border-radius: 0;
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .appsPopoverRow:hover:not(.appsPopoverRowDisabled) {
+  border-radius: 0;
+  background: var(--theme-nav-sidebar-menu-hover, rgba(255, 255, 255, 0.08));
+}
+
+.appsPopoverRow:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.appsPopoverRow:hover:not(.appsPopoverRowDisabled) {
+  background: var(--color-muted, #f1f5f9);
+}
+
+:global([data-theme='dark']) .appsPopoverRow:hover:not(.appsPopoverRowDisabled) {
+  background: #2a2d38;
+}
+
+.appsPopoverRowDisabled {
+  cursor: default;
+  opacity: 0.45;
+  filter: grayscale(0.25);
+  pointer-events: none;
+}
+
+.appsPopoverRowCurrent {
+  background: var(--theme-apps-launcher-row-current, rgba(99, 102, 241, 0.14));
+}
+
+:global([data-zenformed-collapsible-sidebar-shell]) .appsPopoverRowCurrent {
+  background: var(--theme-nav-sidebar-active, rgba(90, 122, 158, 0.35));
+}
+
+:global([data-theme='dark']) .appsPopoverRowCurrent {
+  background: rgba(129, 140, 248, 0.18);
+}
+
+:global([data-theme='dark'])
+  :global([data-zenformed-collapsible-sidebar-shell])
+  .appsPopoverRowCurrent {
+  background: var(--theme-nav-sidebar-active, rgba(90, 122, 158, 0.35));
+}
+
+.appsPopoverRowText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.appsPopoverRowName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.appsPopoverRowDescription,
+.appsPopoverRowMeta {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #64748b);
+  line-height: 1.2;
+}
+
+.appsPopoverRowCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-primary, #6366f1);
+}
