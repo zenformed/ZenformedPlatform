@@ -7,6 +7,8 @@ import {
   isAuthEntryReturnPath,
   parseAuthEntryQueryParams,
   resolvePostAuthRedirectTarget,
+  appendSessionEndToLoginUrl,
+  peekSessionEndReason,
 } from '@zenformed/core/auth';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import { isBuildCoreAuthAppHandoff } from '@/infrastructure/auth/platformBuildCoreLaunchHandoff';
@@ -81,7 +83,11 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
       const returnTo = pathname?.startsWith('/') ? pathname : nav.routes.dashboard;
       // Never encode auth-entry pages as returnTo (e.g. bouncing through /register).
       const safeReturnTo = isAuthEntryReturnPath(returnTo) ? nav.routes.dashboard : returnTo;
-      router.replace(`${nav.routes.login}?returnTo=${encodeURIComponent(safeReturnTo)}`);
+      const loginHref = appendSessionEndToLoginUrl(
+        `${nav.routes.login}?returnTo=${encodeURIComponent(safeReturnTo)}`,
+        peekSessionEndReason()
+      );
+      router.replace(loginHref);
       return;
     }
 

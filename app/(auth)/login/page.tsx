@@ -13,6 +13,8 @@ import {
   parseAuthEntryQueryParams,
   resolvePostAuthRedirectTarget,
   saveZenformedOAuthIntentFromAuthEntry,
+  resolveSessionEndMessageForLogin,
+  ZENFORMED_SESSION_END_QUERY_PARAM,
 } from '@zenformed/core/auth';
 import { extractInviteTokenFromReturnPath } from '@/infrastructure/auth/oauthInviteResume';
 import { logOAuthDebug } from '@/infrastructure/auth/completePlatformGoogleOAuth';
@@ -36,11 +38,22 @@ function LoginPageContent(): ReactElement {
   const [handoffPending, setHandoffPending] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [googleError, setGoogleError] = useState<string | null>(null);
+  const [sessionEndMessage, setSessionEndMessage] = useState<string | null>(null);
   const handoffAttemptedRef = useRef(false);
+  const sessionEndConsumedRef = useRef(false);
 
   const authEntryParams = parseAuthEntryQueryParams(searchParams);
   const isBuildCoreHandoff = isBuildCoreAuthAppHandoff(authEntryParams);
   const redirectTarget = resolvePostAuthRedirectTarget(authEntryParams, nav.routes.dashboard);
+
+  useEffect(() => {
+    if (sessionEndConsumedRef.current) return;
+    sessionEndConsumedRef.current = true;
+    const message = resolveSessionEndMessageForLogin(
+      searchParams.get(ZENFORMED_SESSION_END_QUERY_PARAM)
+    );
+    if (message) setSessionEndMessage(message);
+  }, [searchParams]);
 
   const runBuildCoreHandoff = useCallback(async (): Promise<boolean> => {
     if (handoffAttemptedRef.current) return false;
@@ -145,6 +158,11 @@ function LoginPageContent(): ReactElement {
     >
       {!showLoading ? (
         <>
+          {sessionEndMessage ? (
+            <p className={pageStyles.sessionEndNotice} role="status">
+              {sessionEndMessage}
+            </p>
+          ) : null}
           <ZenformedGoogleSignInButton onContinue={handleGoogleContinue} error={googleError} />
           <ZenformedAuthMethodDivider />
           <ZenformedLoginForm onSubmit={handleSubmit} error={loginError} />

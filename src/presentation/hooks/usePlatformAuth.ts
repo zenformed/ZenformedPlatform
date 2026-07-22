@@ -113,6 +113,8 @@ export function usePlatformAuth(): UsePlatformAuthState {
 
   const signOut = useCallback(
     async (options?: { redirectTo?: string | null }) => {
+      const { markVoluntarySignOut } = await import('@zenformed/core/auth');
+      markVoluntarySignOut();
       await getSupabaseClient().auth.signOut();
       setSession(null);
       setUser(null);

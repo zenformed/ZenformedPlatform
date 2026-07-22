@@ -10,6 +10,8 @@ import {
   resolveSaasProfileAuthReaction,
   shouldApplyAuthCallbackSession,
   shouldShowSaasProfileFullPageLoading,
+  recordSessionInvalidation,
+  recordUnexpectedSignedOut,
 } from '@zenformed/core';
 import { EMPTY_ORGANIZATION_PERMISSIONS } from '@zenformed/core/organization-settings';
 import { getSupabaseClient, type Session } from '@/infrastructure/supabase/supabaseClient';
@@ -103,9 +105,13 @@ export function SaaSProfileProvider({ children }: { children: React.ReactNode })
   const inFlightRef = useRef<Promise<void> | null>(null);
   const bootstrappedUserIdRef = useRef<string | null>(null);
   const profileRef = useRef<SaaSProfile | null>(null);
+  const hadAuthenticatedSessionRef = useRef(false);
   profileRef.current = profile;
   if (profile?.id) {
     bootstrappedUserIdRef.current = profile.id;
+  }
+  if (session != null && user != null) {
+    hadAuthenticatedSessionRef.current = true;
   }
 
   const loadProfile = useCallback(async (options?: { soft?: boolean; force?: boolean }) => {
@@ -189,7 +195,11 @@ export function SaaSProfileProvider({ children }: { children: React.ReactNode })
                 setUser(refreshed.session.user);
                 relayRes = await fetchProfileFromCoreRelay(refreshed.session.access_token);
               } else {
+                // Refresh failed → session revoked/expired. Do not treat a successful
+                // refresh followed by a later 403 as session death (permission only).
+                recordSessionInvalidation(refreshError, 'ended');
                 await supabase.auth.signOut();
+                hadAuthenticatedSessionRef.current = false;
                 bootstrappedUserIdRef.current = null;
                 setSession(null);
                 setUser(null);
@@ -198,6 +208,21 @@ export function SaaSProfileProvider({ children }: { children: React.ReactNode })
                 setMembershipContextStatus('ready');
                 return;
               }
+            }
+
+            // After a successful refresh, a remaining 401 means the token is still
+            // unusable → clear session. A 403 is treated as authorization, not expiry.
+            if (relayRes.status === 401) {
+              recordSessionInvalidation('access token rejected', 'expired');
+              await supabase.auth.signOut();
+              hadAuthenticatedSessionRef.current = false;
+              bootstrappedUserIdRef.current = null;
+              setSession(null);
+              setUser(null);
+              setProfile(null);
+              setOrganizationMembershipContext(null);
+              setMembershipContextStatus('ready');
+              return;
             }
 
             if (relayRes.status === 404) {
@@ -304,7 +329,11 @@ export function SaaSProfileProvider({ children }: { children: React.ReactNode })
         case 'silent_session':
           applySession();
           return;
-        case 'sign_out':
+        case 'sign_out': {
+          if (hadAuthenticatedSessionRef.current) {
+            recordUnexpectedSignedOut();
+          }
+          hadAuthenticatedSessionRef.current = false;
           bootstrappedUserIdRef.current = null;
           setSession(null);
           setUser(null);
@@ -314,6 +343,7 @@ export function SaaSProfileProvider({ children }: { children: React.ReactNode })
           setLoading(false);
           setError(null);
           return;
+        }
         case 'load_full':
           void loadProfile({
             soft: profileRef.current != null,
