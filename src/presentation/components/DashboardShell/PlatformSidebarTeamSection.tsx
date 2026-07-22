@@ -7,6 +7,11 @@ import {
   getUserInitials,
   userCircleColor,
 } from '@zenformed/core/dashboard-shell';
+import {
+  PRESENCE_EFFECTIVE_STATUS_LABELS,
+  ZenformedPresenceAvatarBadge,
+  useUserPresence,
+} from '@zenformed/core/presence';
 import { platformDashboardNavigation as nav } from '@/platform/navigation/platformDashboardNavigation';
 import styles from './PlatformCollapsibleSidebar.module.css';
 
@@ -30,6 +35,15 @@ function memberDisplayName(name: string): { firstLast: string; initialsSource: s
   return { firstLast: trimmed, initialsSource: trimmed };
 }
 
+type TeamMemberRow = {
+  readonly id: string;
+  readonly userId: string;
+  readonly name: string;
+  readonly email: string | null;
+  readonly role: string;
+  readonly roleLabel: string;
+};
+
 /**
  * Host-supplied Team section: active organization members (excluding current user).
  * Keep mounted across sidebar expand/collapse — do not recreate its element each render.
@@ -51,14 +65,30 @@ export function PlatformSidebarTeamSection({
     enabled,
   });
 
-  const members = useMemo(() => {
+  const members = useMemo((): readonly TeamMemberRow[] => {
     const list = workspace.snapshot?.members ?? [];
     const currentUserId = workspace.snapshot?.membershipContext?.currentUserId?.trim() || null;
-    return list.filter((row) => {
-      if (row.status !== 'active') return false;
-      if (currentUserId && row.userId === currentUserId) return false;
-      return true;
-    });
+    return list
+      .filter((row) => {
+        if (row.status !== 'active') return false;
+        if (currentUserId && row.userId === currentUserId) return false;
+        return true;
+      })
+      .map((member) => {
+        const name =
+          [member.firstName, member.lastName].filter(Boolean).join(' ').trim() ||
+          member.displayName ||
+          member.email ||
+          'Member';
+        return {
+          id: member.id,
+          userId: member.userId,
+          name,
+          email: member.email,
+          role: member.role,
+          roleLabel: formatOrganizationRoleLabel(member.role) ?? member.role,
+        };
+      });
   }, [workspace.snapshot]);
 
   if (workspace.isLoading && members.length === 0) {
@@ -71,33 +101,41 @@ export function PlatformSidebarTeamSection({
 
   return (
     <ul className={styles.teamList} aria-label="Organization team members">
-      {members.map((member) => {
-        const name =
-          [member.firstName, member.lastName].filter(Boolean).join(' ').trim() ||
-          member.displayName ||
-          member.email ||
-          'Member';
-        const { firstLast, initialsSource } = memberDisplayName(name);
-        const email = member.email ?? member.id;
-        const roleLabel = formatOrganizationRoleLabel(member.role) ?? member.role;
-        return (
-          <li key={member.id} className={styles.teamRow} title={firstLast}>
-            <span
-              className={styles.teamAvatar}
-              style={{ backgroundColor: userCircleColor(email) }}
-              aria-hidden
-            >
-              {getUserInitials({ email }, initialsSource)}
-            </span>
-            <span className={styles.teamMeta}>
-              <span className={styles.teamName}>{firstLast}</span>
-              <span className={styles.teamRolePill} data-role={member.role}>
-                {roleLabel}
-              </span>
-            </span>
-          </li>
-        );
-      })}
+      {members.map((member) => (
+        <PlatformSidebarTeamMemberRow key={member.id} member={member} />
+      ))}
     </ul>
+  );
+}
+
+function PlatformSidebarTeamMemberRow({
+  member,
+}: {
+  readonly member: TeamMemberRow;
+}): ReactElement {
+  const { firstLast, initialsSource } = memberDisplayName(member.name);
+  const email = member.email ?? member.id;
+  const status = useUserPresence(member.userId);
+  const statusLabel = PRESENCE_EFFECTIVE_STATUS_LABELS[status];
+
+  return (
+    <li className={styles.teamRow} title={`${firstLast} · ${statusLabel}`}>
+      <ZenformedPresenceAvatarBadge status={status} announceDot={false}>
+        <span
+          className={styles.teamAvatar}
+          style={{ backgroundColor: userCircleColor(email) }}
+          aria-hidden
+        >
+          {getUserInitials({ email }, initialsSource)}
+        </span>
+      </ZenformedPresenceAvatarBadge>
+      <span className={styles.teamMeta}>
+        <span className={styles.teamName}>{firstLast}</span>
+        <span className={styles.teamRolePill} data-role={member.role}>
+          {member.roleLabel}
+        </span>
+        <span className={styles.teamPresenceSrOnly}>{statusLabel}</span>
+      </span>
+    </li>
   );
 }
