@@ -824,6 +824,10 @@
   line-height: 0;
 }
 
+/* Reserved for sidebar mobile apps modal backdrop (collapsible shell stylesheet owns styles). */
+.appsMobileBackdrop {
+}
+
 .appsLauncherIcon svg {
   flex-shrink: 0;
   width: 1.5rem;
