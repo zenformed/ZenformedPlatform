@@ -4,13 +4,18 @@ import { Suspense, useCallback, useEffect, useRef, useState, type ReactElement }
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   DEFAULT_AUTH_LABELS,
+  ZenformedAuthMethodDivider,
   ZenformedAuthNavLink,
   ZenformedAuthPageLinks,
+  ZenformedGoogleSignInButton,
   ZenformedLoginForm,
   buildAuthEntryHref,
   parseAuthEntryQueryParams,
   resolvePostAuthRedirectTarget,
+  saveZenformedOAuthIntentFromAuthEntry,
 } from '@zenformed/core/auth';
+import { extractInviteTokenFromReturnPath } from '@/infrastructure/auth/oauthInviteResume';
+import { logOAuthDebug } from '@/infrastructure/auth/completePlatformGoogleOAuth';
 import {
   isBuildCoreAuthAppHandoff,
   performBuildCoreLaunchHandoff,
@@ -23,12 +28,14 @@ import { platformNavigation as nav } from '@/platform/navigation/platformNavigat
 import pageStyles from '@/presentation/components/platformAuthPage.module.css';
 
 function LoginPageContent(): ReactElement {
-  const { signIn, waitForSessionSync, isLoading, session } = usePlatformAuth();
+  const { signIn, signInWithGoogleOAuth, waitForSessionSync, isLoading, session } =
+    usePlatformAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loggingIn, setLoggingIn] = useState(false);
   const [handoffPending, setHandoffPending] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const handoffAttemptedRef = useRef(false);
 
   const authEntryParams = parseAuthEntryQueryParams(searchParams);
@@ -77,6 +84,7 @@ function LoginPageContent(): ReactElement {
   async function handleSubmit(email: string, password: string): Promise<void> {
     setLoggingIn(true);
     setLoginError(null);
+    setGoogleError(null);
     handoffAttemptedRef.current = false;
     try {
       const result = await signIn(email, password);
@@ -98,6 +106,31 @@ function LoginPageContent(): ReactElement {
     }
   }
 
+  async function handleGoogleContinue(): Promise<void> {
+    setGoogleError(null);
+    setLoginError(null);
+    const inviteToken =
+      searchParams.get('inviteToken')?.trim() ||
+      extractInviteTokenFromReturnPath(authEntryParams.returnTo ?? authEntryParams.redirect);
+
+    const saved = saveZenformedOAuthIntentFromAuthEntry(authEntryParams, { inviteToken });
+    logOAuthDebug('saved OAuth intent', {
+      source: 'login',
+      app: saved.app,
+      plan: saved.plan,
+      returnTo: saved.returnTo,
+      redirect: saved.redirect,
+      inviteTokenPresent: saved.inviteToken != null,
+    });
+
+    const result = await signInWithGoogleOAuth();
+    if (!result.ok) {
+      setGoogleError(result.error);
+      throw new Error(result.error);
+    }
+    window.location.assign(result.url);
+  }
+
   const showLoading = isLoading || loggingIn || handoffPending;
 
   return (
@@ -112,6 +145,8 @@ function LoginPageContent(): ReactElement {
     >
       {!showLoading ? (
         <>
+          <ZenformedGoogleSignInButton onContinue={handleGoogleContinue} error={googleError} />
+          <ZenformedAuthMethodDivider />
           <ZenformedLoginForm onSubmit={handleSubmit} error={loginError} />
           <ZenformedAuthPageLinks>
             <ZenformedAuthNavLink href={buildAuthEntryHref(nav.routes.forgotPassword, authEntryParams)}>

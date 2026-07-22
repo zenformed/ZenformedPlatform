@@ -8,6 +8,8 @@ export const platformNavigation = {
     register: '/register',
     forgotPassword: '/forgot-password',
     resetPassword: '/reset-password',
+    authCallback: '/auth/callback',
+    authGoogleStart: '/auth/google',
     products: '/products',
     docs: '/docs',
     roadmap: '#',

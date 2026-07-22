@@ -1,4 +1,4 @@
-import type { AuthEntryQueryParams } from '@zenformed/core/auth';
+import { sanitizeAuthReturnPath, type AuthEntryQueryParams } from '@zenformed/core/auth';
 
 const BUILDCORE_APP_ID = 'buildcore';
 
@@ -13,10 +13,11 @@ export function resolveBuildCoreHandoffReturnPath(
   authEntryParams: AuthEntryQueryParams,
   defaultPath = '/dashboard'
 ): string {
-  const candidate = authEntryParams.returnTo ?? authEntryParams.redirect;
+  const candidate = sanitizeAuthReturnPath(authEntryParams.returnTo ?? authEntryParams.redirect);
   if (candidate === '/') return '/dashboard';
-  if (candidate?.startsWith('/')) return candidate;
-  return defaultPath.startsWith('/') ? defaultPath : `/${defaultPath}`;
+  if (candidate) return candidate;
+  const fallback = defaultPath.startsWith('/') ? defaultPath : `/${defaultPath}`;
+  return sanitizeAuthReturnPath(fallback) ?? '/dashboard';
 }
 
 function readErrorMessage(json: unknown, fallback: string): string {

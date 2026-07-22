@@ -4,13 +4,18 @@ import { Suspense, useState, type ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   DEFAULT_AUTH_LABELS,
+  ZenformedAuthMethodDivider,
   ZenformedAuthNavLink,
   ZenformedAuthPageLinks,
+  ZenformedGoogleSignInButton,
   ZenformedRegisterForm,
   authFormStyles,
   buildAuthEntryHref,
   parseAuthEntryQueryParams,
+  saveZenformedOAuthIntentFromAuthEntry,
 } from '@zenformed/core/auth';
+import { extractInviteTokenFromReturnPath } from '@/infrastructure/auth/oauthInviteResume';
+import { logOAuthDebug } from '@/infrastructure/auth/completePlatformGoogleOAuth';
 import { PlatformAuthPageShell } from '@/presentation/components/PlatformAuthPageShell';
 import { resolvePlatformRegistrationEmailRedirectUrl } from '@/infrastructure/auth/platformRegistrationEmailRedirect';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
@@ -18,10 +23,11 @@ import { platformNavigation as nav } from '@/platform/navigation/platformNavigat
 import pageStyles from '@/presentation/components/platformAuthPage.module.css';
 
 function RegisterPageContent(): ReactElement {
-  const { signUp, isLoading } = usePlatformAuth();
+  const { signUp, signInWithGoogleOAuth, isLoading } = usePlatformAuth();
   const searchParams = useSearchParams();
   const [registering, setRegistering] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const [registrationComplete, setRegistrationComplete] = useState(false);
 
   const authEntryParams = parseAuthEntryQueryParams(searchParams);
@@ -35,6 +41,7 @@ function RegisterPageContent(): ReactElement {
   }): Promise<void> {
     setRegistering(true);
     setRegisterError(null);
+    setGoogleError(null);
     try {
       const result = await signUp(input.email, input.password, {
         firstName: input.firstName,
@@ -57,6 +64,31 @@ function RegisterPageContent(): ReactElement {
     }
   }
 
+  async function handleGoogleContinue(): Promise<void> {
+    setGoogleError(null);
+    setRegisterError(null);
+    const inviteToken =
+      searchParams.get('inviteToken')?.trim() ||
+      extractInviteTokenFromReturnPath(authEntryParams.returnTo ?? authEntryParams.redirect);
+
+    const saved = saveZenformedOAuthIntentFromAuthEntry(authEntryParams, { inviteToken });
+    logOAuthDebug('saved OAuth intent', {
+      source: 'register',
+      app: saved.app,
+      plan: saved.plan,
+      returnTo: saved.returnTo,
+      redirect: saved.redirect,
+      inviteTokenPresent: saved.inviteToken != null,
+    });
+
+    const result = await signInWithGoogleOAuth();
+    if (!result.ok) {
+      setGoogleError(result.error);
+      throw new Error(result.error);
+    }
+    window.location.assign(result.url);
+  }
+
   return (
     <PlatformAuthPageShell
       cardTitle={DEFAULT_AUTH_LABELS.createAccount}
@@ -77,6 +109,8 @@ function RegisterPageContent(): ReactElement {
           </>
         ) : (
           <>
+            <ZenformedGoogleSignInButton onContinue={handleGoogleContinue} error={googleError} />
+            <ZenformedAuthMethodDivider />
             <ZenformedRegisterForm
               onSubmit={handleSubmit}
               error={registerError}

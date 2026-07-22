@@ -4,12 +4,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Session, User } from '@supabase/supabase-js';
 import {
+  signInWithGoogle,
   signInWithPassword,
   signUpWithPassword,
   waitForSupabaseAuthSessionSync,
+  type SignInWithGoogleResult,
   type SignInWithPasswordResult,
   type SignUpWithPasswordResult,
 } from '@zenformed/core/auth';
+import { resolvePlatformGoogleOAuthCallbackUrl } from '@/infrastructure/auth/platformGoogleOAuthCallbackUrl';
 import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
 
@@ -18,6 +21,7 @@ export interface UsePlatformAuthState {
   user: User | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<SignInWithPasswordResult>;
+  signInWithGoogleOAuth: () => Promise<SignInWithGoogleResult>;
   signUp: (
     email: string,
     password: string,
@@ -74,6 +78,12 @@ export function usePlatformAuth(): UsePlatformAuthState {
     return result;
   }, []);
 
+  const signInWithGoogleOAuth = useCallback(async () => {
+    return signInWithGoogle(getSupabaseClient(), {
+      redirectTo: resolvePlatformGoogleOAuthCallbackUrl(),
+    });
+  }, []);
+
   const signUp = useCallback(
     async (
       email: string,
@@ -117,6 +127,7 @@ export function usePlatformAuth(): UsePlatformAuthState {
     user,
     isLoading,
     signIn,
+    signInWithGoogleOAuth,
     signUp,
     waitForSessionSync,
     signOut,
