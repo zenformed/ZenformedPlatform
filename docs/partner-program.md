@@ -1379,6 +1379,39 @@ Modified in ZenformedPlatform:
 Migration `00057` is ready but must be applied and verified by the owner before testing a real
 approval/claim flow.
 
+### 2026-08-11 — Application receipt email
+
+Added `src/email/templates/partnerProgramApplicationReceivedEmail.ts` and integrated it into
+`partnerApplicationService.ts`. A newly stored unauthenticated application now receives a polished
+receipt email through the existing Resend sender. It confirms review is pending, says no account is
+required while waiting, and explicitly does not imply approval. Duplicate submissions retain the
+same privacy-safe browser response but do not send duplicate receipt emails. Provider failure does
+not roll back or conceal the successfully stored application.
+
+### 2026-08-11 — Approval-function ambiguity hotfix
+
+Added `sql/00058_fix_partner_approval_column_ambiguity.sql` and corrected `00056` for fresh
+installations. The deployed PL/pgSQL function returned a column named `application_id`, which made
+its unqualified `ON CONFLICT (application_id)` reference ambiguous. The replacement uses table
+aliases throughout and names the existing unique constraint explicitly. It replaces only the
+function definition and does not modify applications, invitations, or grants.
+The conflict-update expression uses the target alias (`i.send_attempt_count`) because PostgreSQL
+does not permit the original table name after the insert target has been aliased.
+
+### 2026-08-11 — Registration invitation-resume correction
+
+Direct email/password registration now places the validated Partner invitation return path inside
+Supabase's confirmation-email redirect. After the applicant verifies the new account, Platform
+returns through sign-in to `/partner-invitations/accept?token=...` instead of defaulting to the
+dashboard. Existing login and Google OAuth behavior remain unchanged.
+
+Modified: `app/(auth)/register/page.tsx`,
+`src/infrastructure/auth/platformRegistrationEmailRedirect.ts`, and `package.json`. Added:
+`src/infrastructure/auth/registrationConfirmationLoginPath.ts` and
+`src/infrastructure/auth/platformRegistrationEmailRedirect.test.ts`.
+
+Validation: Platform typecheck passed; focused Platform suite passed 9/9.
+
 ### 2026-08-11 — Slice 7C additive runtime access resolution
 
 Added in ZenformedCore:
@@ -1429,7 +1462,9 @@ ZenformedCore added files:
 - `sql/00055_save_partner_program_configuration.sql`
 - `sql/00056_approve_partner_application_invitation.sql`
 - `sql/00057_claim_partner_invitation_grants.sql`
+- `sql/00058_fix_partner_approval_column_ambiguity.sql`
 - `src/email/templates/partnerProgramInvitationEmail.ts`
+- `src/email/templates/partnerProgramApplicationReceivedEmail.ts`
 - `src/http/partnerInvitationHttp.ts`
 - `src/http/partnerProgramsAdminHttp.ts`
 - `src/http/partnerProgramsAdminHttp.test.ts`
