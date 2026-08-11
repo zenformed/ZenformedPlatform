@@ -19,6 +19,7 @@ export const platformNavigation = {
     checkoutSuccess: '/checkout/success',
     legalTerms: '/legal/terms',
     legalPrivacy: '/legal/privacy',
+    partnerProgram: (slug: string) => `/programs/${slug}`,
   },
 } as const;
 

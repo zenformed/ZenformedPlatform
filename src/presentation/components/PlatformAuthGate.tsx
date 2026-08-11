@@ -22,6 +22,8 @@ const PUBLIC_PATHS = [
   nav.routes.authCallback,
   '/auth/google',
   '/products',
+  '/programs',
+  '/partner-invitations',
   nav.routes.docs,
   nav.routes.checkoutSuccess,
   '/legal',

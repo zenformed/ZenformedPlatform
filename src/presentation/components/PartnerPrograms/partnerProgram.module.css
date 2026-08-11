@@ -1,0 +1,27 @@
+.page { max-width: 48rem; margin: 0 auto; }
+.hero { margin: 1.5rem 0 2rem; text-align: center; }
+.hero h1 { margin: 0.5rem 0 0.75rem; font-size: clamp(2rem, 6vw, 3.25rem); }
+.hero > p { color: #b6becb; line-height: 1.65; }
+.eyebrow { margin: 0; color: #4ade80 !important; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.accountNote { font-size: 0.9rem; }
+.card { padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid rgba(255,255,255,0.12); border-radius: 1rem; background: rgba(255,255,255,0.035); }
+.card section + section { margin-top: 2rem; }
+.card h1, .card h2 { margin-top: 0; }
+.card h2 { font-size: 1.15rem; }
+.grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+.questions { display: grid; gap: 1rem; }
+.card label { display: flex; flex-direction: column; gap: 0.4rem; color: #e5e7eb; font-weight: 600; }
+.card label span { color: #9ca3af; font-weight: 400; }
+.card input, .card textarea, .card select { box-sizing: border-box; width: 100%; padding: 0.7rem 0.75rem; border: 1px solid rgba(255,255,255,0.16); border-radius: 0.5rem; background: #161922; color: #fff; font: inherit; }
+.booleanField, .consent { flex-direction: row !important; align-items: flex-start; }
+.booleanField input, .consent input { width: auto; margin-top: 0.2rem; }
+.consent { margin-top: 2rem; font-size: 0.9rem; line-height: 1.5; }
+.consent a { color: #86efac; }
+.submit { width: 100%; margin-top: 1.25rem; padding: 0.85rem 1.25rem; border: 0; border-radius: 0.55rem; background: #119247; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.submit:disabled { opacity: 0.55; cursor: not-allowed; }
+.submitLink, .secondaryLink { display: inline-flex; justify-content: center; padding: 0.85rem 1.25rem; border-radius: 0.55rem; font-weight: 700; text-decoration: none; }
+.submitLink { background:#119247; color:#fff; }
+.secondaryLink { border:1px solid rgba(255,255,255,.18); color:#fff; }
+.authActions { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1.25rem; }
+.error { color: #fca5a5; }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }

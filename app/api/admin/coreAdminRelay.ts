@@ -81,3 +81,31 @@ export async function relayAdminGet(
 
   return NextResponse.json({ relay: 'zenformed_core', ...(json as object) });
 }
+
+export async function relayAdminMutation(
+  request: NextRequest,
+  { upstreamPath, method }: AdminRelayOptions & { method: 'POST' | 'PUT' | 'PATCH' }
+): Promise<NextResponse> {
+  if (!runtimeModes.isSaasMode() || runtimeModes.useMockAuth()) {
+    return NextResponse.json({ error: 'bad_request', message: 'Admin relay requires SaaS mode with real Supabase auth.' }, { status: 400 });
+  }
+  const authHeader = request.headers.get('Authorization');
+  const user = await getSupabaseUserFromToken(authHeader);
+  if (!user || !authHeader?.startsWith('Bearer ')) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
+  const accessToken = authHeader.slice('Bearer '.length).trim();
+  if (!accessToken) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
+  if (env.zenformedCoreApiBaseUrl == null) return NextResponse.json({ relay: 'error', error: 'core_unconfigured' }, { status: 503 });
+  const body = await request.text();
+  if (Buffer.byteLength(body) > 8 * 1024) return NextResponse.json({ error: 'body_too_large' }, { status: 413 });
+  const url = `${env.zenformedCoreApiBaseUrl.replace(/\/+$/, '')}${upstreamPath}`;
+  const res = await fetch(url, {
+    method,
+    cache: 'no-store',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+    body,
+  });
+  let json: unknown;
+  try { json = await res.json(); }
+  catch { return NextResponse.json({ relay: 'error', error: 'invalid_upstream_payload' }, { status: 502 }); }
+  return NextResponse.json(res.ok ? { relay: 'zenformed_core', ...(json as object) } : json, { status: res.status });
+}
