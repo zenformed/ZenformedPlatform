@@ -1480,6 +1480,12 @@ where n.nspname = 'public'
 Expected: `security_definer = false`, browser roles `false`, service role `true`.
 3. Deploy Core, then Platform.
 
+UX refinement: the initial required-actions request now runs inside the existing plain `Loading…`
+state. It renders no dedicated “Checking your account” dialog, and the underlying destination is not
+briefly exposed before the first check completes. When the result is empty, the loading state
+transitions directly to the destination with no additional UI. A modal is created only when an
+actual required action exists (or when a blocking check error needs retry).
+
 ### 2026-08-11 — Slice 7C additive runtime access resolution
 
 Added in ZenformedCore:

@@ -12,13 +12,15 @@ export function PlatformRequiredActionsGate({ children }: { children: ReactNode 
   const { session, user, loading: authLoading } = useSaaSProfile();
   const [actions, setActions] = useState<PartnerAction[]>([]);
   const [loading, setLoading] = useState(false);
+  const [checkedUserId, setCheckedUserId] = useState<string | null>(null);
   const [resolving, setResolving] = useState<'accept' | 'decline' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const accessToken = session?.access_token ?? null;
+  const userId = user?.id ?? null;
   const skip = pathname?.startsWith('/partner-invitations/accept') === true;
 
   const load = useCallback(async () => {
-    if (!accessToken || !user || skip) { setActions([]); return; }
+    if (!accessToken || !userId || skip) { setActions([]); return; }
     setLoading(true); setError(null);
     try {
       const response = await fetch('/api/required-actions', { cache: 'no-store', headers: { Authorization: `Bearer ${accessToken}` } });
@@ -26,8 +28,8 @@ export function PlatformRequiredActionsGate({ children }: { children: ReactNode 
       if (!response.ok || !Array.isArray(json.actions)) throw new Error('Could not load required account actions.');
       setActions(json.actions);
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Could not load required account actions.'); }
-    finally { setLoading(false); }
-  }, [accessToken, user, skip]);
+    finally { setCheckedUserId(userId); setLoading(false); }
+  }, [accessToken, userId, skip]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -43,8 +45,11 @@ export function PlatformRequiredActionsGate({ children }: { children: ReactNode 
   }
 
   const action = actions[0];
-  return <>{children}{!authLoading && !skip && (loading || action != null || error != null) ? <div className={styles.backdrop} role="presentation"><section className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="required-action-title">
-    {loading && action == null ? <><p className={styles.eyebrow}>ZENFORMED</p><h1 id="required-action-title">Checking your account</h1><p>Loading required actions…</p></> : null}
+  const initialCheckPending = !skip && userId != null && checkedUserId !== userId;
+  if (authLoading || initialCheckPending) {
+    return <div className={styles.loadingShell}><p>Loading…</p></div>;
+  }
+  return <>{children}{!skip && (action != null || error != null) ? <div className={styles.backdrop} role="presentation"><section className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="required-action-title">
     {action ? <><p className={styles.eyebrow}>ACTION REQUIRED</p><h1 id="required-action-title">Join {action.programName}</h1>{action.firstName ? <p>Hi {action.firstName},</p> : null}<p>{action.programDescription || `You have been invited to ${action.programName}.`}</p><p className={styles.detail}>Accept to activate the configured Partner benefits for your Zenformed organization. Declining permanently closes this invitation.</p>{error ? <p className={styles.error}>{error}</p> : null}<div className={styles.actions}><button className={styles.decline} disabled={resolving != null} onClick={() => void resolve('decline')}>{resolving === 'decline' ? 'Declining…' : 'Decline invitation'}</button><button className={styles.accept} disabled={resolving != null} onClick={() => void resolve('accept')}>{resolving === 'accept' ? 'Activating…' : 'Accept invitation'}</button></div></> : null}
     {!loading && action == null && error ? <><p className={styles.eyebrow}>ZENFORMED</p><h1 id="required-action-title">We couldn’t check your account</h1><p className={styles.error}>{error}</p><button className={styles.accept} onClick={() => void load()}>Try again</button></> : null}
   </section></div> : null}</>;
