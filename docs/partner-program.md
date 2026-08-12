@@ -1493,6 +1493,15 @@ terms-consent labels. Field validation and submission contracts are unchanged.
 Invitation presentation refinement: the “Accept your … invitation” heading is centered and uses
 balanced wrapping; the greeting, instructions, errors, and actions remain left-aligned.
 
+Follow-up invitation layout refinement: restored the heading to left alignment and vertically
+centered the complete invitation card within the viewport area below the public header. The card
+remains horizontally centered and responsive on mobile.
+
+Required-action activation refresh: after a successful Partner invitation acceptance, Platform now
+reloads the current route so already-mounted dashboard entitlement and product-ownership consumers
+refetch against the newly created grants. Decline still dismisses in place because it creates no
+access. This avoids adding Partner-specific mutation hooks to existing entitlement consumers.
+
 Acceptance-flow consolidation: the token page is now only the unauthenticated email doorway. Its
 Sign in and Create account actions resume at the dashboard, where the verified-email Required
 Actions Gate is the sole accept/decline interface. Authenticated visits to the legacy token page are
@@ -1603,6 +1612,20 @@ ZenformedPlatform added files:
 - `src/presentation/components/PartnerPrograms/PublicPartnerProgramPage.tsx`
 - `src/presentation/components/PartnerPrograms/partnerProgram.module.css`
 - `docs/partner-program.md`
+
+### 2026-08-11 — Effective Partner seat-limit integration
+
+Added `src/partnerPrograms/effectiveOrganizationAccess.ts` and tests. Core organization seat reads
+now combine access-granting base entitlement rows with active, in-window Partner grants using the
+same strongest-plan precedence as runtime app access. The shared result is used by dashboard seat
+totals, organization/team invitation seat enforcement, and organization app-access reporting.
+
+Partner Growth over Starter resolves to 10 seats; paid Pro over Partner Growth remains 25 seats;
+expired or revoked Partner grants contribute nothing. This performs reads only against
+`platform_app_entitlements` and `platform_partner_access_grants`. It does not call Stripe or write
+to Stripe, `platform_subscriptions`, or `platform_app_entitlements`. Modified
+`src/http/organizationWorkspaceStorage.ts` and Core `package.json`. Core typecheck passed and the
+focused Partner suite passed 44/44.
 
 ## Owner checklist
 

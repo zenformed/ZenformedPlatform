@@ -45,6 +45,10 @@ export function PlatformRequiredActionsGate({ children }: { children: ReactNode 
     try {
       const response = await fetch('/api/required-actions', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` }, body: JSON.stringify({ invitationId: action.id, decision }) });
       if (!response.ok) throw new Error(decision === 'accept' ? 'Could not accept this invitation.' : 'Could not decline this invitation.');
+      if (decision === 'accept') {
+        window.location.reload();
+        return;
+      }
       setActions((current) => current.filter((item) => item.id !== action.id));
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Could not complete this action.'); }
     finally { setResolving(null); }

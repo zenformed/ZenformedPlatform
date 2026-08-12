@@ -41,7 +41,7 @@ export function PartnerInvitationAcceptPage(): ReactElement {
 
   if (!authLoading && user != null) return <div className={styles.loadingShell}><p>Loading…</p></div>;
   const returnTo = nav.routes.dashboard;
-  return <ProductsPublicShell backHref={nav.routes.home} backLabel="Zenformed home"><div className={styles.page}><div className={styles.card}>
+  return <ProductsPublicShell backHref={nav.routes.home} backLabel="Zenformed home"><div className={`${styles.page} ${styles.invitationPage}`}><div className={`${styles.card} ${styles.invitationCard}`}>
     {loading || authLoading ? <p>Loading invitation…</p> : null}
     {!loading && error && invitation == null ? <><h1>Invitation unavailable</h1><p className={styles.error}>{error}</p></> : null}
     {invitation != null ? <><h1 className={styles.invitationTitle}>Accept your {invitation.programName} invitation</h1><p>Hi {invitation.firstName || 'there'}. This invitation is for {invitation.emailHint}.</p><p>Sign in or create your Zenformed account using the email address that received this invitation.</p><div className={styles.authActions}><Link className={styles.submitLink} href={`${nav.routes.login}?returnTo=${encodeURIComponent(returnTo)}`}>Sign in</Link><Link className={styles.secondaryLink} href={`${nav.routes.register}?returnTo=${encodeURIComponent(returnTo)}`}>Create account</Link></div></> : null}
