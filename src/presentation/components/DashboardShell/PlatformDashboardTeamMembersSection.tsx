@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactElement } from 'react';
-import { UsersIcon } from '@/platform/icons/platformDashboardShellIcons';
+import { UsersIcon, DashboardMetricIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import {
@@ -35,28 +35,37 @@ export function PlatformDashboardTeamMembersSection({
           <>
             <dl className={styles.dashboardSummaryMetrics}>
               <div className={styles.dashboardSummaryMetric}>
+                <span className={styles.dashboardMetricIcon}><DashboardMetricIcon name="members" /></span>
+                <div>
                 <dt className={styles.dashboardSummaryMetricLabel}>
                   {content.teamMembers.activeMembersLabel}
                 </dt>
                 <dd className={styles.dashboardSummaryMetricValue}>
                   {formatPlatformDashboardSummaryMetric(summary.activeMemberCount, isLoading)}
                 </dd>
+                </div>
               </div>
               <div className={styles.dashboardSummaryMetric}>
+                <span className={styles.dashboardMetricIcon}><DashboardMetricIcon name="invites" /></span>
+                <div>
                 <dt className={styles.dashboardSummaryMetricLabel}>
                   {content.teamMembers.pendingInvitesLabel}
                 </dt>
                 <dd className={styles.dashboardSummaryMetricValue}>
                   {formatPlatformDashboardSummaryMetric(summary.pendingInviteCount, isLoading)}
                 </dd>
+                </div>
               </div>
               <div className={styles.dashboardSummaryMetric}>
+                <span className={styles.dashboardMetricIcon}><DashboardMetricIcon name="availableSeats" /></span>
+                <div>
                 <dt className={styles.dashboardSummaryMetricLabel}>
                   {content.teamMembers.seatsAvailableLabel}
                 </dt>
                 <dd className={styles.dashboardSummaryMetricValue}>
                   {formatPlatformDashboardSummaryMetric(summary.seatsAvailable, isLoading)}
                 </dd>
+                </div>
               </div>
             </dl>
             <PlatformDashboardPanelAction

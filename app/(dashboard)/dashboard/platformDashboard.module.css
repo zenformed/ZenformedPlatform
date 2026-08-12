@@ -9,6 +9,18 @@
   overflow-y: auto;
 }
 
+.dashboardGreeting {
+  margin: 0 0 0.875rem;
+  color: var(--color-text, #0f172a);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+:global([data-theme='dark']) .dashboardGreeting {
+  color: #f8fafc;
+}
+
 .dashboardPanel {
   margin-bottom: 1.25rem;
   border: 1px solid #e0e2e5;
@@ -29,7 +41,9 @@
 }
 
 .dashboardHeadingBar {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   width: 100%;
   margin: 0;
   padding: 5px 8px;
@@ -39,6 +53,284 @@
   color: #ffffff;
   font-weight: 600;
   line-height: 1.3;
+}
+
+.dashboardHeadingIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  border-radius: 0.375rem;
+  color: #fff;
+  background: rgba(37, 99, 235, 0.72);
+}
+
+.dashboardHeadingIcon svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.ownedAppCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 22rem));
+  gap: 0.75rem;
+}
+
+.ownedAppCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: var(--color-bg, #f3f4f6);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.08),
+    0 6px 16px rgba(15, 23, 42, 0.1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ownedAppCard:hover {
+  transform: translateY(-1px);
+  border-color: #94a3b8;
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.1),
+    0 10px 22px rgba(15, 23, 42, 0.14);
+}
+
+.ownedAppCardBuildcore {
+  border-left: 3px solid #2563eb;
+}
+
+.ownedAppCardForgecore {
+  border-left: 3px solid #ea580c;
+}
+
+.ownedAppCardFormcore {
+  border-left: 3px solid #119247;
+}
+
+.ownedAppCardAnalyticscore {
+  border-left: 3px solid #eab308;
+}
+
+.ownedAppCardBuildcore:hover {
+  border-left-color: #2563eb;
+}
+
+.ownedAppCardForgecore:hover {
+  border-left-color: #ea580c;
+}
+
+.ownedAppCardFormcore:hover {
+  border-left-color: #119247;
+}
+
+.ownedAppCardAnalyticscore:hover {
+  border-left-color: #eab308;
+}
+
+:global([data-theme='dark']) .ownedAppCard {
+  border-color: #374151;
+  background: #151b26;
+  box-shadow: none;
+}
+
+:global([data-theme='dark']) .ownedAppCard:hover {
+  transform: none;
+  border-color: #4b5563;
+  box-shadow: none;
+}
+
+:global([data-theme='dark']) .ownedAppCardBuildcore {
+  border-left-color: #3b82f6;
+}
+
+:global([data-theme='dark']) .ownedAppCardForgecore {
+  border-left-color: #f97316;
+}
+
+:global([data-theme='dark']) .ownedAppCardFormcore {
+  border-left-color: #22c55e;
+}
+
+:global([data-theme='dark']) .ownedAppCardAnalyticscore {
+  border-left-color: #facc15;
+}
+
+:global([data-theme='dark']) .ownedAppCardBuildcore:hover {
+  border-left-color: #3b82f6;
+}
+
+:global([data-theme='dark']) .ownedAppCardForgecore:hover {
+  border-left-color: #f97316;
+}
+
+:global([data-theme='dark']) .ownedAppCardFormcore:hover {
+  border-left-color: #22c55e;
+}
+
+:global([data-theme='dark']) .ownedAppCardAnalyticscore:hover {
+  border-left-color: #facc15;
+}
+
+.ownedAppCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.ownedAppCardIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.ownedAppCardIdentity {
+  min-width: 0;
+}
+
+.ownedAppCardTitle {
+  margin: 0;
+  color: var(--color-text, #0f172a);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ownedAppCardTitleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+:global([data-theme='dark']) .ownedAppCardTitle {
+  color: #f8fafc;
+}
+
+.ownedAppCardDescription {
+  margin: 0.25rem 0 0;
+  color: var(--color-text-muted, #64748b);
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ownedAppCardMetrics {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.ownedAppCardMetrics dt {
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.62rem;
+}
+
+.ownedAppCardMetrics dd {
+  margin: 0.1rem 0 0;
+  color: var(--color-text, #0f172a);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+:global([data-theme='dark']) .ownedAppCardMetrics dd {
+  color: #f8fafc;
+}
+
+.ownedAppCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+}
+
+:global([data-theme='dark']) .ownedAppCardFooter {
+  border-color: #303a4a;
+}
+
+.ownedAppCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.ownedAppCardBadges {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.ownedAppCardBadges span {
+  padding: 0.15rem 0.4rem;
+  border: 1px solid #86b99a;
+  border-radius: 999px;
+  color: #14532d;
+  background: #bbf7d0;
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.ownedAppCardBadges span:first-child {
+  border-color: #c4a0e8;
+  color: #581c87;
+  background: #e9d5ff;
+}
+
+:global([data-theme='dark']) .ownedAppCardBadges span {
+  border-color: rgba(74, 222, 128, 0.25);
+  color: #bbf7d0;
+  background: rgba(22, 101, 52, 0.55);
+}
+
+:global([data-theme='dark']) .ownedAppCardBadges span:first-child {
+  border-color: rgba(216, 180, 254, 0.22);
+  color: #d8b4fe;
+  background: rgba(126, 34, 206, 0.35);
+}
+
+.ownedAppOpenButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border, #cbd5e1);
+  border-radius: 0.5rem;
+  color: var(--color-text, #0f172a);
+  background: #ffffff;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+:global([data-theme='dark']) .ownedAppOpenButton {
+  border-color: #4b5563;
+  color: #f8fafc;
+  background: transparent;
+}
+
+.ownedAppOpenButton:hover:not(:disabled) {
+  background: var(--color-muted, #f1f5f9);
+}
+
+:global([data-theme='dark']) .ownedAppOpenButton:hover:not(:disabled) {
+  background: #273142;
+}
+
+.ownedAppOpenButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
 }
 
 :global([data-theme='dark']) .dashboardHeadingBar {
@@ -176,8 +468,33 @@
 }
 
 .dashboardSummaryMetric {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin: 0;
   min-width: 0;
+}
+
+.dashboardMetricIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  border-radius: 0.625rem;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.dashboardMetricIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+:global([data-theme='dark']) .dashboardMetricIcon {
+  color: #93c5fd;
+  background: rgba(37, 99, 235, 0.28);
 }
 
 .dashboardSummaryMetricLabel {

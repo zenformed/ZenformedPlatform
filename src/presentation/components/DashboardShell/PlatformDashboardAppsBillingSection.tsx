@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactElement } from 'react';
-import { BillIcon } from '@/platform/icons/platformDashboardShellIcons';
+import { BillIcon, DashboardMetricIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformDashboardContent as content } from '@/platform/content/platformDashboardContent';
 import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import {
@@ -40,6 +40,8 @@ export function PlatformDashboardAppsBillingSection({
           <>
             <dl className={styles.dashboardSummaryMetrics}>
               <div className={styles.dashboardSummaryMetric}>
+                <span className={styles.dashboardMetricIcon}><DashboardMetricIcon name="subscriptions" /></span>
+                <div>
                 <dt className={styles.dashboardSummaryMetricLabel}>
                   {content.appsBilling.activeSubscriptionsLabel}
                 </dt>
@@ -49,8 +51,11 @@ export function PlatformDashboardAppsBillingSection({
                     billingMetricsLoading
                   )}
                 </dd>
+                </div>
               </div>
               <div className={styles.dashboardSummaryMetric}>
+                <span className={styles.dashboardMetricIcon}><DashboardMetricIcon name="spend" /></span>
+                <div>
                 <dt className={styles.dashboardSummaryMetricLabel}>
                   {content.appsBilling.monthlySpendLabel}
                 </dt>
@@ -60,6 +65,7 @@ export function PlatformDashboardAppsBillingSection({
                     billingMetricsLoading
                   )}
                 </dd>
+                </div>
               </div>
             </dl>
             <PlatformDashboardPanelAction

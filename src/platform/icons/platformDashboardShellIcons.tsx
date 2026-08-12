@@ -146,6 +146,48 @@ export function UsersIcon({ className }: { className?: string }): React.ReactEle
   );
 }
 
+export function AccountIcon({ className }: { className?: string }): React.ReactElement {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="4" y="3" width="16" height="18" rx="2" />
+      <path d="M9 21v-6h6v6M8 7h2M14 7h2M8 11h2M14 11h2" />
+    </svg>
+  );
+}
+
+export type DashboardMetricIconName =
+  | 'organization'
+  | 'subscriptions'
+  | 'seats'
+  | 'members'
+  | 'invites'
+  | 'availableSeats'
+  | 'spend';
+
+export function DashboardMetricIcon({
+  name,
+  className,
+}: {
+  name: DashboardMetricIconName;
+  className?: string;
+}): React.ReactElement {
+  const paths: Record<DashboardMetricIconName, React.ReactNode> = {
+    organization: <><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M9 21v-5h6v5M8 7h2M14 7h2M8 11h2M14 11h2" /></>,
+    subscriptions: <><path d="m12 3-8 4 8 4 8-4-8-4Z" /><path d="m4 12 8 4 8-4M4 17l8 4 8-4" /></>,
+    seats: <><path d="M6 10V7a3 3 0 0 1 6 0v3M12 10V7a3 3 0 0 1 6 0v3" /><path d="M4 10h16v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5ZM7 17v3M17 17v3" /></>,
+    members: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>,
+    invites: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
+    availableSeats: <><circle cx="9" cy="8" r="4" /><path d="M2 21v-2a7 7 0 0 1 14 0v2M19 8v6M16 11h6" /></>,
+    spend: <><circle cx="12" cy="12" r="9" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 6v12" /></>,
+  };
+
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      {paths[name]}
+    </svg>
+  );
+}
+
 export function BillIcon({ className }: { className?: string }): React.ReactElement {
   return (
     <svg

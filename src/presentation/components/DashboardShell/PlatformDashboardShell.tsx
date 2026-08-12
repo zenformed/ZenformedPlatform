@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState, type ReactElement, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactElement, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   pickAppsLauncherClassNames,
@@ -8,7 +8,6 @@ import {
   pickHeaderShellClassNames,
   useZenformedAppLaunch,
   useZenformedShellUserDisplay,
-  ZenformedAppList,
   ZenformedAppsLauncher,
   ZenformedCollapsibleSidebarShell,
   ZenformedDashboardAppShell,
@@ -21,7 +20,7 @@ import {
   formatPlanDisplayName,
   resolveAppEntitlementBadges,
 } from '@zenformed/core/organization-settings';
-import { SettingsIcon, ShopIcon, CameraIcon, SignOutIcon, AppsIcon } from '@/platform/icons/platformDashboardShellIcons';
+import { SettingsIcon, ShopIcon, CameraIcon, SignOutIcon, AppsIcon, DashboardMetricIcon } from '@/platform/icons/platformDashboardShellIcons';
 import { platformAppIconSrc } from '@/platform/assets/platformAppIcon';
 import { platformAppDefinition } from '@/platform/appDefinitions/platform';
 import { PLATFORM_ZENFORMED_APPS } from '@/platform/appDefinitions/zenformedApps';
@@ -45,6 +44,7 @@ import { PlatformAvailableProductsGrid } from '@/presentation/components/Dashboa
 import { PlatformDashboardPanelAction } from '@/presentation/components/DashboardShell/PlatformDashboardPanelAction';
 import { PlatformDashboardAppsBillingSection } from '@/presentation/components/DashboardShell/PlatformDashboardAppsBillingSection';
 import { PlatformDashboardTeamMembersSection } from '@/presentation/components/DashboardShell/PlatformDashboardTeamMembersSection';
+import { PlatformDashboardOwnedAppsGrid } from '@/presentation/components/DashboardShell/PlatformDashboardOwnedAppsGrid';
 import {
   formatPlatformDashboardActiveSubscriptions,
   formatPlatformDashboardSeatsUsed,
@@ -60,7 +60,6 @@ import appsStyles from './platformCollapsibleApps.module.css';
 
 const headerShellClassNames = pickHeaderShellClassNames(shellStyles);
 const appsLauncherClassNames = pickAppsLauncherClassNames(appsStyles);
-const pageAppsClassNames = pickAppsLauncherClassNames(pageStyles);
 const pageLoadingClassNames = pickDashboardPageLoadingClassNames(shellStyles);
 
 const accountMenuLabels: ZenformedAccountMenuLabels = {
@@ -97,6 +96,7 @@ export function PlatformDashboardShell({
   const { theme } = useTheme();
   const { session, user: saasUser } = useSaaSProfile();
   const [appsOpen, setAppsOpen] = useState(false);
+  const [dashboardGreeting, setDashboardGreeting] = useState('Welcome');
   const notifications = usePlatformNotificationsConfig(dash.getAccessToken);
   const themeLabel = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
 
@@ -140,6 +140,11 @@ export function PlatformDashboardShell({
     user: accountUser,
     enabled: accountUser != null,
   });
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    setDashboardGreeting(hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening');
+  }, []);
 
   const teamContent = useMemo(
     () => (
@@ -293,9 +298,13 @@ export function PlatformDashboardShell({
 
   const railDisplayName =
     accountDisplayName.trim() || accountUser?.email?.trim() || '';
+  const greetingDisplayName = accountDisplayName.trim() || accountUser?.email?.split('@')[0] || '';
 
   const homeContent = (
     <div className={pageStyles.dashboardContent}>
+      <p className={pageStyles.dashboardGreeting}>
+        {dashboardGreeting}{greetingDisplayName ? `, ${greetingDisplayName}` : ''}
+      </p>
       <div className={pageStyles.dashboardLayout}>
         <div className={pageStyles.dashboardLeftColumn}>
           <header className={pageStyles.dashboardPanel}>
@@ -306,28 +315,16 @@ export function PlatformDashboardShell({
               <p className={pageStyles.dashboardPageSubtitle}>{content.dashboard.accountSubtitle}</p>
               <dl className={pageStyles.dashboardSummaryMetrics}>
                 <div className={pageStyles.dashboardSummaryMetric}>
-                  <dt className={pageStyles.dashboardSummaryMetricLabel}>
-                    {content.dashboard.organizationLabel}
-                  </dt>
-                  <dd
-                    className={`${pageStyles.dashboardSummaryMetricValue} ${pageStyles.dashboardSummaryMetricValueText}`}
-                  >
-                    {organizationDisplayName}
-                  </dd>
+                  <span className={pageStyles.dashboardMetricIcon}><DashboardMetricIcon name="organization" /></span>
+                  <div><dt className={pageStyles.dashboardSummaryMetricLabel}>{content.dashboard.organizationLabel}</dt><dd className={`${pageStyles.dashboardSummaryMetricValue} ${pageStyles.dashboardSummaryMetricValueText}`}>{organizationDisplayName}</dd></div>
                 </div>
                 <div className={pageStyles.dashboardSummaryMetric}>
-                  <dt className={pageStyles.dashboardSummaryMetricLabel}>
-                    {content.dashboard.activeSubscriptionsLabel}
-                  </dt>
-                  <dd className={pageStyles.dashboardSummaryMetricValue}>
-                    {activeSubscriptionsDisplay}
-                  </dd>
+                  <span className={pageStyles.dashboardMetricIcon}><DashboardMetricIcon name="subscriptions" /></span>
+                  <div><dt className={pageStyles.dashboardSummaryMetricLabel}>{content.dashboard.activeSubscriptionsLabel}</dt><dd className={pageStyles.dashboardSummaryMetricValue}>{activeSubscriptionsDisplay}</dd></div>
                 </div>
                 <div className={pageStyles.dashboardSummaryMetric}>
-                  <dt className={pageStyles.dashboardSummaryMetricLabel}>
-                    {content.dashboard.seatsUsedLabel}
-                  </dt>
-                  <dd className={pageStyles.dashboardSummaryMetricValue}>{seatsUsedDisplay}</dd>
+                  <span className={pageStyles.dashboardMetricIcon}><DashboardMetricIcon name="seats" /></span>
+                  <div><dt className={pageStyles.dashboardSummaryMetricLabel}>{content.dashboard.seatsUsedLabel}</dt><dd className={pageStyles.dashboardSummaryMetricValue}>{seatsUsedDisplay}</dd></div>
                 </div>
               </dl>
               <PlatformDashboardPanelAction
@@ -356,11 +353,11 @@ export function PlatformDashboardShell({
                   {myApps.length === 0 ? (
                     <p className={pageStyles.myAppsEmptyState}>{content.apps.myAppsEmptyState}</p>
                   ) : (
-                    <ZenformedAppList
+                    <PlatformDashboardOwnedAppsGrid
                       apps={myAppsWithBadges}
-                      classNames={pageAppsClassNames}
-                      labels={appsLauncherLabels}
-                      variant="cards"
+                      activeUsers={organizationSummary.activeMemberCount}
+                      planSeats={organizationSummary.seatLimit}
+                      metricsLoading={organizationSummary.isLoading}
                       launchApp={launchApp}
                       launchingAppId={launchingAppId}
                       launchError={launchError}
