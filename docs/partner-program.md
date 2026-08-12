@@ -1412,6 +1412,20 @@ Modified: `app/(auth)/register/page.tsx`,
 
 Validation: Platform typecheck passed; focused Platform suite passed 9/9.
 
+Claim endpoint failures remain generic to applicants, while Core now logs the authenticated user ID
+and sanitized service/RPC error message so production database failures can be diagnosed without
+exposing schema details or invitation tokens in the browser response.
+
+### 2026-08-11 — Claim auth-schema permission correction
+
+Added `sql/00059_fix_partner_claim_auth_users_permission.sql`. Supabase service-role RPC execution
+could not select `auth.users` from the security-invoker claim function. Core already validates the
+Bearer token with Supabase Auth `getUser`; it now checks the returned confirmation timestamp and
+passes the normalized verified email to the service-only RPC. The database still locks the
+invitation and compares that email to the invited address before creating any participation or
+grant. No `auth.users` permission was added or broadened. Core typecheck passed and the focused
+Partner suite passed 40/40.
+
 ### 2026-08-11 — Slice 7C additive runtime access resolution
 
 Added in ZenformedCore:
@@ -1463,6 +1477,7 @@ ZenformedCore added files:
 - `sql/00056_approve_partner_application_invitation.sql`
 - `sql/00057_claim_partner_invitation_grants.sql`
 - `sql/00058_fix_partner_approval_column_ambiguity.sql`
+- `sql/00059_fix_partner_claim_auth_users_permission.sql`
 - `src/email/templates/partnerProgramInvitationEmail.ts`
 - `src/email/templates/partnerProgramApplicationReceivedEmail.ts`
 - `src/http/partnerInvitationHttp.ts`
