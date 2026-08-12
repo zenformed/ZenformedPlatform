@@ -24,6 +24,7 @@ import {
 } from '@/infrastructure/auth/platformBuildCoreLaunchHandoff';
 import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 import { PlatformAuthPageShell } from '@/presentation/components/PlatformAuthPageShell';
+import { PlatformLoadingScreen } from '@/presentation/components/PlatformLoadingScreen';
 import { usePlatformAuth } from '@/presentation/hooks/usePlatformAuth';
 import { platformAppDefinition } from '@/platform/appDefinitions/platform';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
@@ -145,6 +146,10 @@ function LoginPageContent(): ReactElement {
   }
 
   const showLoading = isLoading || loggingIn || handoffPending;
+
+  if (loggingIn || handoffPending) {
+    return <PlatformLoadingScreen statusMessage="Completing sign-in" />;
+  }
 
   return (
     <PlatformAuthPageShell

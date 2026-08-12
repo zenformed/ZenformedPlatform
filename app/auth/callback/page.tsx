@@ -10,8 +10,8 @@ import {
 import { completePlatformGoogleOAuthSession } from '@/infrastructure/auth/completePlatformGoogleOAuth';
 import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 import { PlatformAuthPageShell } from '@/presentation/components/PlatformAuthPageShell';
+import { PlatformLoadingScreen } from '@/presentation/components/PlatformLoadingScreen';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
-import pageStyles from '@/presentation/components/platformAuthPage.module.css';
 
 function readOAuthCallbackError(searchParams: URLSearchParams): string | null {
   const error = searchParams.get('error')?.trim();
@@ -117,26 +117,12 @@ function AuthCallbackContent(): ReactElement {
     );
   }
 
-  return (
-    <PlatformAuthPageShell
-      cardTitle="Completing sign-in"
-      loading
-      loadingMessage="Finishing Google sign-in…"
-    >
-      {null}
-    </PlatformAuthPageShell>
-  );
+  return <PlatformLoadingScreen statusMessage="Completing sign-in" />;
 }
 
 export default function AuthCallbackPage(): ReactElement {
   return (
-    <Suspense
-      fallback={
-        <div className={pageStyles.page}>
-          <p className={pageStyles.loading}>Finishing Google sign-in…</p>
-        </div>
-      }
-    >
+    <Suspense fallback={<PlatformLoadingScreen statusMessage="Completing sign-in" />}>
       <AuthCallbackContent />
     </Suspense>
   );

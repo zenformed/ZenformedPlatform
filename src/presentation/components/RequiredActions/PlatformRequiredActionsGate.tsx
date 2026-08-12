@@ -3,6 +3,7 @@ import type { ReactNode, ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
+import { PlatformLoadingScreen } from '@/presentation/components/PlatformLoadingScreen';
 import styles from './requiredActions.module.css';
 
 type PartnerAction = { id: string; type: 'partner_invitation'; programName: string; programDescription: string; firstName: string; expiresAt: string };
@@ -57,7 +58,7 @@ export function PlatformRequiredActionsGate({ children }: { children: ReactNode 
   const action = actions[0];
   const initialCheckPending = !skip && userId != null && checkedUserId !== userId;
   if (authLoading || initialCheckPending) {
-    return <div className={styles.loadingShell}><p>Loading…</p></div>;
+    return <PlatformLoadingScreen />;
   }
   return <>{children}{!skip && (action != null || error != null) ? <div className={styles.backdrop} role="presentation"><section className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="required-action-title">
     {action ? <><p className={styles.eyebrow}>ACTION REQUIRED</p><h1 id="required-action-title">Join {action.programName}</h1>{action.firstName ? <p>Hi {action.firstName},</p> : null}<p>{action.programDescription || `You have been invited to ${action.programName}.`}</p><p className={styles.detail}>Accept to activate the configured Partner benefits for your Zenformed organization. Declining permanently closes this invitation.</p>{error ? <p className={styles.error}>{error}</p> : null}<div className={styles.actions}><button className={styles.decline} disabled={resolving != null} onClick={() => void resolve('decline')}>{resolving === 'decline' ? 'Declining…' : 'Decline invitation'}</button><button className={styles.accept} disabled={resolving != null} onClick={() => void resolve('accept')}>{resolving === 'accept' ? 'Activating…' : 'Accept invitation'}</button></div></> : null}

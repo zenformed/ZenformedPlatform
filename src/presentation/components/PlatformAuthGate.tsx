@@ -13,6 +13,7 @@ import {
 import { useSaaSProfile } from '@/presentation/hooks/useSaaSProfile';
 import { isBuildCoreAuthAppHandoff } from '@/infrastructure/auth/platformBuildCoreLaunchHandoff';
 import { platformNavigation as nav } from '@/platform/navigation/platformNavigation';
+import { PlatformLoadingScreen } from '@/presentation/components/PlatformLoadingScreen';
 
 const PUBLIC_PATHS = [
   nav.routes.login,
@@ -28,12 +29,6 @@ const PUBLIC_PATHS = [
   nav.routes.checkoutSuccess,
   '/legal',
 ] as const;
-
-const LoadingShell = (): React.ReactElement => (
-  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <p>Loading…</p>
-  </div>
-);
 
 export interface PlatformAuthGateProps {
   children: React.ReactNode;
@@ -126,7 +121,11 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
   ]);
 
   if (!mounted || isLoading) {
-    return <LoadingShell />;
+    return (
+      <PlatformLoadingScreen
+        statusMessage={isOAuthProcessingPath ? 'Completing sign-in' : undefined}
+      />
+    );
   }
 
   if (isAuthRecoveryPath || hasRecoveryCallback || isOAuthProcessingPath) {
@@ -134,11 +133,11 @@ export function PlatformAuthGate({ children }: PlatformAuthGateProps): React.Rea
   }
 
   if (!isAuthenticated && !isPublicPath && !isHomePath) {
-    return <LoadingShell />;
+    return <PlatformLoadingScreen />;
   }
 
   if (isAuthenticated && (isLoginPath || isAuthEntryPath) && !isBuildCoreLoginHandoff) {
-    return <LoadingShell />;
+    return <PlatformLoadingScreen />;
   }
 
   return <>{children}</>;
