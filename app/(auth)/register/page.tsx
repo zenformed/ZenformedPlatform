@@ -48,7 +48,10 @@ function RegisterPageContent(): ReactElement {
         lastName: input.lastName,
         bootstrapDefaultOrganization: true,
         requireEmailConfirmation: true,
-        emailRedirectTo: resolvePlatformRegistrationEmailRedirectUrl(authEntryParams),
+        emailRedirectTo: resolvePlatformRegistrationEmailRedirectUrl(
+          authEntryParams,
+          window.location.origin
+        ),
       });
       if (result.ok && result.pendingEmailVerification) {
         setRegistrationComplete(true);

@@ -40,7 +40,7 @@ export function PartnerInvitationAcceptPage(): ReactElement {
   }, [authLoading, router, user]);
 
   if (!authLoading && user != null) return <div className={styles.loadingShell}><p>Loading…</p></div>;
-  const returnTo = nav.routes.dashboard;
+  const returnTo = `/partner-invitations/accept?token=${encodeURIComponent(token)}`;
   return <ProductsPublicShell backHref={nav.routes.home} backLabel="Zenformed home"><div className={`${styles.page} ${styles.invitationPage}`}><div className={`${styles.card} ${styles.invitationCard}`}>
     {loading || authLoading ? <p>Loading invitation…</p> : null}
     {!loading && error && invitation == null ? <><h1>Invitation unavailable</h1><p className={styles.error}>{error}</p></> : null}

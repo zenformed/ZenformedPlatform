@@ -9,7 +9,8 @@ import { buildRegistrationConfirmationLoginPath } from './registrationConfirmati
 
 /** Absolute Supabase `emailRedirectTo` for direct Platform registration confirmation emails. */
 export function resolvePlatformRegistrationEmailRedirectUrl(
-  authEntryParams?: AuthEntryQueryParams
+  authEntryParams?: AuthEntryQueryParams,
+  platformOrigin?: string | null
 ): string {
   const loginPath = authEntryParams == null
     ? nav.routes.login
@@ -20,7 +21,7 @@ export function resolvePlatformRegistrationEmailRedirectUrl(
         returnTo: resolvePostAuthRedirectTarget(authEntryParams, nav.routes.dashboard),
       });
   return resolveAuthRedirectUrl({
-    appOrigin: env.appUrl,
+    appOrigin: platformOrigin?.trim() || env.appUrl,
     path: loginPath,
   });
 }
