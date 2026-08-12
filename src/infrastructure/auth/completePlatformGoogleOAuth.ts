@@ -114,7 +114,9 @@ export async function completePlatformGoogleOAuthSession(
     return { ok: false, message: ensured.message };
   }
 
-  if (isBuildCoreAuthAppHandoff(authEntryParams) || skipCreateForInviteFlow) {
+  // Invitation acceptance must finish on Platform before launching an app so the
+  // required-action gate can activate the program benefits for the new account.
+  if (isBuildCoreAuthAppHandoff(authEntryParams) && !skipCreateForInviteFlow) {
     const handoffParams: AuthEntryQueryParams = {
       ...authEntryParams,
       app: authEntryParams.app ?? 'buildcore',
