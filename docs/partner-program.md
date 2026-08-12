@@ -1426,6 +1426,60 @@ invitation and compares that email to the invited address before creating any pa
 grant. No `auth.users` permission was added or broadened. Core typecheck passed and the focused
 Partner suite passed 40/40.
 
+### 2026-08-11 — Global Required Actions Gate
+
+Added the reusable post-auth `PlatformRequiredActionsGate` inside `PlatformRootGate`. Every
+authenticated Platform route now checks for unresolved account actions before allowing interaction
+with the underlying page. Partner invitations are the first provider; future versioned legal/EULA
+acceptance can be added as a separate provider without combining unrelated records into Partner
+tables.
+
+For Partner invitations, Core discovers pending, unexpired invitations matching the Supabase
+Auth-verified email even when the user did not arrive through the email link. The modal offers
+explicit Accept and Decline actions. Accept atomically creates participation and time-bound grants.
+Decline atomically revokes the invitation and creates no participation or access. Multiple actions
+are presented sequentially. The existing token acceptance page remains a direct shortcut and is
+excluded from the global overlay to avoid presenting two competing interfaces.
+
+Added in Core:
+
+- `sql/00060_partner_required_actions.sql`
+- `src/partnerPrograms/partnerRequiredActionsService.ts` and test
+- authenticated required-actions handlers in `src/http/partnerInvitationHttp.ts`
+- route registration in `src/http/server.ts`
+
+Added in Platform:
+
+- `app/api/required-actions/route.ts`
+- `src/presentation/components/RequiredActions/PlatformRequiredActionsGate.tsx`
+- `src/presentation/components/RequiredActions/requiredActions.module.css`
+
+Modified `src/presentation/components/PlatformRootGate.tsx` and Core `package.json`.
+
+Validation: Core and Platform typechecks passed; Core focused Partner suite passed 42/42; Platform
+focused suite passed 9/9.
+
+Owner activation for this slice:
+
+1. Run the complete `sql/00060_partner_required_actions.sql` migration.
+2. Verify the function remains service-only:
+
+```sql
+select
+  p.proname as function_name,
+  p.prosecdef as security_definer,
+  has_function_privilege('anon', p.oid, 'EXECUTE') as anon_can_execute,
+  has_function_privilege('authenticated', p.oid, 'EXECUTE') as authenticated_can_execute,
+  has_function_privilege('service_role', p.oid, 'EXECUTE') as service_role_can_execute
+from pg_proc p
+join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public'
+  and p.proname = 'platform_resolve_partner_invitation_action';
+```
+
+Expected: `security_definer = false`, browser roles `false`, service role `true`.
+3. Deploy Core, then Platform.
+
 ### 2026-08-11 — Slice 7C additive runtime access resolution
 
 Added in ZenformedCore:
@@ -1478,6 +1532,7 @@ ZenformedCore added files:
 - `sql/00057_claim_partner_invitation_grants.sql`
 - `sql/00058_fix_partner_approval_column_ambiguity.sql`
 - `sql/00059_fix_partner_claim_auth_users_permission.sql`
+- `sql/00060_partner_required_actions.sql`
 - `src/email/templates/partnerProgramInvitationEmail.ts`
 - `src/email/templates/partnerProgramApplicationReceivedEmail.ts`
 - `src/http/partnerInvitationHttp.ts`

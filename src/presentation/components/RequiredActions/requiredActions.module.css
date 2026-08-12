@@ -1,0 +1,6 @@
+.backdrop{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:24px;background:rgba(2,6,12,.82);backdrop-filter:blur(7px)}
+.dialog{width:min(560px,100%);padding:32px;border:1px solid rgba(148,163,184,.24);border-radius:18px;background:linear-gradient(145deg,#152131,#10151e);box-shadow:0 28px 90px rgba(0,0,0,.5);color:#f8fafc}
+.dialog h1{margin:8px 0 20px;font-size:clamp(1.75rem,5vw,2.4rem);line-height:1.15}.dialog p{line-height:1.65;color:#d7dee8}
+.eyebrow{margin:0!important;color:#56d68b!important;font-size:.75rem;font-weight:800;letter-spacing:.13em}.detail{font-size:.92rem;color:#aab6c6!important}.error{color:#fda4af!important}
+.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:28px}.accept,.decline{min-height:46px;padding:0 20px;border-radius:9px;font:inherit;font-weight:750;cursor:pointer}.accept{border:1px solid #17ad58;background:#149a4e;color:#fff}.decline{border:1px solid #64748b;background:transparent;color:#e2e8f0}.accept:disabled,.decline:disabled{cursor:wait;opacity:.65}
+@media(max-width:520px){.dialog{padding:24px}.actions{flex-direction:column-reverse}.accept,.decline{width:100%}}
