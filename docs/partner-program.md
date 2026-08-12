@@ -1486,6 +1486,20 @@ briefly exposed before the first check completes. When the result is empty, the 
 transitions directly to the destination with no additional UI. A modal is created only when an
 actual required action exists (or when a blocking check error needs retry).
 
+Public application form label refinement: removed the visible “optional” suffix from Company and
+added asterisks to the required First name, Last name, Email, configured required questions, and
+terms-consent labels. Field validation and submission contracts are unchanged.
+
+Invitation presentation refinement: the “Accept your … invitation” heading is centered and uses
+balanced wrapping; the greeting, instructions, errors, and actions remain left-aligned.
+
+Acceptance-flow consolidation: the token page is now only the unauthenticated email doorway. Its
+Sign in and Create account actions resume at the dashboard, where the verified-email Required
+Actions Gate is the sole accept/decline interface. Authenticated visits to the legacy token page are
+redirected to the dashboard. Required-action discovery is suppressed during login, registration,
+recovery, and OAuth callback routes, preventing a modal flash while auth navigation is still in
+progress.
+
 ### 2026-08-11 — Slice 7C additive runtime access resolution
 
 Added in ZenformedCore:

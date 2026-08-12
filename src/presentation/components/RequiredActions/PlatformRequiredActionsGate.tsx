@@ -17,7 +17,13 @@ export function PlatformRequiredActionsGate({ children }: { children: ReactNode 
   const [error, setError] = useState<string | null>(null);
   const accessToken = session?.access_token ?? null;
   const userId = user?.id ?? null;
-  const skip = pathname?.startsWith('/partner-invitations/accept') === true;
+  const skip = pathname?.startsWith('/partner-invitations/accept') === true
+    || pathname?.startsWith('/auth/callback') === true
+    || pathname?.startsWith('/auth/google') === true
+    || pathname?.startsWith('/login') === true
+    || pathname?.startsWith('/register') === true
+    || pathname?.startsWith('/forgot-password') === true
+    || pathname?.startsWith('/reset-password') === true;
 
   const load = useCallback(async () => {
     if (!accessToken || !userId || skip) { setActions([]); return; }
