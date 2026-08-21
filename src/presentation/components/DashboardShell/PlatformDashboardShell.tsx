@@ -7,6 +7,7 @@ import {
   pickDashboardPageLoadingClassNames,
   pickHeaderShellClassNames,
   useZenformedAppLaunch,
+  useZenformedOrganizationSwitcher,
   useZenformedShellUserDisplay,
   ZenformedAppsLauncher,
   ZenformedCollapsibleSidebarShell,
@@ -54,6 +55,7 @@ import { resolvePlatformAccountMenuUser } from '@/platform/auth/resolvePlatformA
 import { ThemeToggle } from '@/presentation/components/ThemeToggle/ThemeToggle';
 import { useTheme } from '@/presentation/providers/ThemeProvider';
 import { usePlatformNotificationsConfig } from '@/presentation/features/notifications/usePlatformNotificationsConfig';
+import { getSupabaseClient } from '@/infrastructure/supabase/supabaseClient';
 import shellStyles from '../../../../app/(dashboard)/dashboard/dashboard.module.css';
 import pageStyles from '../../../../app/(dashboard)/dashboard/platformDashboard.module.css';
 import appsStyles from './platformCollapsibleApps.module.css';
@@ -99,6 +101,19 @@ export function PlatformDashboardShell({
   const [dashboardGreeting, setDashboardGreeting] = useState('Welcome');
   const notifications = usePlatformNotificationsConfig(dash.getAccessToken);
   const themeLabel = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+  const onOrganizationSwitched = useCallback(async () => {
+    // The server-side preference update is already complete. A full navigation
+    // rehydrates the session and context even when the SDK cannot rotate the
+    // current token in place (for example, a stale browser refresh token).
+    await getSupabaseClient().auth.refreshSession().catch(() => undefined);
+    window.location.replace(nav.routes.dashboard);
+  }, []);
+  const organizationSwitcher = useZenformedOrganizationSwitcher({
+    apiUrl: '/api/internal/organization/active',
+    getAccessToken: dash.getAccessToken,
+    enabled: session != null,
+    onSwitched: onOrganizationSwitched,
+  });
 
   const { ownedAppIds, entitlementsByApp, isLoading: entitlementsLoading, error: entitlementsError } =
     usePlatformProductEntitlements(session?.access_token);
@@ -418,6 +433,7 @@ export function PlatformDashboardShell({
         appName={appDisplayName}
         appIconSrc={appIconSrc}
         organizationName={dash.shopName || null}
+        organizationSwitcher={organizationSwitcher}
         appsSwitcher={appsSwitcher}
         sections={sections}
         notifications={notifications}
