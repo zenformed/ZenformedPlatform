@@ -51,6 +51,28 @@
   max-width: 24rem;
 }
 
+/* The shared auth forms retain their behavior; Platform owns this visual variant. */
+.card :global(form) {
+  gap: 0;
+}
+
+.card :global(form > label) {
+  position: relative;
+  z-index: 1;
+  top: 0;
+  align-self: flex-start;
+  margin: 0 0 -0.5rem 0.625rem;
+  padding: 0 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  background: var(--color-surface, #fff);
+}
+
+.card :global(form > input) {
+  margin: 0 0 0.875rem;
+  padding-top: 0.75rem;
+}
+
 .loading {
   margin: 0;
   color: var(--color-text-muted, #64748b);
